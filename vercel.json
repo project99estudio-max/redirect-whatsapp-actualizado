@@ -1,8 +1,8 @@
 {
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/api/r"
-    }
+  "version": 2,
+  "routes": [
+    { "src": "^/$", "dest": "/puente.html" },
+    { "src": "^/puente$", "dest": "/puente.html" },
+    { "src": "^/api/(.*)$", "dest": "/api/$1.js" }
   ]
 }
