@@ -1,36 +1,109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Conectando con WhatsApp</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conectando con WhatsApp...</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f6fdf9;color:#083a2b;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column}
-    .card{max-width:720px;text-align:center;padding:24px}
-    .spinner{width:64px;height:64px;border-radius:50%;background:conic-gradient(#083a2b 0 30%, rgba(8,58,43,0.12) 30% 100%);animation:spin 1s linear infinite;margin:auto}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    h1{font-size:20px;margin:12px 0 6px}
-    p{margin:6px 0 0;color:#0b4f3a;opacity:.9}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at 20% 20%, #2a004d, #000000 90%);
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      position: relative;
+      animation: bgMove 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgMove {
+      0% { background-position: 0 0; background-color: #2a004d; }
+      100% { background-position: 100% 100%; background-color: #4b0099; }
+    }
+
+    /* Partículas */
+    .particle {
+      position: absolute;
+      background: rgba(177, 124, 255, 0.6);
+      border-radius: 50%;
+      width: 2px;
+      height: 2px;
+      animation: float linear infinite, shimmer 4s ease-in-out infinite;
+      box-shadow: 0 0 6px rgba(177, 124, 255, 0.8);
+    }
+
+    @keyframes float {
+      from { transform: translateX(0); opacity: 0.3; }
+      to { transform: translateX(100vw); opacity: 0.9; }
+    }
+
+    @keyframes shimmer {
+      0%,100% { opacity: 0.2; }
+      50% { opacity: 0.9; }
+    }
+
+    /* Loader */
+    .loader {
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid #b17cff;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      animation: spin 1.4s linear infinite;
+      margin-bottom: 25px;
+      box-shadow: 0 0 25px rgba(177, 124, 255, 0.6);
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      color: #fff;
+      text-shadow: 0 0 10px rgba(177, 124, 255, 0.8);
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      color: rgba(255,255,255,0.75);
+      margin-top: 10px;
+      font-size: 1rem;
+    }
   </style>
+
   <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
-    (window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init','TU_PIXEL_ID'); fbq('track','PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=TU_PIXEL_ID&ev=PageView&noscript=1"/></noscript>
-  <script>
-    setTimeout(function(){ window.location.href = "/api/r"; }, 400);
+    // Generar partículas flotantes
+    document.addEventListener("DOMContentLoaded", () => {
+      const body = document.body;
+      for (let i = 0; i < 80; i++) {
+        const particle = document.createElement("div");
+        particle.classList.add("particle");
+        particle.style.top = Math.random() * 100 + "vh";
+        particle.style.left = Math.random() * 100 + "vw";
+        particle.style.animationDuration = (6 + Math.random() * 8) + "s";
+        particle.style.animationDelay = Math.random() * 6 + "s";
+        particle.style.width = particle.style.height = Math.random() * 2 + 1 + "px";
+        body.appendChild(particle);
+      }
+    });
+
+    // Redirigir automáticamente
+    setTimeout(() => {
+      window.location.href = '/api/r';
+    }, 2000);
   </script>
 </head>
 <body>
-  <div class="card">
-    <div class="spinner" aria-hidden="true"></div>
-    <h1>Conectando con WhatsApp</h1>
-    <p>Aguarda un momento y serás redirigido</p>
-  </div>
+  <div class="loader"></div>
+  <h2>Conectando con WhatsApp...</h2>
+  <p>Aguardá un momento 💬</p>
 </body>
 </html>
