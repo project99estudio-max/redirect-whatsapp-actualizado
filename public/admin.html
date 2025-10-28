@@ -12,8 +12,8 @@
   h1{margin:0 0 10px;text-align:center;color:#fff;font-size:28px;letter-spacing:1px;}
   img.logo{
     display:block;
-    margin:0 auto 30px auto;
-    width:240px;          /* logo más grande */
+    margin:0 auto 20px auto;
+    width:240px;
     max-width:80%;
     filter:drop-shadow(0 0 10px rgba(255,255,255,.25));
   }
@@ -22,12 +22,10 @@
   input[type=text]{flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
     border-radius:10px;padding:10px;color:#fff;outline:none}
   input::placeholder{color:#9a8ccc}
-  button{background:#6d4bff;border:none;padding:6px 10px;border-radius:8px;color:#fff;cursor:pointer;transition:.2s;
-    font-size:0.85rem;}
+  button{background:#6d4bff;border:none;padding:10px 14px;border-radius:10px;color:#fff;cursor:pointer;transition:.2s}
   button:hover{filter:brightness(1.15)}
   .item{display:flex;gap:8px;margin:6px 0}
-  .bar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
-  .bar button{flex:1;min-width:90px;max-width:110px;}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
   .ok{color:#90f0b0;text-align:center}
   .err{color:#fca5a5;text-align:center}
 </style>
@@ -58,7 +56,7 @@
 </div>
 
 <script>
-// partículas violetas suaves
+// ======= partículas =======
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let p=[];
 function resize(){c.width=innerWidth;c.height=innerHeight}
@@ -74,6 +72,52 @@ function anim(){
   requestAnimationFrame(anim);
 }
 anim();
+
+// ======= lógica panel =======
+const $=s=>document.querySelector(s);
+const list=$("#list"),msg=$("#msg");
+const tokenInput=$("#token");
+
+function row(v=""){const d=document.createElement("div");d.className="item";
+const i=document.createElement("input");i.value=v;i.placeholder="https://wa.me/...";
+const b=document.createElement("button");b.textContent="Borrar";b.onclick=()=>d.remove();
+d.append(i,b);list.append(d);}
+
+function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
+function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err";}
+
+$("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
+window.onload=()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;}
+
+$("#btnLoad").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  show("Cargando...");
+  const r=await fetch(`/api/admin?token=${t}&get=1`);const j=await r.json();
+  list.innerHTML="";(j.links||[]).forEach(v=>row(v));if((j.links||[]).length==0)row("");
+  show("Lista cargada");
+};
+
+$("#btnAdd").onclick=()=>row("");
+
+$("#btnSave").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const vals=values();if(!vals.length)return show("Nada que guardar",0);
+  show("Guardando...");
+  const r=await fetch(`/api/admin-post?token=${t}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)});
+  const j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error",j.ok);
+};
+
+$("#btnReset").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const r=await fetch(`/api/admin?token=${t}&reset=1`);const j=await r.json();
+  list.innerHTML="";row("");show(j.ok?"Lista reseteada":"Error",j.ok);
+};
+
+$("#btnRot").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const r=await fetch(`/api/rotate-reset?token=${t}`);const j=await r.json();
+  show(j.ok?"Rotación reiniciada":"Error",j.ok);
+};
 </script>
 </body>
 </html>
