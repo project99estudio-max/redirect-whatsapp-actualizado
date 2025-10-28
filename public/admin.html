@@ -36,18 +36,18 @@
   /* Contenedor principal */
   .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
 
-  /* Logo superpuesto a la tarjeta (la tarjeta sube y pisa el logo) */
+  /* Logo superpuesto (la tarjeta lo pisa más) */
   .logo-wrap{display:flex;justify-content:center;position:relative;z-index:2}
   .logo{
     width:240px;display:block;
     filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));
-    margin:10px auto -28px; /* superpone más la tarjeta */
+    margin:10px auto -36px; /* MÁS superposición */
   }
 
-  /* Tarjeta compacta con borde suave */
+  /* Tarjeta */
   .card{
     position:relative;
-    z-index:1;               /* debajo del logo para el efecto de superposición */
+    z-index:1; /* debajo del logo para el efecto */
     margin:0 auto;
     background:
       linear-gradient(var(--card),var(--card)) padding-box,
@@ -78,17 +78,18 @@
     white-space:nowrap;font-weight:600;letter-spacing:.2px;
     text-align:center;
     box-shadow:0 6px 18px rgba(40,0,120,.22);
+    z-index:0; /* crea contexto para pseudo-elementos */
   }
   .btn:hover{filter:brightness(1.08)}
-  .btn > *{position:relative;z-index:1}
+  .btn > *{position:relative;z-index:2}
 
-  /* ARO NEÓN (estático) — máscara para ver solo el borde */
+  /* ARO (estático) — máscara para ver solo el borde */
   .btn::before{
-    content:""; position:absolute; inset:0; border-radius:12px; z-index:0;
+    content:""; position:absolute; inset:0; border-radius:12px; z-index:1;
     background:transparent;
   }
 
-  /* Variante: aro fino y delicado (sin animación) */
+  /* Aro fino y delicado (sin animación) */
   .btn--thin{ box-shadow:0 6px 16px rgba(40,0,120,.18); }
   .btn--thin::before{
     inset:-1px; border-radius:13px;
@@ -99,7 +100,7 @@
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
 
-  /* Variante: aro más grueso/brillante (sin animación) para AGREGAR CAJERA */
+  /* Aro más grueso/brillante (sin animación) para AGREGAR CAJERA */
   .btn--bold{ box-shadow:0 8px 26px rgba(100,50,180,.32); }
   .btn--bold::before{
     inset:-2px; border-radius:14px;
@@ -111,34 +112,39 @@
   }
 
   /* Tamaño compacto para que entren en una línea en celu */
-  .btn--sm{ padding:8px 9px; font-size:12.5px; min-width:115px }
+  .btn--sm{ padding:7px 9px; font-size:12px; min-width:108px }  /* más chico */
+  /* Ajuste específico para "Resetear rotación" aún más chico */
+  #btnRot.btn--sm{ min-width:102px; font-size:11.8px; padding:7px 8px }
 
-  /* Disposición de acciones: fila superior + fila inferior */
+  /* Disposición de acciones */
   .actions-top{
     display:flex; gap:6px; margin:8px 0 6px;
     justify-content:space-between; flex-wrap:nowrap;
   }
-
   .actions-bottom{
     display:flex; justify-content:center;
-    margin:16px 0 6px;   /* MÁS separación respecto a la fila superior */
+    margin:18px 0 6px;   /* MÁS separación para destacar */
     position:relative;
   }
 
-  /* Pulso violeta suave (respiración) detrás de "AGREGAR CAJERA" */
-  .actions-bottom .btn--bold{
-    overflow:visible;
+  /* AGREGAR CAJERA más grande + pulso detrás del botón */
+  .btn--main{
+    font-size:15px; padding:12px 16px; min-width:220px;
+    box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);
   }
-  .actions-bottom .btn--bold::after{
-    content:""; position:absolute; z-index:-1;
-    inset:-14px; border-radius:22px;
-    background: radial-gradient(40% 60% at 50% 50%, rgba(127,92,255,.35), rgba(127,92,255,.12) 60%, transparent 70%);
-    filter:blur(14px);
-    animation:breath 2.6s ease-in-out infinite;
+  .btn--main::after{
+    content:""; position:absolute; z-index:0; /* detrás del contenido, encima del fondo del botón */
+    inset:-16px; border-radius:28px;
+    background: radial-gradient(45% 70% at 50% 50%,
+      rgba(127,92,255,.55),
+      rgba(127,92,255,.22) 55%,
+      transparent 75%);
+    filter:blur(16px);
+    animation:breath 2.8s ease-in-out infinite;
   }
   @keyframes breath{
-    0%,100%{ transform:scale(0.98); opacity:.75; }
-    50%    { transform:scale(1.04); opacity:1;   }
+    0%,100%{ transform:scale(0.96); opacity:.85; }
+    50%    { transform:scale(1.06); opacity:1;   }
   }
 
   /* Ítems de lista y mensajes */
@@ -148,10 +154,12 @@
 
   /* Responsive */
   @media (max-width:420px){
-    .logo{width:216px;margin:8px auto -30px}  /* superposición mayor en mobile */
+    .logo{width:216px;margin:8px auto -38px}  /* aún más superpuesta en mobile */
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
-    .btn--sm{min-width:112px;padding:8px 9px}
+    .btn--sm{min-width:106px;padding:7px 8px}
+    #btnRot.btn--sm{min-width:100px;font-size:11.6px;padding:7px 7px}
+    .btn--main{min-width:210px}
   }
 </style>
 </head>
@@ -181,9 +189,9 @@
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
       </div>
 
-      <!-- Fila inferior: AGREGAR CAJERA (aro más grueso + pulso violeta) -->
+      <!-- Fila inferior: AGREGAR CAJERA (más grande + pulso violeta suave) -->
       <div class="actions-bottom">
-        <button class="btn btn--bold" id="btnAdd">AGREGAR CAJERA</button>
+        <button class="btn btn--bold btn--main" id="btnAdd">AGREGAR CAJERA</button>
       </div>
 
       <div id="list"></div>
