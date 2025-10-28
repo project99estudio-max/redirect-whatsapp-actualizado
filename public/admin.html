@@ -14,6 +14,7 @@
     --edge2:rgba(255,255,255,.55);
     --text:#ffffff;
     --muted:#c9c0f2;
+
     --btn-bg:#1e1935;        /* fondo del botón (oscuro) */
     --neonA:#b985ff;         /* neón violeta */
     --neonB:#efe6ff;         /* destello muy claro */
@@ -28,18 +29,18 @@
     overflow:auto; /* permite scroll en celu si la lista crece */
   }
 
-  /* Fondo animado */
+  /* Fondo animado (partículas) */
   canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
 
   /* Contenedor principal */
-  .shell{position:relative;z-index:2;max-width:760px;margin:8px auto 36px;padding:0 14px}
+  .shell{position:relative;z-index:2;max-width:760px;margin:6px auto 32px;padding:0 14px}
 
-  /* Logo pegado a la tarjeta */
+  /* Logo MUY pegado a la tarjeta */
   .logo-wrap{display:flex;justify-content:center}
   .logo{
     width:240px;display:block;
     filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));
-    margin:14px auto -18px; /* pega la tarjeta al logo */
+    margin:12px auto -22px; /* aún más pegado */
   }
 
   /* Tarjeta compacta con borde suave */
@@ -51,60 +52,81 @@
     border:1px solid transparent;border-radius:20px;
     box-shadow:0 12px 40px rgba(0,0,0,.45);
   }
-  .card-inner{padding:18px 16px}
+  .card-inner{padding:16px 14px}
 
   /* Textos */
-  h1{margin:4px 0 8px;text-align:center;font-size:26px;letter-spacing:.5px}
+  h1{margin:2px 0 8px;text-align:center;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
-  .subtitle{margin:6px 0 12px}
+  .subtitle{margin:4px 0 10px}
 
-  /* Fila de token */
-  .row{display:flex;gap:8px;margin:10px 0}
+  /* Fila de token (guardar token = estilo fino) */
+  .row{display:flex;gap:8px;margin:8px 0}
   input[type=text]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:12px 14px;color:#fff;outline:none
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none
   }
   input::placeholder{color:#9a8ccc}
 
-  /* Botones base con borde neón girando */
+  /* ===== Botones base ===== */
   .btn{
     position:relative;border:none;border-radius:12px;
     padding:10px 12px;color:#fff;cursor:pointer;outline:none;
     background:var(--btn-bg);
-    box-shadow:0 6px 22px rgba(40,0,120,.28);
     white-space:nowrap;font-weight:600;letter-spacing:.2px;
     text-align:center;
+    box-shadow:0 6px 18px rgba(40,0,120,.22);
   }
-  .btn:hover{filter:brightness(1.1)}
+  .btn:hover{filter:brightness(1.08)}
+
+  /* ARO NEÓN (estático) — MÁSCARA para que se vea solo el borde */
   .btn::before{
-    content:"";position:absolute;inset:-2px;border-radius:14px;z-index:-1;
-    background:conic-gradient(var(--neonA),var(--neonB),var(--neonA),var(--neonA));
-    animation:spin 2.8s linear infinite;
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    padding:2px; filter:saturate(120%) blur(.3px);
+    content:""; position:absolute; inset:0; border-radius:12px; z-index:0;
+    background:transparent;
   }
-  .btn::after{
-    content:"";position:absolute;inset:-2px;border-radius:14px;z-index:-1;
-    background:conic-gradient(from 0deg, transparent 0%, transparent 88%, rgba(255,255,255,.9) 92%, rgba(233,230,255,.95) 96%, transparent 100%);
-    animation:spin 2.1s linear infinite;
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    padding:2px; filter:blur(.6px);
+  .btn > *{position:relative; z-index:1}
+
+  /* Variante aro fino y delicado (sin animación) */
+  .btn--thin{
+    box-shadow:0 6px 16px rgba(40,0,120,.18);
   }
-  @keyframes spin{to{transform:rotate(360deg)}}
+  .btn--thin::before{
+    inset:-1px; border-radius:13px;
+    background:conic-gradient(from 45deg, var(--neonA) 0%, var(--neonB) 18%, var(--neonA) 36%, var(--neonA) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    padding:1px; /* ARO FINO */
+    filter:saturate(90%) blur(.15px) opacity(.85);
+  }
+
+  /* Variante aro más grueso/brillante (sin animación) para AGREGAR CAJERA */
+  .btn--bold{
+    box-shadow:0 8px 26px rgba(100,50,180,.32);
+  }
+  .btn--bold::before{
+    inset:-2px; border-radius:14px;
+    background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    padding:2px; /* ARO MÁS GRUESO */
+    filter:saturate(120%) blur(.35px) opacity(.95);
+  }
+
+  /* Tamaño compacto p/ que entren en una línea en celu */
+  .btn--sm{ padding:8px 10px; font-size:13.5px; min-width:110px }
 
   /* Disposición de acciones: fila superior + fila inferior */
   .actions-top{
-    display:flex;gap:8px;margin:10px 0 6px;
-    justify-content:center;flex-wrap:nowrap;overflow-x:auto;
-    -webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;
+    display:flex; gap:6px; margin:8px 0 6px;
+    justify-content:space-between; flex-wrap:nowrap;
   }
-  .actions-top .btn{min-width:160px;scroll-snap-align:center}
   .actions-bottom{
-    display:flex;justify-content:center;margin:6px 0 4px;
+    display:flex; justify-content:center; margin:6px 0 4px;
   }
-  .actions-bottom .btn{min-width:200px}
+  .actions-bottom .btn{ min-width:200px; font-size:14.5px; padding:10px 12px }
 
   /* Lista y mensajes */
   .item{display:flex;gap:8px;margin:6px 0}
@@ -113,14 +135,11 @@
 
   /* Responsive */
   @media (max-width:420px){
-    .logo{width:220px;margin:12px auto -16px}
-    .btn{font-size:14px;padding:10px 10px}
-    .actions-top .btn{min-width:150px}
-    .actions-bottom .btn{min-width:190px}
-    .card-inner{padding:16px 12px}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .btn::before,.btn::after{animation:none}
+    .logo{width:216px;margin:10px auto -20px}
+    .card-inner{padding:14px 10px}
+    .btn{font-size:13.5px}
+    .btn--sm{min-width:100px;padding:8px 9px}
+    .actions-bottom .btn{min-width:180px}
   }
 </style>
 </head>
@@ -137,22 +156,22 @@
       <h1>Panel Admin</h1>
       <p class="subtitle">Gestioná tus enlaces wa.me con rotación automática (2 clics por número).</p>
 
-      <!-- Token -->
+      <!-- Token (Guardar token con aro fino) -->
       <div class="row">
         <input id="token" type="text" placeholder="tok99-2025">
-        <button class="btn" id="btnSaveToken">Guardar token</button>
+        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
       </div>
 
-      <!-- Fila superior: Actualizar | Borrar | Resetear -->
+      <!-- Fila superior: Actualizar | Borrar | Resetear (aros finos) -->
       <div class="actions-top">
-        <button class="btn" id="btnUpdate">Actualizar lista</button>
-        <button class="btn" id="btnReset">Borrar lista</button>
-        <button class="btn" id="btnRot">Resetear rotación</button>
+        <button class="btn btn--thin btn--sm" id="btnUpdate">Actualizar lista</button>
+        <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
+        <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
       </div>
 
-      <!-- Fila inferior: AGREGAR CAJERA -->
+      <!-- Fila inferior: AGREGAR CAJERA (aro más grueso/brillante, estático) -->
       <div class="actions-bottom">
-        <button class="btn" id="btnAdd">AGREGAR CAJERA</button>
+        <button class="btn btn--bold" id="btnAdd">AGREGAR CAJERA</button>
       </div>
 
       <div id="list"></div>
@@ -195,8 +214,10 @@ const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
 function row(v=""){
   const d=document.createElement("div");d.className="item";
   const i=document.createElement("input");i.type="text";i.placeholder="https://wa.me/...";i.value=v;
-  const b=document.createElement("button");b.className="btn";b.textContent="Borrar";b.onclick=()=>d.remove();
+  const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";
+  b.onclick=()=>d.remove();
   d.append(i,b);list.append(d);
+
   // Scroll suave al nuevo campo (para celu)
   setTimeout(()=>{ i.scrollIntoView({behavior:"smooth", block:"end"}); i.focus(); }, 50);
 }
