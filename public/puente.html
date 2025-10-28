@@ -4,6 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conectando con WhatsApp...</title>
+
+  <!-- ✅ META PIXEL CODE -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1368705578011910');
+    fbq('track', 'PageView');
+  </script>
+  <!-- ✅ FIN META PIXEL CODE -->
+
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -27,7 +40,6 @@
       100% { background-position: 100% 100%; background-color: #4b0099; }
     }
 
-    /* Partículas */
     .particle {
       position: absolute;
       background: rgba(177, 124, 255, 0.6);
@@ -48,7 +60,6 @@
       50% { opacity: 0.9; }
     }
 
-    /* Loader */
     .loader {
       border: 6px solid rgba(255, 255, 255, 0.1);
       border-top: 6px solid #b17cff;
@@ -95,13 +106,20 @@
       }
     });
 
-    // Redirigir automáticamente
+    // Redirigir automáticamente con evento del pixel
     setTimeout(() => {
+      if (window.fbq) fbq('trackCustom', 'RedirectToWhatsApp');
       window.location.href = '/api/r';
     }, 2000);
   </script>
 </head>
 <body>
+  <!-- ✅ PIXEL sin JavaScript -->
+  <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
+  </noscript>
+
   <div class="loader"></div>
   <h2>Conectando con WhatsApp...</h2>
   <p>Aguardá un momento 💬</p>
