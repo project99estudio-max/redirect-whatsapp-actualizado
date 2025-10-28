@@ -5,35 +5,85 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Panel Insomnia Admin</title>
 <style>
-  html,body{height:100%;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;background:#1b142c;overflow:hidden;color:#fff;}
-  canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
-  .wrap{position:relative;z-index:2;max-width:720px;margin:60px auto;background:rgba(25,18,45,0.85);backdrop-filter:blur(8px);
-    border:1px solid rgba(125,90,255,.3);border-radius:20px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,.4);}
-  h1{margin:0 0 10px;text-align:center;color:#fff;font-size:28px;letter-spacing:1px;}
-  img.logo{
-    display:block;
-    margin:0 auto 20px auto;
-    width:240px;
-    max-width:80%;
-    filter:drop-shadow(0 0 10px rgba(255,255,255,.25));
+  /* BASICS */
+  html,body{
+    height:100%;margin:0;padding:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+    background:#1b142c;overflow:hidden;color:#fff;
   }
+  canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+
+  /* LOGO ARRIBA, FUERA DE LA TARJETA */
+  .logoTop{
+    position:relative;z-index:2;
+    display:flex;justify-content:center;
+    margin-top:40px; margin-bottom:18px; /* separado del borde */
+  }
+  .logoTop img{
+    width:240px; /* pediste 240px */
+    max-width:60vw;
+    height:auto;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,.25));
+  }
+
+  /* TARJETA (más chica y centrada) */
+  .wrap{
+    position:relative;z-index:2;
+    width:92%;max-width:520px; /* más pequeña */
+    margin:0 auto 28px auto;   /* centrada */
+    background:rgba(25,18,45,0.85);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(125,90,255,.3);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
+  }
+
+  h1{margin:0 0 10px;text-align:center;color:#fff;font-size:24px;letter-spacing:.5px;}
   p,small{color:#c7bdf0;text-align:center}
+
+  /* FILAS / CONTROLES */
   .row{display:flex;gap:8px;margin:10px 0}
-  input[type=text]{flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
-    border-radius:10px;padding:10px;color:#fff;outline:none}
+  input[type=text]{
+    flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
+    border-radius:10px;padding:10px;color:#fff;outline:none
+  }
   input::placeholder{color:#9a8ccc}
-  button{background:#6d4bff;border:none;padding:10px 14px;border-radius:10px;color:#fff;cursor:pointer;transition:.2s}
+
+  /* BOTONES (compactos y parejos) */
+  button{
+    background:#6d4bff;border:none;padding:10px 12px;border-radius:10px;
+    color:#fff;cursor:pointer;transition:.2s;white-space:nowrap
+  }
   button:hover{filter:brightness(1.15)}
+
   .item{display:flex;gap:8px;margin:6px 0}
-  .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+  .item input{flex:1}
+
+  .bar{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px
+  }
+
+  /* MENSAJES */
   .ok{color:#90f0b0;text-align:center}
   .err{color:#fca5a5;text-align:center}
+
+  /* RESPONSIVE */
+  @media (max-width:420px){
+    button{padding:9px 10px;font-size:14px}
+  }
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
+
+<!-- LOGO ARRIBA, FUERA DEL BORDE -->
+<div class="logoTop">
+  <img src="/logo-insomnia.png" alt="Insomnia Logo">
+</div>
+
+<!-- TARJETA PEQUEÑA CENTRADA -->
 <div class="wrap">
-  <img src="/insomnia-logo.png" class="logo" alt="Insomnia Logo">
   <h1>Panel Admin</h1>
   <p>Gestioná tus enlaces wa.me con rotación automática (2 clics por número).</p>
 
@@ -56,7 +106,7 @@
 </div>
 
 <script>
-// ======= partículas =======
+/* ======= Partículas ======= */
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let p=[];
 function resize(){c.width=innerWidth;c.height=innerHeight}
@@ -68,31 +118,33 @@ function anim(){
   for(const o of p){o.x+=o.vx;o.y+=o.vy;
     if(o.x<0||o.x>c.width)o.vx*=-1;
     if(o.y<0||o.y>c.height)o.vy*=-1;
-    x.beginPath();x.arc(o.x,o.y,o.r,0,6.28);x.fill();}
+    x.beginPath();x.arc(o.x,o.y,o.r,0,6.283);x.fill();}
   requestAnimationFrame(anim);
 }
 anim();
 
-// ======= lógica panel =======
+/* ======= Lógica panel ======= */
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg");
 const tokenInput=$("#token");
 
-function row(v=""){const d=document.createElement("div");d.className="item";
-const i=document.createElement("input");i.value=v;i.placeholder="https://wa.me/...";
-const b=document.createElement("button");b.textContent="Borrar";b.onclick=()=>d.remove();
-d.append(i,b);list.append(d);}
-
+function row(v=""){
+  const d=document.createElement("div");d.className="item";
+  const i=document.createElement("input");i.value=v;i.placeholder="https://wa.me/...";
+  const b=document.createElement("button");b.textContent="Borrar";b.onclick=()=>d.remove();
+  d.append(i,b);list.append(d);
+}
 function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err";}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
-window.onload=()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;}
+window.onload=()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;};
 
 $("#btnLoad").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   show("Cargando...");
-  const r=await fetch(`/api/admin?token=${t}&get=1`);const j=await r.json();
+  const r=await fetch(`/api/admin?token=${t}&get=1`);
+  const j=await r.json();
   list.innerHTML="";(j.links||[]).forEach(v=>row(v));if((j.links||[]).length==0)row("");
   show("Lista cargada");
 };
@@ -103,21 +155,27 @@ $("#btnSave").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   const vals=values();if(!vals.length)return show("Nada que guardar",0);
   show("Guardando...");
-  const r=await fetch(`/api/admin-post?token=${t}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)});
+  const r=await fetch(`/api/admin-post?token=${t}`,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(vals)
+  });
   const j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error",j.ok);
 };
 
 $("#btnReset").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
-  const r=await fetch(`/api/admin?token=${t}&reset=1`);const j=await r.json();
+  const r=await fetch(`/api/admin?token=${t}&reset=1`);
+  const j=await r.json();
   list.innerHTML="";row("");show(j.ok?"Lista reseteada":"Error",j.ok);
 };
 
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
-  const r=await fetch(`/api/rotate-reset?token=${t}`);const j=await r.json();
+  const r=await fetch(`/api/rotate-reset?token=${t}`);
+  const j=await r.json();
   show(j.ok?"Rotación reiniciada":"Error",j.ok);
 };
 </script>
 </body>
 </html>
+
