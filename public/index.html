@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Insomnia Redirección</title>
+<style>
+  :root {
+    --bg1: #4b0082;
+    --bg2: #000;
+    --particle: #c7b3ff;
+  }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: radial-gradient(circle at 30% -10%, var(--bg1), var(--bg2));
+    overflow: hidden;
+  }
+  canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  .wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
+    text-align: center;
+  }
+  .logo {
+    width: 160px;
+    margin-bottom: 28px;
+    filter: drop-shadow(0 0 10px rgba(200,150,255,0.4));
+  }
+  .loader {
+    width: 80px;
+    height: 80px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #b985ff;
+    border-radius: 50%;
+    animation: spin 1.4s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  p {
+    margin-top: 22px;
+    color: #c7b3ff;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+  }
+</style>
+
+<!-- 🧠 Meta Pixel -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1368705578011910');
+  fbq('track', 'PageView');
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
+</noscript>
+</head>
+
+<body>
+<canvas id="bg"></canvas>
+<div class="wrap">
+  <img src="/logo-home.png" alt="Insomnia Logo" class="logo" />
+  <div class="loader"></div>
+  <p>Conectando con tu asistente...</p>
+</div>
+
+<script>
+  // Partículas suaves
+  const c = document.getElementById("bg"), x = c.getContext("2d");
+  let P = [];
+  function rs(){ c.width = innerWidth; c.height = innerHeight }
+  addEventListener("resize", rs); rs();
+  for (let i = 0; i < 70; i++) {
+    P.push({
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      r: Math.random() * 2 + 0.5
+    });
+  }
+  (function anim() {
+    const grad = x.createRadialGradient(
+      c.width * 0.3, c.height * 0.1, 0,
+      c.width * 0.3, c.height * 0.1, Math.max(c.width, c.height)
+    );
+    grad.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--bg1').trim());
+    grad.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim());
+    x.fillStyle = grad; x.fillRect(0, 0, c.width, c.height);
+    x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--particle').trim();
+    for (const p of P) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > c.width) p.vx *= -1;
+      if (p.y < 0 || p.y > c.height) p.vy *= -1;
+      x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+    }
+    requestAnimationFrame(anim);
+  })();
+
+  // Redirección automática
+  setTimeout(() => {
+    window.location.href = "/api/r";
+  }, 400);
+</script>
+</body>
+</html>
