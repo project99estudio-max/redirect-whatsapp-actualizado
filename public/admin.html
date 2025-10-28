@@ -1,136 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Panel Admin</title>
-  <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle at top, #4b0082, #000);
-      color: white;
-      font-family: 'Poppins', sans-serif;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      position: relative;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .container {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      margin-top: 60px;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    img {
-      width: 100px;
-      margin-bottom: 10px;
-      animation: fadeIn 1.5s ease;
-    }
-
-    h1 {
-      margin-bottom: 25px;
-      font-size: 1.8em;
-      letter-spacing: 1px;
-    }
-
-    .btns {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 25px;
-    }
-
-    button {
-      background-color: #8a2be2;
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      font-size: 0.9em;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.3s;
-      min-width: 100px;
-    }
-
-    button:hover {
-      background-color: #a94cf7;
-      transform: scale(1.05);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Panel Insomnia Admin</title>
+<style>
+  html,body{height:100%;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;background:#1b142c;overflow:hidden;color:#fff;}
+  canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
+  .wrap{position:relative;z-index:2;max-width:720px;margin:60px auto;background:rgba(25,18,45,0.85);backdrop-filter:blur(8px);
+    border:1px solid rgba(125,90,255,.3);border-radius:20px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,.4);}
+  h1{margin:0 0 10px;text-align:center;color:#fff;font-size:28px;letter-spacing:1px;}
+  img.logo{
+    display:block;
+    margin:0 auto 30px auto;
+    width:240px;          /* logo más grande */
+    max-width:80%;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.25));
+  }
+  p,small{color:#c7bdf0;text-align:center}
+  .row{display:flex;gap:8px;margin:10px 0}
+  input[type=text]{flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
+    border-radius:10px;padding:10px;color:#fff;outline:none}
+  input::placeholder{color:#9a8ccc}
+  button{background:#6d4bff;border:none;padding:6px 10px;border-radius:8px;color:#fff;cursor:pointer;transition:.2s;
+    font-size:0.85rem;}
+  button:hover{filter:brightness(1.15)}
+  .item{display:flex;gap:8px;margin:6px 0}
+  .bar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+  .bar button{flex:1;min-width:90px;max-width:110px;}
+  .ok{color:#90f0b0;text-align:center}
+  .err{color:#fca5a5;text-align:center}
+</style>
 </head>
 <body>
-  <canvas id="particles"></canvas>
+<canvas id="bg"></canvas>
+<div class="wrap">
+  <img src="/insomnia-logo.png" class="logo" alt="Insomnia Logo">
+  <h1>Panel Admin</h1>
+  <p>Gestioná tus enlaces wa.me con rotación automática (2 clics por número).</p>
 
-  <div class="container">
-    <img src="/insomnia-logo.png" alt="Insomnia Logo" />
-    <h1>Panel Admin</h1>
-
-    <div class="btns">
-      <button>Cargar lista</button>
-      <button>Agregar</button>
-      <button>Guardar</button>
-      <button>Reset lista</button>
-      <button>Reset rotación</button>
-    </div>
+  <div class="row">
+    <input id="token" type="text" placeholder="tok99-2025">
+    <button id="btnSaveToken">Guardar token</button>
   </div>
 
-  <script>
-    // Fondo de partículas flotando suavemente
-    const canvas = document.getElementById('particles');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  <div class="bar">
+    <button id="btnLoad">Cargar lista</button>
+    <button id="btnAdd">Agregar</button>
+    <button id="btnSave">Guardar</button>
+    <button id="btnReset">Reset lista</button>
+    <button id="btnRot">Reset rotación</button>
+  </div>
 
-    const particles = [];
-    for (let i = 0; i < 40; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 1,
-        speedX: Math.random() * 0.3 + 0.1,
-        speedY: Math.random() * 0.3 - 0.15,
-      });
-    }
+  <div id="list"></div>
+  <p id="msg"></p>
+  <small>Ejemplo: https://wa.me/5491178430749?text=Hola%20quisiera%20jugar</small>
+</div>
 
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255,255,255,0.6)";
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        p.x += p.speedX;
-        p.y += p.speedY;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y > canvas.height) p.y = 0;
-        if (p.y < 0) p.y = canvas.height;
-      });
-      requestAnimationFrame(animate);
-    }
-
-    animate();
-  </script>
+<script>
+// partículas violetas suaves
+const c=document.getElementById("bg"),x=c.getContext("2d");
+let p=[];
+function resize(){c.width=innerWidth;c.height=innerHeight}
+addEventListener("resize",resize);resize();
+for(let i=0;i<80;i++)p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+0.5});
+function anim(){
+  x.fillStyle="#1b142c";x.fillRect(0,0,c.width,c.height);
+  x.fillStyle="#a68bff";
+  for(const o of p){o.x+=o.vx;o.y+=o.vy;
+    if(o.x<0||o.x>c.width)o.vx*=-1;
+    if(o.y<0||o.y>c.height)o.vy*=-1;
+    x.beginPath();x.arc(o.x,o.y,o.r,0,6.28);x.fill();}
+  requestAnimationFrame(anim);
+}
+anim();
+</script>
 </body>
 </html>
