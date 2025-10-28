@@ -5,112 +5,79 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Panel Insomnia Admin</title>
 <style>
-  html,body{
-    height:100%;
-    margin:0;
-    padding:0;
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
-    background:#1b142c;
-    overflow:hidden;
-    color:#fff;
+  /* ===== base ===== */
+  :root{
+    --bg:#1b142c;
+    --card:#1c1433f0;
+    --edge1:rgba(174,143,255,.15);
+    --edge2:rgba(255,255,255,.45);
+    --text:#ffffff;
+    --muted:#c9c0f2;
+    --btn:#6d4bff;
+    --btn-edge1:rgba(255,255,255,.15);
+    --btn-edge2:rgba(255,255,255,.65);
+  }
+  html,body{height:100%;margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;overflow:hidden}
+  canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+
+  /* ===== contenedor y logo ===== */
+  .shell{position:relative;z-index:2;max-width:760px;margin:12px auto 36px; padding:0 14px}
+  .logo-wrap{display:flex;justify-content:center}
+  .logo{
+    width:240px;               /* tamaño del logo */
+    display:block;
+    filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));
+    margin:18px auto -10px;    /* lo pega a la tarjeta */
   }
 
-  canvas{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:0;
-  }
-
-  .wrap{
-    position:relative;
-    z-index:2;
-    max-width:640px;
-    margin:120px auto 0;
-    background:rgba(25,18,45,0.85);
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(125,90,255,.3);
+  /* ===== tarjeta con borde “neón” animado ===== */
+  .card{
+    margin:0 auto;
+    background:
+      linear-gradient(var(--card),var(--card)) padding-box,
+      linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
+    border:1px solid transparent;
     border-radius:20px;
-    padding:24px;
-    box-shadow:0 10px 40px rgba(0,0,0,.4);
-    text-align:center;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);
+    animation:shine 8s linear infinite;
+    background-size:auto,300% 300%;
   }
+  .card-inner{padding:22px}
+  @keyframes shine{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
 
-  h1{margin:10px 0 10px;text-align:center;color:#fff;font-size:26px;letter-spacing:1px;}
-  img.logo{display:block;margin:40px auto -60px auto;width:240px;filter:drop-shadow(0 0 12px rgba(255,255,255,.25));}
+  /* ===== textos ===== */
+  h1{margin:6px 0 10px;text-align:center;font-size:30px;letter-spacing:.5px}
+  p,small{color:var(--muted);text-align:center;margin:0}
+  .subtitle{margin:8px 0 14px}
 
-  p,small{color:#c7bdf0;text-align:center}
+  /* ===== layout inputs/botones ===== */
   .row{display:flex;gap:8px;margin:10px 0}
   input[type=text]{
-    flex:1;
-    background:#2b2250;
-    border:1px solid rgba(180,140,255,.4);
-    border-radius:10px;
-    padding:10px;
-    color:#fff;
-    outline:none
+    flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:12px 14px;color:#fff;outline:none
   }
   input::placeholder{color:#9a8ccc}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0 6px}
 
-  /* ==== Botones con efecto neón ==== */
-  button{
+  /* ===== botón con borde neón “destello” ===== */
+  .btn{
     position:relative;
-    background:#6d4bff;
-    border:none;
-    padding:10px 14px;
-    border-radius:10px;
-    color:#fff;
-    cursor:pointer;
-    transition:.2s;
-    white-space:nowrap;
-    font-weight:600;
-    letter-spacing:.2px;
-    box-shadow:0 0 0 rgba(173,128,255,0);
-    overflow:hidden;
-  }
-  button::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
+    border:1px solid transparent;
     border-radius:12px;
-    background:conic-gradient(
-      from 0deg,
-      rgba(173,128,255,.0) 0%,
-      rgba(173,128,255,.55) 15%,
-      rgba(255,255,255,.9) 30%,
-      rgba(173,128,255,.55) 45%,
-      rgba(173,128,255,.0) 60%
-    );
-    filter:blur(8px);
-    animation:rotateGlow 4.5s linear infinite;
-    z-index:0;
+    padding:10px 14px;
+    color:#fff; cursor:pointer; outline:none;
+    background:
+      linear-gradient(var(--btn),var(--btn)) padding-box,
+      linear-gradient(90deg,var(--btn-edge1),var(--btn-edge2),var(--btn-edge1)) border-box;
+    background-size:auto,200% 100%;
+    animation:sweep 2.6s linear infinite;
+    box-shadow:0 6px 22px rgba(40,0,120,.35);
   }
-  button::after{
-    content:"";
-    position:absolute;
-    inset:1.5px;
-    border-radius:8.5px;
-    background:transparent;
-    z-index:1;
-  }
-  button > *{position:relative;z-index:2;}
-  button:hover{
-    transform:translateY(-1px);
-    box-shadow:0 8px 24px rgba(173,128,255,.25);
-  }
-  @keyframes rotateGlow{
-    0%{transform:rotate(0deg);}
-    100%{transform:rotate(360deg);}
-  }
-  @media(prefers-reduced-motion:reduce){
-    button::before{animation:none;}
-    button:hover{transform:none;}
-  }
+  .btn:hover{filter:brightness(1.13)}
+  @keyframes sweep{0%{background-position:0% 0}100%{background-position:200% 0}}
 
+  /* items de lista */
   .item{display:flex;gap:8px;margin:6px 0}
-  .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
   .ok{color:#90f0b0;text-align:center}
   .err{color:#fca5a5;text-align:center}
 </style>
@@ -118,86 +85,78 @@
 <body>
 <canvas id="bg"></canvas>
 
-<img src="/insomnia-logo.png" class="logo" alt="Insomnia Logo">
-
-<div class="wrap">
-  <h1>Panel Admin</h1>
-  <p>Gestioná tus enlaces wa.me con rotación automática (2 clics por número).</p>
-
-  <div class="row">
-    <input id="token" type="text" placeholder="tok99-2025">
-    <button id="btnSaveToken">Guardar token</button>
+<div class="shell">
+  <!-- logo pegado a la tarjeta -->
+  <div class="logo-wrap">
+    <img class="logo" src="/insomnia-logo.png" alt="Insomnia Logo">
   </div>
 
-  <div class="bar">
-    <button id="btnUpdate">Actualizar lista</button>
-    <button id="btnAdd">Agregar</button>
-    <button id="btnReset">Borrar lista</button>
-    <button id="btnRot">Reset rotación</button>
-  </div>
+  <!-- tarjeta -->
+  <div class="card">
+    <div class="card-inner">
+      <h1>Panel Admin</h1>
+      <p class="subtitle">Gestioná tus enlaces wa.me con rotación automática (2 clics por número).</p>
 
-  <div id="list"></div>
-  <p id="msg"></p>
-  <small>Ejemplo: https://wa.me/5491178430749?text=Hola%20quisiera%20jugar</small>
+      <div class="row">
+        <input id="token" type="text" placeholder="tok99-2025">
+        <button class="btn" id="btnSaveToken">Guardar token</button>
+      </div>
+
+      <div class="bar">
+        <button class="btn" id="btnLoad">Actualizar lista</button>
+        <button class="btn" id="btnAdd">Agregar</button>
+        <button class="btn" id="btnSave">Guardar cambios</button>
+        <button class="btn" id="btnReset">Borrar lista</button>
+        <button class="btn" id="btnRot">Reset rotación</button>
+      </div>
+
+      <div id="list"></div>
+      <p id="msg"></p>
+      <small>Ejemplo: https://wa.me/5491178430749?text=Hola%20quisiera%20jugar</small>
+    </div>
+  </div>
 </div>
 
 <script>
-// ==== partículas fondo ====
+/* ===== partículas suaves ===== */
 const c=document.getElementById("bg"),x=c.getContext("2d");
-let p=[];
-function resize(){c.width=innerWidth;c.height=innerHeight}
-addEventListener("resize",resize);resize();
-for(let i=0;i<80;i++)p.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*2+0.5});
-function anim(){
-  x.fillStyle="#1b142c";x.fillRect(0,0,c.width,c.height);
-  x.fillStyle="#a68bff";
-  for(const o of p){o.x+=o.vx;o.y+=o.vy;
-    if(o.x<0||o.x>c.width)o.vx*=-1;
-    if(o.y<0||o.y>c.height)o.vy*=-1;
-    x.beginPath();x.arc(o.x,o.y,o.r,0,6.28);x.fill();}
-  requestAnimationFrame(anim);
-}
-anim();
+let P=[];function rs(){c.width=innerWidth;c.height=innerHeight}addEventListener("resize",rs);rs();
+for(let i=0;i<85;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.6});
+(function anim(){x.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--bg');x.fillRect(0,0,c.width,c.height);
+x.fillStyle="#a68bff";for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill()}requestAnimationFrame(anim)})();
 
-// ==== lógica del panel ====
-const $=s=>document.querySelector(s);
-const list=$("#list"),msg=$("#msg");
-const tokenInput=$("#token");
+/* ===== lógica panel ===== */
+const $=s=>document.querySelector(s), list=$("#list"), msg=$("#msg"), tokenInput=$("#token");
 
 function row(v=""){const d=document.createElement("div");d.className="item";
-const i=document.createElement("input");i.value=v;i.placeholder="https://wa.me/...";
-const b=document.createElement("button");b.textContent="Borrar";b.onclick=()=>d.remove();
-d.append(i,b);list.append(d);}
-
+  const i=document.createElement("input");i.type="text";i.placeholder="https://wa.me/...";i.value=v;
+  const b=document.createElement("button");b.className="btn";b.textContent="Borrar";b.onclick=()=>d.remove();
+  d.append(i,b);list.append(d);
+}
 function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
-function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err";}
+function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
-window.onload=async()=>{
-  const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;
-  if(t) await loadList(t);
-};
+window.addEventListener("load",()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t});
 
-async function loadList(t){
+$("#btnLoad").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   show("Cargando...");
-  const r=await fetch(`/api/admin?token=${t}&get=1`);
-  const j=await r.json();
-  list.innerHTML="";
-  (j.links||[]).forEach(v=>row(v));
-  if((j.links||[]).length==0)row("");
+  const r=await fetch(`/api/admin?token=${t}&get=1`);const j=await r.json();
+  list.innerHTML="";(j.links||[]).forEach(v=>row(v));if((j.links||[]).length===0)row("");
   show("Lista cargada");
-}
+};
 
 $("#btnAdd").onclick=()=>row("");
 
-$("#btnUpdate").onclick=async()=>{
+$("#btnSave").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   const vals=values();if(!vals.length)return show("Nada que guardar",0);
   show("Guardando...");
-  const r=await fetch(`/api/admin-post?token=${t}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)});
-  const j=await r.json();
-  if(j.ok){show(`Guardado (${j.saved})`);await loadList(t);}
-  else show("Error al guardar",0);
+  const r=await fetch(`/api/admin-post?token=${t}`,{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
+  });
+  const j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error",j.ok);
 };
 
 $("#btnReset").onclick=async()=>{
