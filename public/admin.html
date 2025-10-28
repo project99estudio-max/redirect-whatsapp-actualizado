@@ -18,6 +18,7 @@
     --btn-bg:#1e1935;        /* fondo del botón (oscuro) */
     --neonA:#b985ff;         /* neón violeta */
     --neonB:#efe6ff;         /* destello muy claro */
+    --pulse:#7f5cff;         /* pulso violeta suave */
   }
 
   html,body{
@@ -26,25 +27,27 @@
     color:var(--text);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
     background: radial-gradient(circle at 30% -10%, var(--bg1), var(--bg2));
-    overflow:auto; /* permite scroll en celu si la lista crece */
+    overflow:auto; /* scroll en celu si la lista crece */
   }
 
   /* Fondo animado (partículas) */
   canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
 
   /* Contenedor principal */
-  .shell{position:relative;z-index:2;max-width:760px;margin:6px auto 32px;padding:0 14px}
+  .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
 
-  /* Logo MUY pegado a la tarjeta */
-  .logo-wrap{display:flex;justify-content:center}
+  /* Logo superpuesto a la tarjeta (la tarjeta sube y pisa el logo) */
+  .logo-wrap{display:flex;justify-content:center;position:relative;z-index:2}
   .logo{
     width:240px;display:block;
     filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));
-    margin:12px auto -22px; /* aún más pegado */
+    margin:10px auto -28px; /* superpone más la tarjeta */
   }
 
   /* Tarjeta compacta con borde suave */
   .card{
+    position:relative;
+    z-index:1;               /* debajo del logo para el efecto de superposición */
     margin:0 auto;
     background:
       linear-gradient(var(--card),var(--card)) padding-box,
@@ -59,7 +62,7 @@
   p,small{color:var(--muted);text-align:center;margin:0}
   .subtitle{margin:4px 0 10px}
 
-  /* Fila de token (guardar token = estilo fino) */
+  /* Fila de token */
   .row{display:flex;gap:8px;margin:8px 0}
   input[type=text]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
@@ -77,69 +80,78 @@
     box-shadow:0 6px 18px rgba(40,0,120,.22);
   }
   .btn:hover{filter:brightness(1.08)}
+  .btn > *{position:relative;z-index:1}
 
-  /* ARO NEÓN (estático) — MÁSCARA para que se vea solo el borde */
+  /* ARO NEÓN (estático) — máscara para ver solo el borde */
   .btn::before{
     content:""; position:absolute; inset:0; border-radius:12px; z-index:0;
     background:transparent;
   }
-  .btn > *{position:relative; z-index:1}
 
-  /* Variante aro fino y delicado (sin animación) */
-  .btn--thin{
-    box-shadow:0 6px 16px rgba(40,0,120,.18);
-  }
+  /* Variante: aro fino y delicado (sin animación) */
+  .btn--thin{ box-shadow:0 6px 16px rgba(40,0,120,.18); }
   .btn--thin::before{
     inset:-1px; border-radius:13px;
     background:conic-gradient(from 45deg, var(--neonA) 0%, var(--neonB) 18%, var(--neonA) 36%, var(--neonA) 100%);
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor; mask-composite:exclude;
     padding:1px; /* ARO FINO */
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
 
-  /* Variante aro más grueso/brillante (sin animación) para AGREGAR CAJERA */
-  .btn--bold{
-    box-shadow:0 8px 26px rgba(100,50,180,.32);
-  }
+  /* Variante: aro más grueso/brillante (sin animación) para AGREGAR CAJERA */
+  .btn--bold{ box-shadow:0 8px 26px rgba(100,50,180,.32); }
   .btn--bold::before{
     inset:-2px; border-radius:14px;
     background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor; mask-composite:exclude;
     padding:2px; /* ARO MÁS GRUESO */
     filter:saturate(120%) blur(.35px) opacity(.95);
   }
 
-  /* Tamaño compacto p/ que entren en una línea en celu */
-  .btn--sm{ padding:8px 10px; font-size:13.5px; min-width:110px }
+  /* Tamaño compacto para que entren en una línea en celu */
+  .btn--sm{ padding:8px 9px; font-size:12.5px; min-width:115px }
 
   /* Disposición de acciones: fila superior + fila inferior */
   .actions-top{
     display:flex; gap:6px; margin:8px 0 6px;
     justify-content:space-between; flex-wrap:nowrap;
   }
-  .actions-bottom{
-    display:flex; justify-content:center; margin:6px 0 4px;
-  }
-  .actions-bottom .btn{ min-width:200px; font-size:14.5px; padding:10px 12px }
 
-  /* Lista y mensajes */
+  .actions-bottom{
+    display:flex; justify-content:center;
+    margin:16px 0 6px;   /* MÁS separación respecto a la fila superior */
+    position:relative;
+  }
+
+  /* Pulso violeta suave (respiración) detrás de "AGREGAR CAJERA" */
+  .actions-bottom .btn--bold{
+    overflow:visible;
+  }
+  .actions-bottom .btn--bold::after{
+    content:""; position:absolute; z-index:-1;
+    inset:-14px; border-radius:22px;
+    background: radial-gradient(40% 60% at 50% 50%, rgba(127,92,255,.35), rgba(127,92,255,.12) 60%, transparent 70%);
+    filter:blur(14px);
+    animation:breath 2.6s ease-in-out infinite;
+  }
+  @keyframes breath{
+    0%,100%{ transform:scale(0.98); opacity:.75; }
+    50%    { transform:scale(1.04); opacity:1;   }
+  }
+
+  /* Ítems de lista y mensajes */
   .item{display:flex;gap:8px;margin:6px 0}
   .item .btn{min-width:auto;padding:10px 12px}
   #msg.ok{color:#90f0b0} #msg.err{color:#fca5a5}
 
   /* Responsive */
   @media (max-width:420px){
-    .logo{width:216px;margin:10px auto -20px}
+    .logo{width:216px;margin:8px auto -30px}  /* superposición mayor en mobile */
     .card-inner{padding:14px 10px}
-    .btn{font-size:13.5px}
-    .btn--sm{min-width:100px;padding:8px 9px}
-    .actions-bottom .btn{min-width:180px}
+    .btn{font-size:12.5px}
+    .btn--sm{min-width:112px;padding:8px 9px}
   }
 </style>
 </head>
@@ -162,14 +174,14 @@
         <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
       </div>
 
-      <!-- Fila superior: Actualizar | Borrar | Resetear (aros finos) -->
+      <!-- Fila superior: Actualizar | Borrar | Resetear (aros finos y compactos) -->
       <div class="actions-top">
         <button class="btn btn--thin btn--sm" id="btnUpdate">Actualizar lista</button>
         <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
       </div>
 
-      <!-- Fila inferior: AGREGAR CAJERA (aro más grueso/brillante, estático) -->
+      <!-- Fila inferior: AGREGAR CAJERA (aro más grueso + pulso violeta) -->
       <div class="actions-bottom">
         <button class="btn btn--bold" id="btnAdd">AGREGAR CAJERA</button>
       </div>
