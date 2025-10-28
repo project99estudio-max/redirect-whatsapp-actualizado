@@ -5,60 +5,93 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Panel Insomnia Admin</title>
 <style>
-  html,body{height:100%;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;background:#1b142c;overflow:hidden;color:#fff;}
+  html,body{
+    height:100%;margin:0;padding:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+    background:#1b142c;overflow:hidden;color:#fff;
+  }
   canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;}
-  .wrap{position:relative;z-index:2;max-width:720px;margin:20px auto;background:rgba(25,18,45,0.85);
-    backdrop-filter:blur(8px);border:1px solid rgba(125,90,255,.3);border-radius:20px;padding:24px;
-    box-shadow:0 10px 40px rgba(0,0,0,.4);}
-  h1{text-align:center;color:#fff;font-size:28px;letter-spacing:1px;margin:0 0 15px;}
-  img.logo{display:block;margin:-20px auto -10px auto;width:180px;filter:drop-shadow(0 0 6px rgba(255,255,255,.25));}
-  p,small{color:#c7bdf0;text-align:center}
+  .wrap{
+    position:relative;z-index:2;max-width:720px;
+    margin:40px auto;background:rgba(25,18,45,0.85);
+    backdrop-filter:blur(8px);border:1px solid rgba(125,90,255,.3);
+    border-radius:20px;padding:24px;
+    box-shadow:0 10px 40px rgba(0,0,0,.4);
+  }
+  h1{margin:0 0 10px;text-align:center;color:#fff;font-size:28px;letter-spacing:1px;}
+  img.logo{
+    display:block;margin:0 auto -10px auto;width:140px;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,.25));
+  }
   .row{display:flex;gap:8px;margin:10px 0}
-  input[type=text]{flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
-    border-radius:10px;padding:10px;color:#fff;outline:none}
+  input[type=text]{
+    flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.4);
+    border-radius:10px;padding:10px;color:#fff;outline:none;
+  }
   input::placeholder{color:#9a8ccc}
-  button{background:#2a1e58;border:none;padding:10px 14px;border-radius:10px;color:#fff;cursor:pointer;transition:.3s}
-  button:hover{filter:brightness(1.2)}
-  .small-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
-  .small-bar button{flex:1;min-width:100px;font-size:14px;padding:8px 10px;border:1px solid rgba(180,140,255,.4);}
-  #btnAdd{display:block;margin:18px auto;padding:14px 24px;background:#6d4bff;border-radius:12px;
-    font-weight:600;font-size:16px;box-shadow:0 0 15px 4px rgba(109,75,255,.3);position:relative;animation:pulse 2.5s infinite;}
-  @keyframes pulse{0%{box-shadow:0 0 10px 2px rgba(109,75,255,.3);}50%{box-shadow:0 0 22px 6px rgba(109,75,255,.6);}100%{box-shadow:0 0 10px 2px rgba(109,75,255,.3);}}
-  #btnSave{display:block;margin:18px auto;padding:14px 24px;background:#865dff;border-radius:12px;
-    font-weight:600;font-size:16px;width:70%;box-shadow:0 0 15px 3px rgba(134,93,255,.3);}
-  .item{display:flex;gap:8px;margin:8px 0}
-  .item button{background:#512bbf;border:1px solid rgba(180,140,255,.4)}
-  .ok{color:#90f0b0;text-align:center;margin-top:10px}
-  .err{color:#fca5a5;text-align:center;margin-top:10px}
+  button{
+    background:#2d176a;border:1px solid #a782ff;
+    padding:10px 14px;border-radius:10px;color:#fff;
+    cursor:pointer;transition:.25s;position:relative;overflow:hidden;
+  }
+  button::before{
+    content:"";position:absolute;top:0;left:-50%;
+    width:200%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(166,130,255,.35),transparent);
+    transition:all .8s linear;
+  }
+  button:hover::before{left:100%;}
+  button:hover{filter:brightness(1.3);}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+  .item{display:flex;gap:8px;margin:6px 0}
+  .ok{color:#90f0b0;text-align:center}
+  .err{color:#fca5a5;text-align:center}
+  #btnAdd{
+    background:#6d4bff;
+    border:1px solid #b292ff;
+    margin-top:30px;
+    animation:pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0% {box-shadow:0 0 8px 2px rgba(175,100,255,0.4);}
+    50% {box-shadow:0 0 20px 6px rgba(175,100,255,0.8);}
+    100% {box-shadow:0 0 8px 2px rgba(175,100,255,0.4);}
+  }
+  #btnSaveFinal{
+    display:block;margin:20px auto 0 auto;
+    background:#2d176a;border:1px solid #a782ff;
+    padding:10px 20px;border-radius:10px;
+    color:#fff;cursor:pointer;transition:.25s;
+  }
 </style>
 </head>
 <body>
 <canvas id="bg"></canvas>
+<img src="/insomnia-logo.png" class="logo" alt="Insomnia Logo">
 <div class="wrap">
-  <img src="/insomnia-logo.png" class="logo" alt="Insomnia Logo">
   <h1>Panel Admin</h1>
+  <p style="text-align:center;color:#c7bdf0">Gestioná tus enlaces wa.me con rotación automática (2 clics por número)</p>
 
   <div class="row">
     <input id="token" type="text" placeholder="tok99-2025">
     <button id="btnSaveToken">Guardar token</button>
   </div>
 
-  <div class="small-bar">
-    <button id="btnView">Ver lista</button>
+  <div class="bar">
+    <button id="btnLoad">Ver lista</button>
     <button id="btnReset">Borrar lista</button>
     <button id="btnRot">Resetear rotación</button>
   </div>
 
-  <button id="btnAdd">AGREGAR CAJERA</button>
-
   <div id="list"></div>
-  <button id="btnSave">GUARDAR</button>
-
   <p id="msg"></p>
+
+  <button id="btnAdd">Agregar cajera</button>
+  <button id="btnSaveFinal">Guardar</button>
 </div>
 
 <script>
-// === fondo partículas ===
+// ======= partículas =======
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let p=[];
 function resize(){c.width=innerWidth;c.height=innerHeight}
@@ -75,32 +108,39 @@ function anim(){
 }
 anim();
 
-// === lógica panel ===
+// ======= lógica panel =======
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg");
 const tokenInput=$("#token");
 
-function row(v=""){const d=document.createElement("div");d.className="item";
-const i=document.createElement("input");i.value=v;i.placeholder="https://wa.me/...";const b=document.createElement("button");b.textContent="Borrar";b.onclick=()=>d.remove();
-d.append(i,b);list.append(d);}
-
+function row(v=""){
+  const d=document.createElement("div");
+  d.className="item";
+  const i=document.createElement("input");
+  i.value=v;i.placeholder="https://wa.me/...";
+  const b=document.createElement("button");
+  b.textContent="Borrar";b.onclick=()=>d.remove();
+  d.append(i,b);list.append(d);
+}
 function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err";}
 
-$("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado ✅")};
+$("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 window.onload=()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;}
 
 // Ver lista
-$("#btnView").onclick=async()=>{
+$("#btnLoad").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   show("Cargando...");
   const r=await fetch(`/api/admin?token=${t}&get=1`);
   const j=await r.json();
-  list.innerHTML="";
-  (j.links||[]).forEach(v=>row(v));
+  list.innerHTML="";(j.links||[]).forEach(v=>row(v));
   if((j.links||[]).length==0)row("");
-  show("Lista cargada ✅");
+  show("Lista cargada");
 };
+
+// Agregar cajera
+$("#btnAdd").onclick=()=>row("");
 
 // Borrar lista
 $("#btnReset").onclick=async()=>{
@@ -108,34 +148,28 @@ $("#btnReset").onclick=async()=>{
   const r=await fetch(`/api/admin?token=${t}&reset=1`);
   const j=await r.json();
   list.innerHTML="";row("");
-  show(j.ok?"Lista borrada ✅":"Error",j.ok);
+  show(j.ok?"Lista borrada":"Error",j.ok);
 };
 
-// Reset rotación
+// Resetear rotación
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   const r=await fetch(`/api/rotate-reset?token=${t}`);
   const j=await r.json();
-  show(j.ok?"Rotación reiniciada ✅":"Error al resetear",j.ok);
+  show(j.ok?"Rotación reiniciada":"Error",j.ok);
 };
 
-// Agregar cajera
-$("#btnAdd").onclick=()=>row("");
-
-// Guardar lista
-$("#btnSave").onclick=async()=>{
+// Guardar lista final
+$("#btnSaveFinal").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
-  const vals=values();if(!vals.length)return show("Nada para guardar",0);
+  const vals=values();if(!vals.length)return show("Nada que guardar",0);
   show("Guardando...");
-  const r=await fetch(`/api/admin-post?token=${t}`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(vals)
-  });
+  const r=await fetch(`/api/admin?token=${t}&set=${encodeURIComponent(vals.join(','))}`);
   const j=await r.json();
-  show(j.ok?`Guardado correctamente (${j.saved}) ✅`:`Error al guardar ❌`,j.ok);
+  show(j.ok?`Guardado (${j.saved})`:"Error",j.ok);
 };
 </script>
 </body>
 </html>
+
 
