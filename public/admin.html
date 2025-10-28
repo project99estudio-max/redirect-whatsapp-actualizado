@@ -25,7 +25,7 @@
   .card-inner{padding:16px 14px}
   .mini-inner{padding:14px 14px}
 
-  /* === CTA "Estadísticas" con estilo de tarjeta === */
+  /* Botón-tarjeta ESTADÍSTICAS */
   .cta-card{
     width:100%;
     margin:14px auto;
@@ -97,9 +97,8 @@
   .mini-inner{padding:14px 14px}
   .mini-title{margin:0 0 8px;text-align:center;font-size:14px;color:#dcd2ff}
 
-  /* Placeholder de la sección Estadísticas */
-  #stats{margin:14px auto 0; padding:6px 2px; max-width:760px}
-  #stats .hint{color:#b9acee;font-size:13px;text-align:center;margin-top:8px}
+  /* Sección vacía para estadísticas (ancla/target) */
+  #stats{margin:0 auto; max-width:760px}
 
   @media (max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
@@ -142,12 +141,14 @@
     </div>
   </div>
 
-  <!-- 🔹 Botón tipo tarjeta: ESTADÍSTICAS -->
+  <!-- Botón tipo tarjeta: ESTADÍSTICAS (con nuevo ícono) -->
   <button class="cta-card" id="btnStats" aria-label="Ir a Estadísticas">
-    <!-- Ícono simple (pie chart) -->
+    <!-- Ícono de barras + línea -->
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M11 3a1 1 0 0 1 1-1 10 10 0 1 1-10 10 1 1 0 0 1 2 0 8 8 0 1 0 8-8 1 1 0 0 1-1-1Z" fill="#fff"/>
-      <path d="M12 2a1 1 0 0 1 1 1v8h8a1 1 0 0 1 1 1 10 10 0 0 1-10 10 1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" fill="#ffffff" opacity=".7"/>
+      <rect x="3" y="11" width="3" height="8" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <rect x="9" y="7"  width="3" height="12" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <rect x="15" y="4" width="3" height="15" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <path d="M3 19c3.5-2.2 6-3.2 8.5-5.8C13.7 11 16 8.5 21 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
     </svg>
     <span>Estadísticas</span>
   </button>
@@ -157,7 +158,6 @@
     <div class="mini-inner">
       <p class="mini-title">Configuración</p>
 
-      <!-- Bloque: Rotar cada X clicks -->
       <div class="row">
         <label for="blocksize" style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
         <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2" style="max-width:120px">
@@ -165,7 +165,6 @@
         <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
 
-      <!-- Bloque: Token -->
       <div class="row">
         <input id="token" type="text" placeholder="tok99-2025">
         <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
@@ -173,14 +172,12 @@
     </div>
   </div>
 
-  <!-- Placeholder de la futura sección de estadísticas -->
-  <section id="stats">
-    <p class="hint">Aquí vamos a renderizar el módulo de <strong>Estadísticas</strong> (tabla y filtros).</p>
-  </section>
+  <!-- Sección vacía donde montaremos la futura vista -->
+  <section id="stats"></section>
 </div>
 
 <script>
-// ===== Partículas =====
+// Partículas
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];
 function rs(){c.width=innerWidth;c.height=innerHeight}
@@ -196,7 +193,7 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
   requestAnimationFrame(anim);
 })();
 
-// ===== Lógica =====
+// Lógica
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
 const bsInput=$("#blocksize");
@@ -213,13 +210,11 @@ function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
-// Cargar token y blocksize al entrar
 window.onload=async()=>{
   const t=localStorage.getItem("adm_tok"); if(t) tokenInput.value=t;
-  if(t){ await loadBlockSize(t); } // intenta leer blocksize si ya hay token guardado
+  if(t){ await loadBlockSize(t); }
 };
 
-// Ver lista (solo GET)
 $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -232,7 +227,6 @@ $("#btnView").onclick=async()=>{
   }catch(e){ show("Error al cargar",0); }
 };
 
-// Borrar lista
 $("#btnReset").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -243,7 +237,6 @@ $("#btnReset").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
-// Reset rotación
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -253,10 +246,8 @@ $("#btnRot").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
-// Agregar cajera
 $("#btnAdd").onclick=()=>row("");
 
-// Guardar lista (POST)
 $("#btnSaveFinal").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const vals=values(); if(!vals.length)return show("Nada que guardar",0);
@@ -270,7 +261,7 @@ $("#btnSaveFinal").onclick=async()=>{
   }catch(e){ show("Error al guardar",0); }
 };
 
-// ===== Block Size (leer/guardar en Redis) =====
+// Block Size
 async function loadBlockSize(t){
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
@@ -278,9 +269,8 @@ async function loadBlockSize(t){
     if(j.ok && typeof j.value!=="undefined" && j.value!==null){
       bsInput.value = j.value;
     }
-  }catch(e){ /* silencioso */ }
+  }catch(e){/* noop */}
 }
-
 $("#btnSaveBS").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const v=Number(bsInput.value);
@@ -294,7 +284,7 @@ $("#btnSaveBS").onclick=async()=>{
   }catch(e){ show("Error al guardar",0); }
 };
 
-// Scroll suave hacia la sección Estadísticas
+// Scroll suave al ancla de estadísticas
 document.getElementById('btnStats').onclick = () => {
   const target = document.getElementById('stats');
   if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
