@@ -1,33 +1,33 @@
+// api/admin.js
+// Uso: /api/admin?token=TU_TOKEN&set=url1,url2,url3
 export default async function handler(req, res) {
-  const { token, set } = req.query;
-
-  // Validar token
-  if (token !== process.env.ADMIN_TOKEN) {
-    return res.status(401).json({ error: 'Token inválido' });
-  }
-
   try {
-    // Validar que haya URLs en "set"
-    if (!set) {
-      return res.status(400).json({ error: 'Falta el parámetro set' });
+    const { token, set } = req.query;
+
+    if (token !== process.env.ADMIN_TOKEN) {
+      return res.status(401).json({ ok: false, error: "token inválido" });
     }
 
-    // Guardar temporalmente en Redis
+    if (!set) {
+      return res.status(400).json({ ok: false, error: "falta parámetro ?set=" });
+    }
+
+    // Guardamos los links en la key "links"
     const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
     const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-    const response = await fetch(`${redisUrl}/set/links/${encodeURIComponent(set)}`, {
+    const setResp = await fetch(`${redisUrl}/set/links/${encodeURIComponent(set)}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${redisToken}`,
-      },
+      headers: { Authorization: `Bearer ${redisToken}` },
     });
+    const setData = await setResp.json();
 
-    if (!response.ok) throw new Error("Error al guardar en Redis");
+    // Contador de cuántos guardaste (para feedback)
+    const saved = set.split(",").length;
 
-    return res.status(200).json({ ok: true, saved: set.split(",").length });
-  } catch (err) {
-    console.error("Error en /api/admin:", err);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    return res.json({ ok: true, saved, upstash: setData });
+  } catch (e) {
+    console.error("Error en /api/admin:", e);
+    return res.status(500).json({ ok: false, error: "error interno" });
   }
 }
