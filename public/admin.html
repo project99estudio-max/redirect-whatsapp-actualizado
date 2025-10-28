@@ -135,9 +135,11 @@
   #msg.ok{color:#90f0b0} #msg.err{color:#fca5a5}
 
   /* 🔽 LISTA DE CAJERAS MÁS ABAJO */
-  #list {
-    margin-top: 30px;
-  }
+  #list { margin-top: 30px; }
+
+  /* Botón GUARDAR centrado abajo (estilo como los de arriba, no como AGREGAR) */
+  .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
+  #btnSaveFinal{ min-width:180px; }
 
   @media (max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
@@ -168,7 +170,7 @@
       </div>
 
       <div class="actions-top">
-        <button class="btn btn--thin btn--sm" id="btnUpdate">Actualizar lista</button>
+        <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
         <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
       </div>
@@ -178,12 +180,16 @@
       </div>
 
       <div id="list"></div>
+      <div class="save-wrap">
+        <button class="btn btn--thin" id="btnSaveFinal">Guardar</button>
+      </div>
       <p id="msg"></p>
     </div>
   </div>
 </div>
 
 <script>
+/* ===== Partículas ===== */
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];
 function rs(){c.width=innerWidth;c.height=innerHeight}
@@ -208,6 +214,7 @@ for(let i=0;i<90;i++)P.push({
   requestAnimationFrame(anim);
 })();
 
+/* ===== Lógica ===== */
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
 
@@ -227,10 +234,13 @@ $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.
 
 window.onload=async()=>{
   const t=localStorage.getItem("adm_tok");
-  if(t){ tokenInput.value=t; await loadList(t); }
+  if(t){ tokenInput.value=t; }
 };
 
-async function loadList(t){
+/* VER LISTA (solo GET) */
+$("#btnView").onclick=async()=>{
+  const t=tokenInput.value.trim();
+  if(!t)return show("Poné token",0);
   try{
     show("Cargando...");
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
@@ -240,26 +250,12 @@ async function loadList(t){
     if((j.links||[]).length===0)row("");
     show("Lista cargada");
   }catch(e){ show("Error al cargar",0); }
-}
-
-$("#btnAdd").onclick=()=>row("");
-
-$("#btnUpdate").onclick=async()=>{
-  const t=tokenInput.value.trim();
-  if(!t)return show("Poné token",0);
-  const vals=values();
-  if(!vals.length)return show("Nada que guardar",0);
-  try{
-    show("Guardando...");
-    const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
-      method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
-    });
-    const j=await r.json();
-    if(j.ok){ show(`Guardado (${j.saved})`); await loadList(t); }
-    else show("Error al guardar",0);
-  }catch(e){ show("Error al guardar",0); }
 };
 
+/* AGREGAR CAJERA (solo UI) */
+$("#btnAdd").onclick=()=>row("");
+
+/* BORRAR LISTA */
 $("#btnReset").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -270,6 +266,7 @@ $("#btnReset").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
+/* RESETEAR ROTACIÓN */
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -277,6 +274,24 @@ $("#btnRot").onclick=async()=>{
     const j=await r.json();
     show(j.ok?"Rotación reiniciada":"Error",j.ok);
   }catch(e){ show("Error",0); }
+};
+
+/* GUARDAR (POST a /api/admin-post) */
+$("#btnSaveFinal").onclick=async()=>{
+  const t=tokenInput.value.trim();
+  if(!t)return show("Poné token",0);
+  const vals=values();
+  if(!vals.length)return show("Nada que guardar",0);
+  try{
+    show("Guardando...");
+    const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(vals)
+    });
+    const j=await r.json();
+    show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
+  }catch(e){ show("Error al guardar",0); }
 };
 </script>
 </body>
