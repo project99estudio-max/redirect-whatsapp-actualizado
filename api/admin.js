@@ -6,43 +6,33 @@ export default async function handler(req, res) {
       return res.status(401).json({ ok: false, error: "token inválido" });
     }
 
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+    const base = process.env.UPSTASH_REDIS_REST_URL;
+    const auth = { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` };
 
-    // RESET: borra la lista (clave "links")
+    // RESET: borra la lista (key "links")
     if (reset) {
-      const r = await fetch(`${redisUrl}/command`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${redisToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ cmd: ["DEL", "links"] }),
-      });
+      const r = await fetch(`${base}/del/links`, { method: "POST", headers: auth });
       const j = await r.json();
       return res.json({ ok: true, reset: true, upstash: j });
     }
 
     // GET: devuelve la lista guardada como array
     if (get) {
-      const r = await fetch(`${redisUrl}/command`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${redisToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ cmd: ["GET", "links"] }),
-      });
+      const r = await fetch(`${base}/get/links`, { headers: auth });
       const j = await r.json();
       const csv = j.result || "";
       const arr = csv ? decodeURIComponent(csv).split(",").map(s => s.trim()).filter(Boolean) : [];
       return res.json({ ok: true, links: arr });
     }
 
-    // SET: guarda lista (CSV) en "links"
+    // SET: guarda CSV en "links"
     if (set) {
-      const value = set; // ya viene CSV en la query
-      const r = await fetch(`${redisUrl}/command`, {
+      const r = await fetch(`${base}/set/links/${encodeURIComponent(set)}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${redisToken}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ cmd: ["SET", "links", value] }),
+        headers: auth
       });
       const j = await r.json();
-      const count = value.split(",").filter(Boolean).length;
+      const count = set.split(",").filter(Boolean).length;
       return res.json({ ok: true, saved: count, upstash: j });
     }
 
