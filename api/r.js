@@ -1,41 +1,46 @@
-// api/r.js — rotación por bloques (2 clics por número)
+// /api/r.js  (ESM) — redirección con rotación por bloque
+import { Redis } from '@upstash/redis';
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
+
 export default async function handler(req, res) {
   try {
-    const base = process.env.UPSTASH_REDIS_REST_URL;
-    const auth = { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` };
-
-    // 1) Leer la lista CSV desde la key "links"
-    const getResp = await fetch(`${base}/get/links`, { headers: auth });
-    const getJson = await getResp.json();
-    const csv = getJson.result || "";
-    const links = csv
-      ? decodeURIComponent(csv)
-          .split(/,(?=https?:\/\/)/)   // separa solo donde empieza otra URL
-          .map(s => s.trim())
-          .filter(Boolean)
-      : [];
-
-    if (!links.length) {
-      res.status(204).send("Sin links configurados");
-      return;
+    // 1) Traer links
+    const links = await redis.lrange('links', 0, -1);
+    if (!links || links.length === 0) {
+      return res.status(200).send('Sin enlaces configurados.');
     }
 
-    // 2) Bloques estrictos: cada número recibe N clics antes de rotar
-    const BLOCK_SIZE = Math.max(parseInt(process.env.BLOCK_SIZE || "2", 10), 1);
+    // 2) Block size: Redis > ENV > 2
+    let bs = await redis.get('blockSize');
+    bs = Number(bs ?? process.env.BLOCK_SIZE ?? 2);
+    if (!Number.isInteger(bs) || bs < 1) bs = 2;
 
-    // contador global (persistente en Redis)
-    const incResp = await fetch(`${base}/incr/links:ctr`, { method: "POST", headers: auth });
-    const incJson = await incResp.json();
-    const counter = Number(incJson.result || 1);
+    // 3) Estado de rotación
+    let idx = Number(await redis.get('rotateIndex') ?? 0);
+    let hit = Number(await redis.get('rotateCount') ?? 0);
+    if (!Number.isInteger(idx) || idx < 0) idx = 0;
+    if (!Number.isInteger(hit) || hit < 0) hit = 0;
 
-    // índice por bloques: 1..N -> idx 0; N+1..2N -> idx 1; etc.
-    const idx = Math.floor((counter - 1) / BLOCK_SIZE) % links.length;
-    const target = links[idx];
+    // 4) Elegir link actual y actualizar contadores
+    let nextIdx = idx, nextHit = hit + 1;
+    if (nextHit >= bs) { nextIdx = (idx + 1) % links.length; nextHit = 0; }
 
-    res.writeHead(302, { Location: target, "Cache-Control": "no-store" });
-    res.end();
+    // Persistir nuevos contadores (no bloquear)
+    await Promise.all([
+      redis.set('rotateIndex', nextIdx),
+      redis.set('rotateCount', nextHit),
+    ]);
+
+    const url = links[idx];
+    // 5) Redirigir
+    res.statusCode = 302;
+    res.setHeader('Location', url);
+    return res.end();
   } catch (e) {
-    console.error("r.js error:", e);
-    res.status(500).send("Error interno");
+    return res.status(500).send('Error interno');
   }
 }
