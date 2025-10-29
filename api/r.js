@@ -1,3 +1,4 @@
+// /api/r.js  (ESM) — redirección con rotación por bloque
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -5,86 +6,41 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-// Helper: parsea cada item de Redis a { name, url }
-function normalizeItem(s) {
-  // Si viene en JSON (nuevo formato)
-  try {
-    const o = JSON.parse(s);
-    if (o && typeof o === 'object') {
-      const name = typeof o.name === 'string' ? o.name : '';
-      const url  = typeof o.url  === 'string' ? o.url  : '';
-      if (url) return { name, url };
-    }
-  } catch (_) { /* no-json, sigo */ }
-
-  // Compat con datos viejos: era un string con la URL
-  const str = String(s || '').trim();
-  if (!str) return null;
-  return { name: '', url: str };
-}
-
-async function getBlockSize() {
-  // 1) valor guardado vía /api/blocksize
-  const saved = await redis.get('blocksize');
-  if (saved) {
-    const n = Number(saved);
-    if (Number.isInteger(n) && n >= 1 && n <= 20) return n;
-  }
-  // 2) variable de entorno
-  const envN = Number(process.env.BLOCK_SIZE || 2);
-  if (Number.isInteger(envN) && envN >= 1 && envN <= 50) return envN;
-  // 3) default
-  return 2;
-}
-
 export default async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'GET') return res.status(405).json({ ok: false, error: 'method_not_allowed' });
+  try {
+    // 1) Traer links
+    const links = await redis.lrange('links', 0, -1);
+    if (!links || links.length === 0) {
+      return res.status(200).send('Sin enlaces configurados.');
+    }
 
-  // Traer lista
-  const raw = await redis.lrange('links', 0, -1);
-  const list = raw.map(normalizeItem).filter(Boolean);
+    // 2) Block size: Redis > ENV > 2
+    let bs = await redis.get('blockSize');
+    bs = Number(bs ?? process.env.BLOCK_SIZE ?? 2);
+    if (!Number.isInteger(bs) || bs < 1) bs = 2;
 
-  if (!list.length) {
-    // No hay links: 404 amigable
-    return res.status(404).send('No hay enlaces configurados.');
+    // 3) Estado de rotación
+    let idx = Number(await redis.get('rotateIndex') ?? 0);
+    let hit = Number(await redis.get('rotateCount') ?? 0);
+    if (!Number.isInteger(idx) || idx < 0) idx = 0;
+    if (!Number.isInteger(hit) || hit < 0) hit = 0;
+
+    // 4) Elegir link actual y actualizar contadores
+    let nextIdx = idx, nextHit = hit + 1;
+    if (nextHit >= bs) { nextIdx = (idx + 1) % links.length; nextHit = 0; }
+
+    // Persistir nuevos contadores (no bloquear)
+    await Promise.all([
+      redis.set('rotateIndex', nextIdx),
+      redis.set('rotateCount', nextHit),
+    ]);
+
+    const url = links[idx];
+    // 5) Redirigir
+    res.statusCode = 302;
+    res.setHeader('Location', url);
+    return res.end();
+  } catch (e) {
+    return res.status(500).send('Error interno');
   }
-
-  // Tamaño del bloque (cuántos clics por número antes de rotar)
-  const blockSize = await getBlockSize();
-
-  // Estado de rotación
-  let i = Number(await redis.get('rot:i'));
-  if (!Number.isInteger(i) || i < 0) i = 0;
-
-  let left = Number(await redis.get('rot:left'));
-  if (!Number.isInteger(left) || left <= 0) left = blockSize;
-
-  // Si el índice quedó fuera por cambios de longitud, lo normalizamos
-  if (i >= list.length) {
-    i = 0;
-    left = blockSize;
-  }
-
-  // Elegimos la URL actual
-  const current = list[i];
-  const target = current.url;
-
-  // Consumimos un clic del bloque
-  left -= 1;
-  if (left <= 0) {
-    i = (i + 1) % list.length; // siguiente cajera
-    left = blockSize;          // reseteamos contador
-  }
-
-  // Persistimos estado de rotación
-  await redis.mset({ 'rot:i': String(i), 'rot:left': String(left) });
-
-  // Redirigimos
-  res.writeHead(302, { Location: target });
-  res.end();
 }
