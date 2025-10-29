@@ -1,3 +1,4 @@
+// /api/admin-post.js
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -18,15 +19,16 @@ export default async function handler(req, res) {
     return res.status(401).json({ ok: false, error: 'bad_token' });
   }
 
-  let body;
+  let body = req.body;
   try {
-    body = req.body;
+    // por si el runtime te lo entrega como string:
+    if (typeof body === 'string') body = JSON.parse(body);
     if (!Array.isArray(body)) throw new Error('bad_body');
   } catch {
     return res.status(400).json({ ok: false, error: 'bad_body' });
   }
 
-  // Normalizar a {name, url}
+  // Normalizar a {name,url}
   const normalized = body
     .map((it) => {
       if (typeof it === 'string') return { name: '', url: it };
@@ -42,7 +44,7 @@ export default async function handler(req, res) {
   await redis.del('links');
   let saved = 0;
   for (const it of normalized) {
-    await redis.rpush('links', JSON.stringify(it)); // << serialize
+    await redis.rpush('links', JSON.stringify(it)); // 👈 CLAVE: serializado
     saved++;
   }
 
