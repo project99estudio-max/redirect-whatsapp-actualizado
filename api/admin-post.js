@@ -25,21 +25,23 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'bad_body' });
   }
 
-  const normalized = body
-    .map((it) => {
-      if (typeof it === 'string') return { name: '', url: it };
-      if (it && typeof it === 'object') return { name: (it.name || '').trim(), url: (it.url || '').trim() };
-      return null;
-    })
-    .filter((it) => it && it.url);
+  // normalizar y VALIDAR que url sea string http(s)
+  const normalized = [];
+  for (const it of body) {
+    const name = (it && typeof it === 'object' ? (it.name || '') : '').trim();
+    const url  = (it && typeof it === 'object' ? it.url : (typeof it === 'string' ? it : ''));
+
+    if (typeof url !== 'string' || !/^https?:\/\//i.test(url.trim())) {
+      return res.status(400).json({ ok: false, error: 'bad_url', detail: url });
+    }
+    normalized.push({ name, url: url.trim() });
+  }
 
   if (normalized.length === 0) return res.status(400).json({ ok: false, error: 'empty_list' });
 
   await redis.del('links');
-  let saved = 0;
   for (const it of normalized) {
-    await redis.rpush('links', JSON.stringify(it)); // ← CLAVE
-    saved++;
+    await redis.rpush('links', JSON.stringify(it));
   }
-  return res.json({ ok: true, saved });
+  return res.json({ ok: true, saved: normalized.length });
 }
