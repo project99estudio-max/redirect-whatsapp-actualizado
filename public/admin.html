@@ -25,7 +25,7 @@
   .card-inner{padding:16px 14px}
   .mini-inner{padding:14px 14px}
 
-  /* Botón-tarjeta ESTADÍSTICAS (nuevo icono) */
+  /* Botón-tarjeta ESTADÍSTICAS */
   .cta-card{
     width:100%;
     margin:14px auto;
@@ -47,10 +47,10 @@
   h1{margin:2px 0 8px;text-align:center;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
 
-  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:nowrap}
+  .row{display:flex;gap:8px;margin:8px 0}
   input[type=text], input[type=number]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:10px 12px;color:#fff;outline:none;min-width:0;
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none
   }
   input::placeholder{color:#9a8ccc}
 
@@ -75,37 +75,23 @@
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
     padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
   }
-  .btn--sm{ padding:7px 9px; font-size:12px; min-width:92px } /* ↓ más chico para que no desborde */
-  #btnRot.btn--sm{ min-width:92px; font-size:11.6px; padding:7px 7px }
+  .btn--sm{ padding:7px 9px; font-size:12px; min-width:108px }
+  #btnRot.btn--sm{ min-width:102px; font-size:11.8px; padding:7px 8px }
 
-  .actions-top{
-    display:flex; gap:6px; margin:8px 0 6px; justify-content:space-between; flex-wrap:nowrap;
-  }
+  .actions-top{display:flex; gap:6px; margin:8px 0 6px; justify-content:space-between; flex-wrap:nowrap;}
   .actions-bottom{display:flex; justify-content:center; margin:18px 0 6px; position:relative;}
   .btn--main{font-size:15px; padding:12px 16px; min-width:220px; box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);}
   .btn--main::after{content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px; background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%); filter:blur(16px); animation:breath 2.8s ease-in-out infinite;}
   @keyframes breath{0%,100%{ transform:scale(0.96); opacity:.85;} 50%{ transform:scale(1.06); opacity:1;}}
 
-  /* FILA: Nombre + Walink + Borrar */
-  .item{display:flex;gap:8px;margin:6px 0;align-items:center;}
+  .item{display:flex;gap:8px;margin:6px 0}
   .item .btn{min-width:auto;padding:10px 12px}
-
-  /* Campo "Nombre" pequeño (similar a botón Borrar) */
-  .in-name{
-    flex:0 0 120px; /* tamaño chico, fijo */
-    max-width:120px;
-  }
-  /* En móviles, aún más compacto y que no se salga */
-  @media (max-width:420px){
-    .in-name{flex:0 0 100px; max-width:100px}
-    .item{gap:6px}
-  }
 
   #msg.ok{color:#90f0b0} #msg.err{color:#fca5a5}
   #list{ margin-top: 24px; }
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
-  #btnSaveFinal{ min-width:160px; }
+  #btnSaveFinal{ min-width:180px; }
 
   .card-mini{margin-top:16px}
   .mini-inner{padding:14px 14px}
@@ -119,10 +105,9 @@
     .card-inner{padding:14px 10px}
     .mini-inner{padding:12px 10px}
     .btn{font-size:12.5px}
-    .btn--sm{min-width:90px;padding:7px 8px}
-    #btnRot.btn--sm{min-width:90px;font-size:11.4px;padding:7px 7px}
+    .btn--sm{min-width:106px;padding:7px 8px}
+    #btnRot.btn--sm{min-width:100px;font-size:11.6px;padding:7px 7px}
     .btn--main{min-width:210px}
-    .actions-top{gap:5px}
   }
 </style>
 </head>
@@ -149,7 +134,6 @@
       </div>
 
       <div id="list"></div>
-
       <div class="save-wrap">
         <button class="btn btn--thin" id="btnSaveFinal">Guardar</button>
       </div>
@@ -157,14 +141,14 @@
     </div>
   </div>
 
-  <!-- Botón tipo tarjeta: ESTADÍSTICAS (nuevo ícono de estadísticas) -->
+  <!-- Botón tipo tarjeta: ESTADÍSTICAS (con nuevo ícono) -->
   <button class="cta-card" id="btnStats" aria-label="Ir a Estadísticas">
-    <!-- Ícono “stats” alternativo: barras + línea ascendente -->
+    <!-- Ícono de barras + línea -->
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="12" width="3" height="7" rx="1.2" fill="#fff" opacity=".9"/>
-      <rect x="9" y="9"  width="3" height="10" rx="1.2" fill="#fff" opacity=".9"/>
-      <rect x="15" y="6" width="3" height="13" rx="1.2" fill="#fff" opacity=".9"/>
-      <path d="M3 13l4-3 3 2 5-6 6 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+      <rect x="3" y="11" width="3" height="8" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <rect x="9" y="7"  width="3" height="12" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <rect x="15" y="4" width="3" height="15" rx="1.2" fill="#ffffff" opacity=".9"/>
+      <path d="M3 19c3.5-2.2 6-3.2 8.5-5.8C13.7 11 16 8.5 21 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
     </svg>
     <span>Estadísticas</span>
   </button>
@@ -188,11 +172,12 @@
     </div>
   </div>
 
+  <!-- Sección vacía donde montaremos la futura vista -->
   <section id="stats"></section>
 </div>
 
 <script>
-// ===== Partículas =====
+// Partículas
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];
 function rs(){c.width=innerWidth;c.height=innerHeight}
@@ -208,77 +193,40 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
   requestAnimationFrame(anim);
 })();
 
-// ===== Lógica =====
+// Lógica
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
 const bsInput=$("#blocksize");
 
-// ---- Fila Nombre + Walink ----
 function row(v=""){
-  // v puede ser string (url) o objeto {name,url}
-  let nameVal = "", urlVal = "";
-  if (typeof v === "string") { urlVal = v; }
-  else if (v && typeof v === "object") { nameVal = v.name || ""; urlVal = v.url || ""; }
-
   const d=document.createElement("div");d.className="item";
-
-  const inName=document.createElement("input");
-  inName.type="text"; inName.placeholder="Nombre"; inName.value=nameVal; 
-  inName.className="in-name"; // chico, similar a botón borrar
-
-  const inUrl=document.createElement("input");
-  inUrl.type="text"; inUrl.placeholder="https://wa.me/..."; inUrl.value=urlVal;
-
-  const b=document.createElement("button");
-  b.className="btn btn--thin btn--sm"; b.textContent="Borrar"; b.onclick=()=>d.remove();
-
-  d.append(inName,inUrl,b); list.append(d);
-
-  setTimeout(()=>{ inUrl.scrollIntoView({behavior:"smooth", block:"end"}); inUrl.focus(); }, 50);
+  const i=document.createElement("input");i.type="text";i.placeholder="https://wa.me/...";i.value=v;
+  const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
+  d.append(i,b);list.append(d);
+  setTimeout(()=>{ i.scrollIntoView({behavior:"smooth", block:"end"}); i.focus(); }, 50);
 }
-
-function values(){
-  // devuelve [{name,url}] filtrando vacíos
-  const items=[...list.querySelectorAll(".item")];
-  const out=[];
-  for(const it of items){
-    const inputs = it.querySelectorAll("input");
-    if (inputs.length < 2) continue;
-    const name = (inputs[0].value||"").trim();
-    const url  = (inputs[1].value||"").trim();
-
-    if(!url) continue; // no guardamos vacíos
-    out.push({name, url});
-  }
-  return out;
-}
-
+function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
-// Cargar token y blocksize al entrar
 window.onload=async()=>{
   const t=localStorage.getItem("adm_tok"); if(t) tokenInput.value=t;
   if(t){ await loadBlockSize(t); }
 };
 
-// Ver lista (solo GET)
 $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
     show("Cargando...");
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
     const j=await r.json();
-    list.innerHTML="";
-    // j.links puede traer strings o objetos
-    (j.links||[]).forEach(v=>row(v));
+    list.innerHTML=""; (j.links||[]).forEach(v=>row(v));
     if((j.links||[]).length===0)row("");
     show("Lista cargada");
   }catch(e){ show("Error al cargar",0); }
 };
 
-// Borrar lista
 $("#btnReset").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -289,7 +237,6 @@ $("#btnReset").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
-// Reset rotación
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -299,35 +246,22 @@ $("#btnRot").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
-// Agregar cajera
 $("#btnAdd").onclick=()=>row("");
 
-// Guardar lista (POST) – con validación suave de wa.me
 $("#btnSaveFinal").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const vals=values(); if(!vals.length)return show("Nada que guardar",0);
-
-  // validar formato básico
-  for (const it of vals){
-    if (!/^https?:\/\/wa\.me\/\d+/.test(it.url)) {
-      show("Walink inválido (usa https://wa.me/…)",0);
-      return;
-    }
-  }
-
   try{
     show("Guardando...");
     const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(vals) // ahora mandamos [{name,url}]
+      method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
     });
     const j=await r.json();
     show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
   }catch(e){ show("Error al guardar",0); }
 };
 
-// ===== Block Size (leer/guardar en Redis) =====
+// Block Size
 async function loadBlockSize(t){
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
@@ -335,9 +269,8 @@ async function loadBlockSize(t){
     if(j.ok && typeof j.value!=="undefined" && j.value!==null){
       bsInput.value = j.value;
     }
-  }catch(e){ /* silencioso */ }
+  }catch(e){/* noop */}
 }
-
 $("#btnSaveBS").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const v=Number(bsInput.value);
