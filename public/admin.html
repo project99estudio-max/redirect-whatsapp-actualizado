@@ -10,7 +10,6 @@
     --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
     --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
     --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
-    --violet-soft:#7d55ff;
   }
 
   html,body{
@@ -43,15 +42,16 @@
   }
   input::placeholder{color:#9a8ccc}
 
-  /* Campos nombre + url */
+  /* Ítems de lista (Nombre + WaLink + Borrar) */
   .item{display:flex;gap:8px;margin:6px 0;align-items:center}
   .item .name{
-    width:112px;min-width:108px; /* igual que btn--sm */
+    width:108px;min-width:108px;
     background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:10px 10px;color:#fff;outline:none;
+    border-radius:12px;padding:10px;color:#fff;outline:none;
+    height:40px; /* igual alto que los botones */
   }
-  .item .url{flex:1;}
-  .item .btn{min-width:auto;padding:10px 12px}
+  .item .url{flex:1}
+  .item .btn{min-width:auto;padding:10px 12px;height:40px}
 
   /* Botones base */
   .btn{
@@ -63,6 +63,7 @@
   .btn:hover{filter:brightness(1.08)}
   .btn > *{position:relative;z-index:2}
   .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
+
   .btn--thin::before{
     inset:-1px;border-radius:13px;
     background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
@@ -70,17 +71,13 @@
     -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
-  .btn--sm{ padding:10px 10px; font-size:12.5px; min-width:108px; }
+  .btn--sm{ padding:10px 10px; font-size:12.5px; min-width:108px; height:40px; }
 
-  /* Top actions: 3 botones parejos y responsivos */
-  .actions-top{
-    display:flex; gap:8px; margin:8px 0 6px;
-  }
-  .actions-top .btn{
-    flex:1; /* todos mismo ancho */
-    display:flex; align-items:center; justify-content:center;
-    height:40px; /* mismo alto */
-  }
+  /* Top actions: parejos y responsivos */
+  .actions-top{display:flex; gap:8px; margin:8px 0 6px;}
+  .actions-top .btn{flex:1;display:flex;align-items:center;justify-content:center}
+  /* Texto más chico SOLO para “Resetear rotación” */
+  #btnRot{font-size:11.5px}
 
   /* Botón principal “AGREGAR CAJERA” con borde y pulso */
   .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
@@ -113,13 +110,13 @@
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
   #btnSaveFinal{ min-width:180px; }
 
-  /* Botón de estadísticas (entre tarjetas) — un poco más claro */
+  /* Botón “Estadísticas” igual que una tarjeta */
   .stats-card{
     margin:18px auto;
     padding:14px;
     display:flex;align-items:center;justify-content:center;gap:10px;
     cursor:pointer;user-select:none;
-    background:linear-gradient(180deg, rgba(139,109,255,.22), rgba(139,109,255,.08)) padding-box,
+    background:linear-gradient(var(--card),var(--card)) padding-box,
                linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
     border:1px solid transparent;border-radius:20px;
     box-shadow:0 12px 40px rgba(0,0,0,.45);
@@ -130,12 +127,24 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
+  /* Mini tarjeta inferior */
+  .card-mini{margin-top:16px}
+  .mini-inner{padding:14px 14px}
+  .mini-title{margin:0 0 8px;text-align:center;font-size:14px;color:#dcd2ff}
+
+  /* Campo numérico “Rotar cada” más angosto */
+  #blocksize{
+    max-width:72px; /* solo cambiamos esto: más compacto */
+    padding:8px 10px;
+    text-align:center;
+  }
+
   @media(max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
     .actions-top .btn{height:40px}
-    .item .name{min-width:100px;width:100px}
+    .item .name{min-width:108px;width:108px;height:40px}
   }
 </style>
 </head>
@@ -179,11 +188,11 @@
   <!-- Mini tarjeta inferior -->
   <div class="card-mini">
     <div class="mini-inner">
-      <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
+      <p class="mini-title">Configuración</p>
 
       <div class="row">
         <label style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
-        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2" style="max-width:120px">
+        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
         <label style="align-self:center;color:#d7ccff;min-width:60px">clicks</label>
         <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
