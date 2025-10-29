@@ -167,30 +167,30 @@ const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize");
 
 /**
- * Función Corregida: Crea una nueva fila de entrada.
- * Asegura que los valores de nombre y URL sean strings limpios.
+ * Función Corregida: Crea una nueva fila de entrada (input).
+ * Se asegura de extraer 'name' y 'url' como strings para evitar [object Object].
  */
 function row(data={name:"",url:""}) {
-    // 1. Desestructurar y validar. Aseguramos que solo trabajamos con strings.
+    // 1. Extraer y asegurar que son strings limpios.
     const name = (data && data.name) ? String(data.name).trim() : '';
     const url = (data && data.url) ? String(data.url).trim() : '';
     
-    // Si no hay URL ni nombre, no hacemos nada (opcional)
+    // Si no hay URL ni nombre, salimos (para evitar filas vacías si el backend devuelve un item vacío)
     if (!url && !name) return;
 
-    // 2. Crear elementos. Se usa 'row item' para los estilos.
-    const d=document.createElement("div");d.className="row item"; 
-    
-    // Campo Nombre (Aparecía vacío)
+    // 2. Crear elementos. Vuelve a la clase original 'item'.
+    const d=document.createElement("div");d.className="item row"; // Agregué 'row' si deseas usar la clase CSS de flexbox
+
+    // Campo Nombre (Ahora debería mostrar el nombre o estar vacío)
     const iName=document.createElement("input");iName.type="text";iName.placeholder="Nombre";iName.className="name";iName.value=name; 
     
-    // Campo URL (Aparecía [object Object])
+    // Campo URL (Ahora debería mostrar la URL y no [object Object])
     const iUrl=document.createElement("input");iUrl.type="text";iUrl.placeholder="https://wa.me/...";iUrl.className="url";iUrl.value=url; 
     
     const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
+    
     d.append(iName,iUrl,b);list.append(d);
 }
-
 
 function values(){
   return [...list.querySelectorAll(".item")].map(el=>{
@@ -213,11 +213,10 @@ $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   try{
     show("Cargando...");
-    // Usa /api/admin?get=1 para obtener la lista (la API devuelve objetos {name, url})
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
     const j=await r.json();
     list.innerHTML="";
-    (j.links||[]).forEach(o=>row(o)); // Se pasa el objeto 'o' a la función 'row'
+    (j.links||[]).forEach(o=>row(o));
     if((j.links||[]).length===0)row();
     show("Lista cargada");
   }catch(e){show("Error al cargar",0);}
@@ -247,7 +246,6 @@ $("#btnSaveFinal").onclick=async()=>{
   const vals=values();if(!vals.length)return show("Nada que guardar",0);
   try{
     show("Guardando...");
-    // Usa /api/admin-post (POST) para guardar la lista de objetos {name, url}
     const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
       method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
     });
