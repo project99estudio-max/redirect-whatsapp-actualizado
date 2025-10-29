@@ -1,4 +1,3 @@
-// /api/r.js
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -35,7 +34,7 @@ export default async function handler(req, res) {
 
     res.writeHead(302, { Location: url });
     return res.end();
-  } catch (e) {
+  } catch {
     return res.status(500).json({ ok: false, error: 'server_error' });
   }
 }
