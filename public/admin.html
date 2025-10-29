@@ -41,19 +41,14 @@
   }
   input::placeholder{color:#9a8ccc}
 
-  /* Campos nombre + url */
-  .item .name{
-    width:110px;min-width:100px;
-    background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:10px 10px;color:#fff;outline:none;
-  }
-  .item .url{flex:1;}
-
+  /* ===== BOTONES BASE ===== */
   .btn{
     position:relative;border:none;border-radius:12px;padding:10px 12px;
     color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
     white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
     box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
+    display:flex;align-items:center;justify-content:center;
+    height:36px;font-size:12.5px;
   }
   .btn:hover{filter:brightness(1.08)}
   .btn > *{position:relative;z-index:2}
@@ -66,10 +61,66 @@
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
 
-  .actions-top{display:flex;gap:6px;margin:8px 0 6px;justify-content:space-between;flex-wrap:nowrap;}
+  /* ===== TOP: 3 BOTONES SIMÉTRICOS ===== */
+  .actions-top{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr; /* tres iguales */
+    gap:8px;
+    margin:8px 0 6px;
+  }
+  /* texto más chico para que entre */
+  #btnRot{ font-size:11.4px; }
+
+  /* ===== BOTÓN PRINCIPAL (AGREGAR CAJERA) CON NEÓN ===== */
   .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
-  #msg.ok{color:#90f0b0}#msg.err{color:#fca5a5}
+  .btn--main{
+    position:relative;
+    font-size:15px; padding:12px 16px; min-width:220px;
+    background:#231a44;
+    box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);
+  }
+  .btn--main::before{
+    content:""; position:absolute; inset:-2px; border-radius:14px; z-index:1;
+    background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
+  }
+  .btn--main::after{
+    content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px;
+    background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%);
+    filter:blur(16px);
+    animation:breath 2.8s ease-in-out infinite;
+  }
+  @keyframes breath{
+    0%,100%{ transform:scale(0.96); opacity:.85; }
+    50%    { transform:scale(1.06); opacity:1;   }
+  }
+
+  /* ===== LISTA: NOMBRE | WAlink | BORRAR ===== */
   #list{margin-top:24px;}
+  .item{
+    display:grid;
+    grid-template-columns: 108px 1fr 108px; /* Nombre | WaLink | Borrar */
+    gap:8px; align-items:center; margin:6px 0;
+  }
+  .item input, .item .btn{ height:36px; }
+
+  .item .name{
+    width:108px;min-width:108px;max-width:108px;
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;
+  }
+  .item .url{
+    width:100%;min-width:0;
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:8px 12px;color:#fff;outline:none;font-size:13px;
+  }
+  .item .btn{
+    min-width:108px;max-width:108px;
+    display:flex;align-items:center;justify-content:center;font-size:12.5px;
+  }
+
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
   /* Botón de estadísticas (entre tarjetas) */
@@ -115,7 +166,7 @@
       </div>
 
       <div class="actions-bottom">
-        <button class="btn btn--bold btn--main" id="btnAdd">AGREGAR CAJERA</button>
+        <button class="btn btn--main" id="btnAdd">AGREGAR CAJERA</button>
       </div>
 
       <div id="list"></div>
