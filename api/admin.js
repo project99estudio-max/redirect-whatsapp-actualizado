@@ -1,4 +1,3 @@
-// /api/admin.js
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -10,7 +9,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   const { token, get, reset, set } = req.query;
@@ -18,19 +16,18 @@ export default async function handler(req, res) {
     return res.status(401).json({ ok: false, error: 'bad_token' });
   }
 
-  // Reset lista
+  // Vaciar lista
   if (reset) {
     await redis.del('links');
     return res.json({ ok: true, reset: true });
   }
 
-  // Compat: set via query guarda ya como objeto serializado
+  // Carga rápida por query (guarda BIEN como objetos)
   if (set) {
     const arr = decodeURIComponent(set)
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean);
-
     await redis.del('links');
     for (const url of arr) {
       await redis.rpush('links', JSON.stringify({ name: '', url }));
@@ -38,6 +35,7 @@ export default async function handler(req, res) {
     return res.json({ ok: true, saved: arr.length });
   }
 
+  // Leer lista
   if (get) {
     const raw = await redis.lrange('links', 0, -1);
     const links = raw.map((s) => {
@@ -46,7 +44,7 @@ export default async function handler(req, res) {
         if (o && o.url) return { name: o.name || '', url: o.url };
         return { name: '', url: String(s) };
       } catch {
-        return { name: '', url: String(s) }; // compat strings viejos
+        return { name: '', url: String(s) }; // compat datos viejos
       }
     });
     return res.json({ ok: true, links });
