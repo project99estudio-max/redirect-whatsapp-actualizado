@@ -11,10 +11,17 @@
     --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935; --neonA:#b985ff; --neonB:#efe6ff;
     --pulse:#7f5cff;
   }
-  html,body{height:100%;margin:0;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background: radial-gradient(circle at 30% -10%, var(--bg1), var(--bg2));overflow:auto;}
+
+  html,body{
+    height:100%;margin:0;color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    background:radial-gradient(circle at 30% -10%,var(--bg1),var(--bg2));
+    overflow:auto;
+  }
+
   canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
   .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
-  .logo-wrap{display:flex;justify-content:center;position:relative;z-index:2}
+  .logo-wrap{display:flex;justify-content:center}
   .logo{width:240px;display:block;filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));margin:10px auto -36px;}
 
   .card, .card-mini{
@@ -28,63 +35,64 @@
   h1{margin:2px 0 8px;text-align:center;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
 
-  .row{display:flex;gap:8px;margin:8px 0}
-  input[type=text], input[type=number]{
+  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+  input[type=text],input[type=number]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:10px 12px;color:#fff;outline:none
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none;
   }
   input::placeholder{color:#9a8ccc}
 
+  /* ---- nombre corto ---- */
+  .item .name{
+    width:110px;min-width:100px;
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:10px 10px;color:#fff;outline:none;
+  }
+  .item .url{flex:1;}
+
   .btn{
-    position:relative;border:none;border-radius:12px;padding:10px 12px;color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
-    white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
+    position:relative;border:none;border-radius:12px;padding:10px 12px;
+    color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
+    white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
+    box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
   }
   .btn:hover{filter:brightness(1.08)}
   .btn > *{position:relative;z-index:2}
-  .btn::before{content:""; position:absolute; inset:0; border-radius:12px; z-index:1; background:transparent;}
-  .btn--thin{ box-shadow:0 6px 16px rgba(40,0,120,.18); }
+  .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
   .btn--thin::before{
-    inset:-1px; border-radius:13px;
-    background:conic-gradient(from 45deg, var(--neonA) 0%, var(--neonB) 18%, var(--neonA) 36%, var(--neonA) 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
-    padding:1px; filter:saturate(90%) blur(.15px) opacity(.85);
+    inset:-1px;border-radius:13px;
+    background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
+    filter:saturate(90%) blur(.15px) opacity(.85);
   }
-  .btn--bold{ box-shadow:0 8px 26px rgba(100,50,180,.32); }
-  .btn--bold::before{
-    inset:-2px; border-radius:14px;
-    background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
-    padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
-  }
-  .btn--sm{ padding:7px 9px; font-size:12px; min-width:108px }
-  #btnRot.btn--sm{ min-width:102px; font-size:11.8px; padding:7px 8px }
 
-  .actions-top{display:flex; gap:6px; margin:8px 0 6px; justify-content:space-between; flex-wrap:nowrap;}
-  .actions-bottom{display:flex; justify-content:center; margin:18px 0 6px; position:relative;}
-  .btn--main{font-size:15px; padding:12px 16px; min-width:220px; box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);}
-  .btn--main::after{content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px; background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%); filter:blur(16px); animation:breath 2.8s ease-in-out infinite;}
-  @keyframes breath{0%,100%{ transform:scale(0.96); opacity:.85;} 50%{ transform:scale(1.06); opacity:1;}}
-
-  .item{display:flex;gap:8px;margin:6px 0}
-  .item .btn{min-width:auto;padding:10px 12px}
-
-  #msg.ok{color:#90f0b0} #msg.err{color:#fca5a5}
-  #list{ margin-top: 24px; }
-
+  .actions-top{display:flex;gap:6px;margin:8px 0 6px;justify-content:space-between;flex-wrap:nowrap;}
+  .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
+  #msg.ok{color:#90f0b0}#msg.err{color:#fca5a5}
+  #list{margin-top:24px;}
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
-  #btnSaveFinal{ min-width:180px; }
 
-  .card-mini{margin-top:16px}
-  .mini-title{margin:0 0 8px;text-align:center;font-size:14px;color:#dcd2ff}
+  /* --- Botón Estadísticas --- */
+  .stats-btn{
+    display:flex;align-items:center;justify-content:center;
+    gap:10px;width:100%;padding:16px;
+    background:linear-gradient(90deg,#7d3cff,#a874ff);
+    color:#fff;font-weight:600;font-size:16px;
+    border-radius:20px;box-shadow:0 0 20px rgba(127,92,255,.35);
+    margin:22px 0;cursor:pointer;transition:.2s;
+  }
+  .stats-btn:hover{filter:brightness(1.08);transform:scale(1.02)}
+  .stats-icon{
+    width:22px;height:22px;
+    background:conic-gradient(from 0deg,#ffffff 0deg 90deg,#b985ff 90deg 360deg);
+    border-radius:50%;
+  }
 
-  @media (max-width:420px){
+  @media(max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
-    .mini-inner{padding:12px 10px}
     .btn{font-size:12.5px}
-    .btn--sm{min-width:106px;padding:7px 8px}
-    #btnRot.btn--sm{min-width:100px;font-size:11.6px;padding:7px 7px}
-    .btn--main{min-width:210px}
   }
 </style>
 </head>
@@ -118,157 +126,139 @@
     </div>
   </div>
 
-  <!-- Tarjeta mini inferior: BLOCK_SIZE + TOKEN -->
+  <!-- Mini tarjeta config -->
   <div class="card-mini">
     <div class="mini-inner">
-      <p class="mini-title">Configuración</p>
+      <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
-      <!-- Bloque: Rotar cada X clicks -->
       <div class="row">
-        <label for="blocksize" style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
+        <label style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
         <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2" style="max-width:120px">
         <label style="align-self:center;color:#d7ccff;min-width:60px">clicks</label>
         <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
 
-      <!-- Bloque: Token -->
       <div class="row">
         <input id="token" type="text" placeholder="tok99-2025">
         <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
       </div>
     </div>
   </div>
+
+  <!-- Botón de estadísticas -->
+  <div class="stats-btn" id="btnStats">
+    <div class="stats-icon"></div>
+    <span>Estadísticas</span>
+  </div>
 </div>
 
 <script>
-// ===== Partículas =====
+// ===== Fondo con partículas =====
 const c=document.getElementById("bg"),x=c.getContext("2d");
-let P=[];
-function rs(){c.width=innerWidth;c.height=innerHeight}
-addEventListener("resize",rs);rs();
+let P=[];function rs(){c.width=innerWidth;c.height=innerHeight}addEventListener("resize",rs);rs();
 for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
-(function anim(){
-  const grad=x.createRadialGradient(c.width*0.3, c.height*0.1, 0, c.width*0.3, c.height*0.1, Math.max(c.width,c.height));
-  const cs=(p)=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
-  grad.addColorStop(0, cs('--bg1')); grad.addColorStop(1, cs('--bg2'));
-  x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);
-  x.fillStyle=cs('--particle');
-  for(const p of P){p.x+=p.vx;p.y+=p.vy; if(p.x<0||p.x>c.width)p.vx*=-1; if(p.y<0||p.y>c.height)p.vy*=-1; x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
-  requestAnimationFrame(anim);
-})();
+(function anim(){const grad=x.createRadialGradient(c.width*0.3,c.height*0.1,0,c.width*0.3,c.height*0.1,Math.max(c.width,c.height));
+const cs=p=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
+grad.addColorStop(0,cs('--bg1'));grad.addColorStop(1,cs('--bg2'));
+x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
+for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
+requestAnimationFrame(anim);})();
 
-// ===== Lógica =====
+// ===== Lógica principal =====
 const $=s=>document.querySelector(s);
-const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
-const bsInput=$("#blocksize");
+const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize");
 
-function row(v=""){
+function row(val={name:"",url:""}) {
+  if(typeof val==="string") val={name:"",url:val};
   const d=document.createElement("div");d.className="item";
-  const i=document.createElement("input");i.type="text";i.placeholder="https://wa.me/...";i.value=v;
+  const iName=document.createElement("input");iName.type="text";iName.placeholder="Nombre";iName.className="name";iName.value=val.name||"";
+  const iUrl=document.createElement("input");iUrl.type="text";iUrl.placeholder="https://wa.me/...";iUrl.className="url";iUrl.value=val.url||"";
   const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
-  d.append(i,b);list.append(d);
-  setTimeout(()=>{ i.scrollIntoView({behavior:"smooth", block:"end"}); i.focus(); }, 50);
+  d.append(iName,iUrl,b);list.append(d);
 }
-function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
+
+function values(){
+  return [...list.querySelectorAll(".item")].map(el=>{
+    const name=el.querySelector(".name")?.value.trim()||"";
+    const url=el.querySelector(".url")?.value.trim()||"";
+    return url?{name,url}:null;
+  }).filter(Boolean);
+}
+
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
-// Cargar token y blocksize al entrar
 window.onload=async()=>{
-  const t=localStorage.getItem("adm_tok"); if(t) tokenInput.value=t;
-  if(t){ await loadBlockSize(t); } // intenta leer blocksize si ya hay token guardado
+  const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;
+  if(t){await loadBlockSize(t);}
 };
 
-// Ver lista (solo GET)
 $("#btnView").onclick=async()=>{
-  const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   try{
     show("Cargando...");
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
     const j=await r.json();
-    list.innerHTML=""; (j.links||[]).forEach(v=>row(v));
-    if((j.links||[]).length===0)row("");
+    list.innerHTML="";
+    (j.links||[]).forEach(o=>row(o));
+    if((j.links||[]).length===0)row();
     show("Lista cargada");
-  }catch(e){ show("Error al cargar",0); }
+  }catch(e){show("Error al cargar",0);}
 };
 
-// Borrar lista
 $("#btnReset").onclick=async()=>{
-  const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   try{
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&reset=1`);
-    const j=await r.json();
-    list.innerHTML=""; row("");
+    const j=await r.json();list.innerHTML="";row();
     show(j.ok?"Lista borrada":"Error",j.ok);
-  }catch(e){ show("Error",0); }
+  }catch(e){show("Error",0);}
 };
 
-// Reset rotación
 $("#btnRot").onclick=async()=>{
-  const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   try{
     const r=await fetch(`/api/rotate-reset?token=${encodeURIComponent(t)}`);
-    const j=await r.json();
-    show(j.ok?"Rotación reiniciada":"Error",j.ok);
-  }catch(e){ show("Error",0); }
+    const j=await r.json();show(j.ok?"Rotación reiniciada":"Error",j.ok);
+  }catch(e){show("Error",0);}
 };
 
-// Agregar cajera
-$("#btnAdd").onclick=()=>row("");
+$("#btnAdd").onclick=()=>row();
 
-// Guardar lista (POST)
 $("#btnSaveFinal").onclick=async()=>{
-  const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
-  const vals=values(); if(!vals.length)return show("Nada que guardar",0);
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const vals=values();if(!vals.length)return show("Nada que guardar",0);
   try{
     show("Guardando...");
     const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
       method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
     });
-    const j=await r.json();
-    show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
-  }catch(e){ show("Error al guardar",0); }
+    const j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
+  }catch(e){show("Error al guardar",0);}
 };
 
-// ===== Block Size (leer/guardar en Redis) =====
 async function loadBlockSize(t){
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
-    const j=await r.json();
-    if(j.ok && typeof j.value!=="undefined" && j.value!==null){
-      bsInput.value = j.value;
-    }
-  }catch(e){ /* silencioso */ }
+    const j=await r.json();if(j.ok&&j.value!==undefined)bsInput.value=j.value;
+  }catch(e){}
 }
 
 $("#btnSaveBS").onclick=async()=>{
-  const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   const v=Number(bsInput.value);
-  if(!Number.isInteger(v) || v<1 || v>20) return show("Valor inválido (1 a 20)",0);
+  if(!Number.isInteger(v)||v<1||v>20)return show("Valor inválido (1 a 20)",0);
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}`,{
       method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({value:v})
     });
-    const j=await r.json();
-    show(j.ok?`Block size guardado (${v})`:"Error al guardar",j.ok);
-  }catch(e){ show("Error al guardar",0); }
+    const j=await r.json();show(j.ok?`Block size guardado (${v})`:"Error al guardar",j.ok);
+  }catch(e){show("Error al guardar",0);}
 };
-  /* --- nombre corto al lado del link --- */
-.item .name {
-  width: 110px;               /* chico, tipo “Borrar” */
-  min-width: 100px;
-  background:#2b2250;
-  border:1px solid rgba(180,140,255,.35);
-  border-radius:12px;
-  padding:10px 10px;
-  color:#fff;
-  outline:none;
-}
-.item .url {
-  flex:1;
-}
 
+// Estadísticas (placeholder temporal)
+$("#btnStats").onclick=()=>show("📊 Próximamente estadísticas");
 </script>
 </body>
 </html>
