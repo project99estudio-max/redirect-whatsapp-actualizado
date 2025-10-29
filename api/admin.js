@@ -12,41 +12,47 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  const { token, set, get, reset } = req.query;
+  const { token, get, reset, set } = req.query;
   if (!token || token !== process.env.ADMIN_TOKEN) {
     return res.status(401).json({ ok: false, error: 'bad_token' });
   }
 
-  // RESET LISTA
+  // Reset lista
   if (reset) {
     await redis.del('links');
     return res.json({ ok: true, reset: true });
   }
 
-  // GUARDAR LISTA
+  // Compat: set por query (coma-separado) — guarda como strings simples
   if (set) {
     const arr = decodeURIComponent(set)
       .split(',')
       .map((v) => v.trim())
       .filter(Boolean);
-    if (arr.length === 0)
-      return res.status(400).json({ ok: false, error: 'empty_list' });
 
     await redis.del('links');
-    let saved = 0;
-    for (const link of arr) {
-      await redis.rpush('links', link);
-      saved++;
+    for (const url of arr) {
+      await redis.rpush('links', JSON.stringify({ name: '', url })); // guarda ya en formato objeto
     }
-    return res.json({ ok: true, saved });
+    return res.json({ ok: true, saved: arr.length });
   }
 
-  // OBTENER LISTA
+  // Obtener lista
   if (get) {
-    const links = await redis.lrange('links', 0, -1);
+    const raw = await redis.lrange('links', 0, -1);
+    const links = raw.map((s) => {
+      try {
+        const o = JSON.parse(s);
+        if (o && o.url) return { name: o.name || '', url: o.url };
+        // si parsea pero no trae url, devolvemos como string de última
+        return { name: '', url: String(s) };
+      } catch {
+        // compat con datos viejos (string plano)
+        return { name: '', url: String(s) };
+      }
+    });
     return res.json({ ok: true, links });
   }
 
-  // SI NO SE PASA NADA
   return res.status(400).json({ ok: false, error: 'missing_action' });
 }
