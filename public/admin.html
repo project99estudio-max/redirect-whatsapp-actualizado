@@ -9,9 +9,8 @@
     --bg1:#4b0082; --bg2:#000000; --particle:#c7b3ff;
     --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
     --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
-    --neonA:#b985ff; --neonB:#efe6ff;
+    --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
   }
-
   html,body{
     height:100%;margin:0;color:var(--text);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
@@ -24,7 +23,7 @@
   .logo{width:240px;display:block;filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));margin:10px auto -36px;}
 
   .card,.card-mini{
-    position:relative;margin:0 auto;
+    position:relative;z-index:1;margin:0 auto;
     background:linear-gradient(var(--card),var(--card)) padding-box,
                linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
     border:1px solid transparent;border-radius:20px;
@@ -32,23 +31,33 @@
   }
   .card-inner{padding:16px 14px}
   .mini-inner{padding:14px 14px}
-
   h1{text-align:center;margin:2px 0 8px;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
 
-  /* Botones base */
+  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+  input[type=text],input[type=number]{
+    flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none;
+  }
+  input::placeholder{color:#9a8ccc}
+
+  /* Campos nombre + url */
+  .item .name{
+    width:110px;min-width:100px;
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:10px 10px;color:#fff;outline:none;
+  }
+  .item .url{flex:1;}
+
   .btn{
     position:relative;border:none;border-radius:12px;padding:10px 12px;
     color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
     white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
     box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
-    display:flex;align-items:center;justify-content:center;
-    height:36px;font-size:12.5px;
   }
   .btn:hover{filter:brightness(1.08)}
-  .btn::before{
-    content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;
-  }
+  .btn > *{position:relative;z-index:2}
+  .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
   .btn--thin::before{
     inset:-1px;border-radius:13px;
     background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
@@ -57,60 +66,13 @@
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
 
-  /* Top actions parejos */
-  .actions-top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0 6px}
-  #btnRot{font-size:11.4px}
-
-  /* Botón principal con borde + glow */
+  .actions-top{display:flex;gap:6px;margin:8px 0 6px;justify-content:space-between;flex-wrap:nowrap;}
   .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
-  .btn--main{
-    font-size:15px; padding:12px 16px; min-width:220px;
-    background:#231a44;
-    box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);
-  }
-  .btn--main::before{
-    inset:-2px;border-radius:14px;
-    background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude;
-    padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
-  }
-  .btn--main::after{
-    content:""; position:absolute; z-index:0;
-    inset:-16px; border-radius:28px;
-    background: radial-gradient(45% 70% at 50% 50%,
-      rgba(127,92,255,.55),
-      rgba(127,92,255,.22) 55%,
-      transparent 75%);
-    filter:blur(16px);
-    animation:breath 2.8s ease-in-out infinite;
-  }
-  @keyframes breath{0%,100%{transform:scale(0.96);opacity:.85}50%{transform:scale(1.06);opacity:1}}
+  #msg.ok{color:#90f0b0}#msg.err{color:#fca5a5}
+  #list{margin-top:24px;}
+  .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
-  /* Lista de cajeras: simétrica y sin solapes */
-  #list{margin-top:18px}
-  .item{
-    display:grid;
-    grid-template-columns: 108px 1fr 108px; /* Nombre | WaLink | Borrar */
-    gap:8px;align-items:center;margin:6px 0;
-  }
-  .item input{
-    background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;color:#fff;outline:none;height:36px;
-  }
-  .item .name{
-    width:108px;min-width:108px;max-width:108px;
-    padding:8px 10px;font-size:12.5px;
-  }
-  .item .url{
-    width:100%;min-width:0;padding:8px 12px;font-size:13px;
-  }
-  .item .btn{min-width:108px;max-width:108px}
-
-  .save-wrap{display:flex;justify-content:center;margin:14px 0 6px}
-  #btnSaveFinal{ min-width:180px; }
-
-  /* Botón Estadísticas = tarjeta */
+  /* Botón de estadísticas (entre tarjetas) */
   .stats-card{
     margin:18px auto;
     padding:14px;
@@ -127,29 +89,10 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
-  /* Mini tarjeta inferior */
-  .card-mini{margin-top:16px}
-  .mini-title{margin:0 0 8px;text-align:center;font-size:14px;color:#dcd2ff}
-
-  /* Config en UNA línea exacta y simétrica */
-  .config-row{
-    display:grid;
-    grid-template-columns: auto 108px auto 108px; /* “Rotar cada” | input=108 | “clicks” | Guardar (108) */
-    align-items:center;gap:8px;margin:8px 0;
-  }
-  #blocksize{
-    width:108px;max-width:108px;min-width:108px;
-    padding:6px 8px;text-align:center;height:36px;font-size:13px;
-    background:#2b2250;border:1px solid rgba(180,140,255,.35);border-radius:12px;color:#fff;outline:none;
-  }
-
-  #msg.ok{color:#90f0b0}#msg.err{color:#fca5a5}
-
-  @media (max-width:420px){
+  @media(max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
-    .mini-inner{padding:12px 10px}
-    .actions-top{grid-template-columns:1fr 1fr 1fr}
+    .btn{font-size:12.5px}
   }
 </style>
 </head>
@@ -165,56 +108,52 @@
   <div class="card">
     <div class="card-inner">
       <h1>PANEL ADMIN</h1>
-
       <div class="actions-top">
-        <button class="btn btn--thin" id="btnView">Ver lista</button>
-        <button class="btn btn--thin" id="btnReset">Borrar lista</button>
-        <button class="btn btn--thin" id="btnRot">Resetear rotación</button>
+        <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
+        <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
+        <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
       </div>
 
       <div class="actions-bottom">
-        <button class="btn btn--main" id="btnAdd">AGREGAR CAJERA</button>
+        <button class="btn btn--bold btn--main" id="btnAdd">AGREGAR CAJERA</button>
       </div>
 
       <div id="list"></div>
-
       <div class="save-wrap">
         <button class="btn btn--thin" id="btnSaveFinal">Guardar</button>
       </div>
-
       <p id="msg"></p>
     </div>
   </div>
 
-  <!-- Botón Estadísticas (igual que tarjeta) -->
+  <!-- Botón Estadísticas -->
   <div class="stats-card" id="btnStats">
     <div class="stats-icon"></div>
     <span>Estadísticas</span>
   </div>
 
-  <!-- Mini tarjeta inferior (Configuración) -->
+  <!-- Mini tarjeta inferior -->
   <div class="card-mini">
     <div class="mini-inner">
-      <p class="mini-title">Configuración</p>
+      <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
-      <div class="config-row">
-        <label style="color:#d7ccff">Rotar cada</label>
-        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
-        <label style="color:#d7ccff">clicks</label>
-        <button class="btn btn--thin" id="btnSaveBS">Guardar</button>
+      <div class="row">
+        <label style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
+        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2" style="max-width:120px">
+        <label style="align-self:center;color:#d7ccff;min-width:60px">clicks</label>
+        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
 
-      <!-- Fila de token: NO se toca -->
       <div class="row">
         <input id="token" type="text" placeholder="tok99-2025">
-        <button class="btn btn--thin" id="btnSaveToken">Guardar token</button>
+        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* Fondo partículas */
+// ===== Fondo partículas =====
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];function rs(){c.width=innerWidth;c.height=innerHeight}addEventListener("resize",rs);rs();
 for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
@@ -225,7 +164,7 @@ x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
 for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
 requestAnimationFrame(anim);})();
 
-/* Lógica panel (igual que tenías) */
+// ===== Panel =====
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize");
 
@@ -234,10 +173,9 @@ function row(val={name:"",url:""}) {
   const d=document.createElement("div");d.className="item";
   const iName=document.createElement("input");iName.type="text";iName.placeholder="Nombre";iName.className="name";iName.value=val.name||"";
   const iUrl=document.createElement("input");iUrl.type="text";iUrl.placeholder="https://wa.me/...";iUrl.className="url";iUrl.value=val.url||"";
-  const b=document.createElement("button");b.className="btn btn--thin";b.textContent="Borrar";b.onclick=()=>d.remove();
+  const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
   d.append(iName,iUrl,b);list.append(d);
 }
-
 function values(){
   return [...list.querySelectorAll(".item")].map(el=>{
     const name=el.querySelector(".name")?.value.trim()||"";
@@ -300,6 +238,7 @@ async function loadBlockSize(t){
     const j=await r.json();if(j.ok&&j.value!==undefined)bsInput.value=j.value;
   }catch(e){}
 }
+
 $("#btnSaveBS").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   const v=Number(bsInput.value);
