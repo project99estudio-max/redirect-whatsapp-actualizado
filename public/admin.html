@@ -68,7 +68,6 @@
     gap:8px;
     margin:8px 0 6px;
   }
-  /* texto más chico para que entre */
   #btnRot{ font-size:11.4px; }
 
   /* ===== BOTÓN PRINCIPAL (AGREGAR CAJERA) CON NEÓN ===== */
@@ -101,7 +100,7 @@
   #list{margin-top:24px;}
   .item{
     display:grid;
-    grid-template-columns: 108px 1fr 108px; /* Nombre | WaLink | Borrar */
+    grid-template-columns: 108px 1fr 108px;
     gap:8px; align-items:center; margin:6px 0;
   }
   .item input, .item .btn{ height:36px; }
@@ -159,10 +158,12 @@
   <div class="card">
     <div class="card-inner">
       <h1>PANEL ADMIN</h1>
+
+      <!-- ORDEN CORREGIDO -->
       <div class="actions-top">
         <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
-        <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
+        <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
       </div>
 
       <div class="actions-bottom">
