@@ -22,6 +22,7 @@ export default async function handler(req, res) {
     const pointer = Math.floor(idx / BLOCK) % raw.length;
     const itemRaw = raw[pointer];
 
+    // Soporta objetos {name,url} y strings viejos
     let url = '';
     try {
       const obj = JSON.parse(itemRaw);
