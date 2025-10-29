@@ -1,4 +1,3 @@
-// /api/admin-post.js
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -10,7 +9,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'method_not_allowed' });
 
@@ -21,14 +19,12 @@ export default async function handler(req, res) {
 
   let body = req.body;
   try {
-    // por si el runtime te lo entrega como string:
     if (typeof body === 'string') body = JSON.parse(body);
     if (!Array.isArray(body)) throw new Error('bad_body');
   } catch {
     return res.status(400).json({ ok: false, error: 'bad_body' });
   }
 
-  // Normalizar a {name,url}
   const normalized = body
     .map((it) => {
       if (typeof it === 'string') return { name: '', url: it };
@@ -37,16 +33,13 @@ export default async function handler(req, res) {
     })
     .filter((it) => it && it.url);
 
-  if (normalized.length === 0) {
-    return res.status(400).json({ ok: false, error: 'empty_list' });
-  }
+  if (normalized.length === 0) return res.status(400).json({ ok: false, error: 'empty_list' });
 
   await redis.del('links');
   let saved = 0;
   for (const it of normalized) {
-    await redis.rpush('links', JSON.stringify(it)); // 👈 CLAVE: serializado
+    await redis.rpush('links', JSON.stringify(it)); // ← CLAVE
     saved++;
   }
-
   return res.json({ ok: true, saved });
 }
