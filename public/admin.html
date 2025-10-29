@@ -25,7 +25,7 @@
   .card-inner{padding:16px 14px}
   .mini-inner{padding:14px 14px}
 
-  /* Botón-tarjeta ESTADÍSTICAS */
+  /* Botón-tarjeta ESTADÍSTICAS (nuevo icono) */
   .cta-card{
     width:100%;
     margin:14px auto;
@@ -47,10 +47,10 @@
   h1{margin:2px 0 8px;text-align:center;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
 
-  .row{display:flex;gap:8px;margin:8px 0}
+  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:nowrap}
   input[type=text], input[type=number]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:10px 12px;color:#fff;outline:none
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none;min-width:0;
   }
   input::placeholder{color:#9a8ccc}
 
@@ -75,23 +75,37 @@
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude;
     padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
   }
-  .btn--sm{ padding:7px 9px; font-size:12px; min-width:108px }
-  #btnRot.btn--sm{ min-width:102px; font-size:11.8px; padding:7px 8px }
+  .btn--sm{ padding:7px 9px; font-size:12px; min-width:92px } /* ↓ más chico para que no desborde */
+  #btnRot.btn--sm{ min-width:92px; font-size:11.6px; padding:7px 7px }
 
-  .actions-top{display:flex; gap:6px; margin:8px 0 6px; justify-content:space-between; flex-wrap:nowrap;}
+  .actions-top{
+    display:flex; gap:6px; margin:8px 0 6px; justify-content:space-between; flex-wrap:nowrap;
+  }
   .actions-bottom{display:flex; justify-content:center; margin:18px 0 6px; position:relative;}
   .btn--main{font-size:15px; padding:12px 16px; min-width:220px; box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);}
   .btn--main::after{content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px; background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%); filter:blur(16px); animation:breath 2.8s ease-in-out infinite;}
   @keyframes breath{0%,100%{ transform:scale(0.96); opacity:.85;} 50%{ transform:scale(1.06); opacity:1;}}
 
-  .item{display:flex;gap:8px;margin:6px 0}
+  /* FILA: Nombre + Walink + Borrar */
+  .item{display:flex;gap:8px;margin:6px 0;align-items:center;}
   .item .btn{min-width:auto;padding:10px 12px}
+
+  /* Campo "Nombre" pequeño (similar a botón Borrar) */
+  .in-name{
+    flex:0 0 120px; /* tamaño chico, fijo */
+    max-width:120px;
+  }
+  /* En móviles, aún más compacto y que no se salga */
+  @media (max-width:420px){
+    .in-name{flex:0 0 100px; max-width:100px}
+    .item{gap:6px}
+  }
 
   #msg.ok{color:#90f0b0} #msg.err{color:#fca5a5}
   #list{ margin-top: 24px; }
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
-  #btnSaveFinal{ min-width:180px; }
+  #btnSaveFinal{ min-width:160px; }
 
   .card-mini{margin-top:16px}
   .mini-inner{padding:14px 14px}
@@ -105,9 +119,10 @@
     .card-inner{padding:14px 10px}
     .mini-inner{padding:12px 10px}
     .btn{font-size:12.5px}
-    .btn--sm{min-width:106px;padding:7px 8px}
-    #btnRot.btn--sm{min-width:100px;font-size:11.6px;padding:7px 7px}
+    .btn--sm{min-width:90px;padding:7px 8px}
+    #btnRot.btn--sm{min-width:90px;font-size:11.4px;padding:7px 7px}
     .btn--main{min-width:210px}
+    .actions-top{gap:5px}
   }
 </style>
 </head>
@@ -142,13 +157,14 @@
     </div>
   </div>
 
-  <!-- Botón tipo tarjeta: ESTADÍSTICAS (ícono pie chart) -->
+  <!-- Botón tipo tarjeta: ESTADÍSTICAS (nuevo ícono de estadísticas) -->
   <button class="cta-card" id="btnStats" aria-label="Ir a Estadísticas">
+    <!-- Ícono “stats” alternativo: barras + línea ascendente -->
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <!-- Pie chart: 3 sectores -->
-      <path d="M12 3a1 1 0 0 1 1 1v7h7a1 1 0 0 1 1 1 9 9 0 1 1-9-9z" fill="#fff" opacity=".95"/>
-      <path d="M13 3.1V12h8a9 9 0 0 0-8-8.9z" fill="#ffffff" opacity=".65"/>
-      <path d="M11 3a9 9 0 0 0-8 8h8V3z" fill="#ffffff" opacity=".65"/>
+      <rect x="3" y="12" width="3" height="7" rx="1.2" fill="#fff" opacity=".9"/>
+      <rect x="9" y="9"  width="3" height="10" rx="1.2" fill="#fff" opacity=".9"/>
+      <rect x="15" y="6" width="3" height="13" rx="1.2" fill="#fff" opacity=".9"/>
+      <path d="M3 13l4-3 3 2 5-6 6 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
     </svg>
     <span>Estadísticas</span>
   </button>
@@ -207,7 +223,8 @@ function row(v=""){
   const d=document.createElement("div");d.className="item";
 
   const inName=document.createElement("input");
-  inName.type="text"; inName.placeholder="Nombre (opcional)"; inName.value=nameVal; inName.style.maxWidth="180px";
+  inName.type="text"; inName.placeholder="Nombre"; inName.value=nameVal; 
+  inName.className="in-name"; // chico, similar a botón borrar
 
   const inUrl=document.createElement("input");
   inUrl.type="text"; inUrl.placeholder="https://wa.me/..."; inUrl.value=urlVal;
