@@ -18,7 +18,6 @@
     background:radial-gradient(circle at 30% -10%,var(--bg1),var(--bg2));
     overflow:auto;
   }
-
   canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
   .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
   .logo-wrap{display:flex;justify-content:center}
@@ -44,8 +43,7 @@
     white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
     box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
     display:flex;align-items:center;justify-content:center;
-    height:36px; /* altura uniforme */
-    font-size:12.5px;
+    height:36px;font-size:12.5px;
   }
   .btn:hover{filter:brightness(1.08)}
   .btn::before{
@@ -61,7 +59,7 @@
 
   /* Top actions parejos */
   .actions-top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:8px 0 6px}
-  #btnRot{font-size:11.4px} /* texto un pelín más chico */
+  #btnRot{font-size:11.4px}
 
   /* Botón principal con borde + glow */
   .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
@@ -89,11 +87,11 @@
   }
   @keyframes breath{0%,100%{transform:scale(0.96);opacity:.85}50%{transform:scale(1.06);opacity:1}}
 
-  /* Lista de cajeras: grid para simetría */
+  /* Lista de cajeras: simétrica y sin solapes */
   #list{margin-top:18px}
   .item{
     display:grid;
-    grid-template-columns: 100px 1fr 108px; /* Nombre chico | URL flexible | Borrar */
+    grid-template-columns: 108px 1fr 108px; /* Nombre | WaLink | Borrar */
     gap:8px;align-items:center;margin:6px 0;
   }
   .item input{
@@ -101,11 +99,13 @@
     border-radius:12px;color:#fff;outline:none;height:36px;
   }
   .item .name{
-    width:100%;min-width:0;padding:8px 10px;font-size:12.5px; /* chico */
+    width:108px;min-width:108px;max-width:108px;
+    padding:8px 10px;font-size:12.5px;
   }
   .item .url{
     width:100%;min-width:0;padding:8px 12px;font-size:13px;
   }
+  .item .btn{min-width:108px;max-width:108px}
 
   .save-wrap{display:flex;justify-content:center;margin:14px 0 6px}
   #btnSaveFinal{ min-width:180px; }
@@ -131,14 +131,15 @@
   .card-mini{margin-top:16px}
   .mini-title{margin:0 0 8px;text-align:center;font-size:14px;color:#dcd2ff}
 
-  /* Config row en UNA línea: Rotar cada | [num pequeño] | clicks | Guardar */
+  /* Config en UNA línea exacta y simétrica */
   .config-row{
     display:grid;
-    grid-template-columns: auto 64px auto min-content; /* etiqueta | número chico | etiqueta | botón */
+    grid-template-columns: auto 108px auto 108px; /* “Rotar cada” | input=108 | “clicks” | Guardar (108) */
     align-items:center;gap:8px;margin:8px 0;
   }
   #blocksize{
-    max-width:64px; padding:6px 8px; text-align:center; height:36px; font-size:13px;
+    width:108px;max-width:108px;min-width:108px;
+    padding:6px 8px;text-align:center;height:36px;font-size:13px;
     background:#2b2250;border:1px solid rgba(180,140,255,.35);border-radius:12px;color:#fff;outline:none;
   }
 
@@ -203,6 +204,7 @@
         <button class="btn btn--thin" id="btnSaveBS">Guardar</button>
       </div>
 
+      <!-- Fila de token: NO se toca -->
       <div class="row">
         <input id="token" type="text" placeholder="tok99-2025">
         <button class="btn btn--thin" id="btnSaveToken">Guardar token</button>
