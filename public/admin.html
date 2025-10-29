@@ -134,6 +134,7 @@
       </div>
 
       <div id="list"></div>
+
       <div class="save-wrap">
         <button class="btn btn--thin" id="btnSaveFinal">Guardar</button>
       </div>
@@ -141,14 +142,13 @@
     </div>
   </div>
 
-  <!-- Botón tipo tarjeta: ESTADÍSTICAS (con nuevo ícono) -->
+  <!-- Botón tipo tarjeta: ESTADÍSTICAS (ícono pie chart) -->
   <button class="cta-card" id="btnStats" aria-label="Ir a Estadísticas">
-    <!-- Ícono de barras + línea -->
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3" y="11" width="3" height="8" rx="1.2" fill="#ffffff" opacity=".9"/>
-      <rect x="9" y="7"  width="3" height="12" rx="1.2" fill="#ffffff" opacity=".9"/>
-      <rect x="15" y="4" width="3" height="15" rx="1.2" fill="#ffffff" opacity=".9"/>
-      <path d="M3 19c3.5-2.2 6-3.2 8.5-5.8C13.7 11 16 8.5 21 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
+      <!-- Pie chart: 3 sectores -->
+      <path d="M12 3a1 1 0 0 1 1 1v7h7a1 1 0 0 1 1 1 9 9 0 1 1-9-9z" fill="#fff" opacity=".95"/>
+      <path d="M13 3.1V12h8a9 9 0 0 0-8-8.9z" fill="#ffffff" opacity=".65"/>
+      <path d="M11 3a9 9 0 0 0-8 8h8V3z" fill="#ffffff" opacity=".65"/>
     </svg>
     <span>Estadísticas</span>
   </button>
@@ -172,12 +172,11 @@
     </div>
   </div>
 
-  <!-- Sección vacía donde montaremos la futura vista -->
   <section id="stats"></section>
 </div>
 
 <script>
-// Partículas
+// ===== Partículas =====
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];
 function rs(){c.width=innerWidth;c.height=innerHeight}
@@ -193,40 +192,76 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
   requestAnimationFrame(anim);
 })();
 
-// Lógica
+// ===== Lógica =====
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token");
 const bsInput=$("#blocksize");
 
+// ---- Fila Nombre + Walink ----
 function row(v=""){
+  // v puede ser string (url) o objeto {name,url}
+  let nameVal = "", urlVal = "";
+  if (typeof v === "string") { urlVal = v; }
+  else if (v && typeof v === "object") { nameVal = v.name || ""; urlVal = v.url || ""; }
+
   const d=document.createElement("div");d.className="item";
-  const i=document.createElement("input");i.type="text";i.placeholder="https://wa.me/...";i.value=v;
-  const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
-  d.append(i,b);list.append(d);
-  setTimeout(()=>{ i.scrollIntoView({behavior:"smooth", block:"end"}); i.focus(); }, 50);
+
+  const inName=document.createElement("input");
+  inName.type="text"; inName.placeholder="Nombre (opcional)"; inName.value=nameVal; inName.style.maxWidth="180px";
+
+  const inUrl=document.createElement("input");
+  inUrl.type="text"; inUrl.placeholder="https://wa.me/..."; inUrl.value=urlVal;
+
+  const b=document.createElement("button");
+  b.className="btn btn--thin btn--sm"; b.textContent="Borrar"; b.onclick=()=>d.remove();
+
+  d.append(inName,inUrl,b); list.append(d);
+
+  setTimeout(()=>{ inUrl.scrollIntoView({behavior:"smooth", block:"end"}); inUrl.focus(); }, 50);
 }
-function values(){return[...list.querySelectorAll("input")].map(i=>i.value.trim()).filter(Boolean)}
+
+function values(){
+  // devuelve [{name,url}] filtrando vacíos
+  const items=[...list.querySelectorAll(".item")];
+  const out=[];
+  for(const it of items){
+    const inputs = it.querySelectorAll("input");
+    if (inputs.length < 2) continue;
+    const name = (inputs[0].value||"").trim();
+    const url  = (inputs[1].value||"").trim();
+
+    if(!url) continue; // no guardamos vacíos
+    out.push({name, url});
+  }
+  return out;
+}
+
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
+// Cargar token y blocksize al entrar
 window.onload=async()=>{
   const t=localStorage.getItem("adm_tok"); if(t) tokenInput.value=t;
   if(t){ await loadBlockSize(t); }
 };
 
+// Ver lista (solo GET)
 $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
     show("Cargando...");
     const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
     const j=await r.json();
-    list.innerHTML=""; (j.links||[]).forEach(v=>row(v));
+    list.innerHTML="";
+    // j.links puede traer strings o objetos
+    (j.links||[]).forEach(v=>row(v));
     if((j.links||[]).length===0)row("");
     show("Lista cargada");
   }catch(e){ show("Error al cargar",0); }
 };
 
+// Borrar lista
 $("#btnReset").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -237,6 +272,7 @@ $("#btnReset").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
+// Reset rotación
 $("#btnRot").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   try{
@@ -246,22 +282,35 @@ $("#btnRot").onclick=async()=>{
   }catch(e){ show("Error",0); }
 };
 
+// Agregar cajera
 $("#btnAdd").onclick=()=>row("");
 
+// Guardar lista (POST) – con validación suave de wa.me
 $("#btnSaveFinal").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const vals=values(); if(!vals.length)return show("Nada que guardar",0);
+
+  // validar formato básico
+  for (const it of vals){
+    if (!/^https?:\/\/wa\.me\/\d+/.test(it.url)) {
+      show("Walink inválido (usa https://wa.me/…)",0);
+      return;
+    }
+  }
+
   try{
     show("Guardando...");
     const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
-      method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(vals) // ahora mandamos [{name,url}]
     });
     const j=await r.json();
     show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
   }catch(e){ show("Error al guardar",0); }
 };
 
-// Block Size
+// ===== Block Size (leer/guardar en Redis) =====
 async function loadBlockSize(t){
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
@@ -269,8 +318,9 @@ async function loadBlockSize(t){
     if(j.ok && typeof j.value!=="undefined" && j.value!==null){
       bsInput.value = j.value;
     }
-  }catch(e){/* noop */}
+  }catch(e){ /* silencioso */ }
 }
+
 $("#btnSaveBS").onclick=async()=>{
   const t=tokenInput.value.trim(); if(!t)return show("Poné token",0);
   const v=Number(bsInput.value);
