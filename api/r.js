@@ -1,4 +1,3 @@
-// /api/r.js  (ESM) — redirección con rotación por bloque
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -6,41 +5,41 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
+const KEY_IDX = 'links:index';
+const KEY_LIST = 'links';
+const BLOCK = parseInt(process.env.BLOCK_SIZE || '2', 10);
+
 export default async function handler(req, res) {
   try {
-    // 1) Traer links
-    const links = await redis.lrange('links', 0, -1);
-    if (!links || links.length === 0) {
-      return res.status(200).send('Sin enlaces configurados.');
+    // Obtener lista
+    const raw = await redis.lrange(KEY_LIST, 0, -1);
+    if (!raw || raw.length === 0) {
+      return res.status(404).json({ ok: false, error: 'no_links' });
     }
 
-    // 2) Block size: Redis > ENV > 2
-    let bs = await redis.get('blockSize');
-    bs = Number(bs ?? process.env.BLOCK_SIZE ?? 2);
-    if (!Number.isInteger(bs) || bs < 1) bs = 2;
+    // índice actual y bloqueo de 2 clics por número
+    let idx = parseInt((await redis.get(KEY_IDX)) || '0', 10);
+    if (isNaN(idx) || idx < 0) idx = 0;
 
-    // 3) Estado de rotación
-    let idx = Number(await redis.get('rotateIndex') ?? 0);
-    let hit = Number(await redis.get('rotateCount') ?? 0);
-    if (!Number.isInteger(idx) || idx < 0) idx = 0;
-    if (!Number.isInteger(hit) || hit < 0) hit = 0;
+    const pointer = Math.floor(idx / BLOCK) % raw.length;
+    const itemRaw = raw[pointer];
 
-    // 4) Elegir link actual y actualizar contadores
-    let nextIdx = idx, nextHit = hit + 1;
-    if (nextHit >= bs) { nextIdx = (idx + 1) % links.length; nextHit = 0; }
+    // Parsear item → {name,url} o string-compat
+    let url = '';
+    try {
+      const obj = JSON.parse(itemRaw);
+      url = obj && obj.url ? obj.url : String(itemRaw);
+    } catch {
+      url = String(itemRaw);
+    }
 
-    // Persistir nuevos contadores (no bloquear)
-    await Promise.all([
-      redis.set('rotateIndex', nextIdx),
-      redis.set('rotateCount', nextHit),
-    ]);
+    // incrementar índice
+    await redis.incr(KEY_IDX);
 
-    const url = links[idx];
-    // 5) Redirigir
-    res.statusCode = 302;
-    res.setHeader('Location', url);
+    // redirigir
+    res.writeHead(302, { Location: url });
     return res.end();
   } catch (e) {
-    return res.status(500).send('Error interno');
+    return res.status(500).json({ ok: false, error: 'server_error' });
   }
 }
