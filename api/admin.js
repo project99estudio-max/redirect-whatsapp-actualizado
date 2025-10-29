@@ -1,3 +1,4 @@
+// /api/admin.js
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -23,7 +24,7 @@ export default async function handler(req, res) {
     return res.json({ ok: true, reset: true });
   }
 
-  // Compat: set por query (coma-separado) — guarda como strings simples
+  // Compat: set via query guarda ya como objeto serializado
   if (set) {
     const arr = decodeURIComponent(set)
       .split(',')
@@ -32,23 +33,20 @@ export default async function handler(req, res) {
 
     await redis.del('links');
     for (const url of arr) {
-      await redis.rpush('links', JSON.stringify({ name: '', url })); // guarda ya en formato objeto
+      await redis.rpush('links', JSON.stringify({ name: '', url }));
     }
     return res.json({ ok: true, saved: arr.length });
   }
 
-  // Obtener lista
   if (get) {
     const raw = await redis.lrange('links', 0, -1);
     const links = raw.map((s) => {
       try {
         const o = JSON.parse(s);
         if (o && o.url) return { name: o.name || '', url: o.url };
-        // si parsea pero no trae url, devolvemos como string de última
         return { name: '', url: String(s) };
       } catch {
-        // compat con datos viejos (string plano)
-        return { name: '', url: String(s) };
+        return { name: '', url: String(s) }; // compat strings viejos
       }
     });
     return res.json({ ok: true, links });
