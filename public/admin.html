@@ -254,6 +254,21 @@ $("#btnSaveBS").onclick=async()=>{
     show(j.ok?`Block size guardado (${v})`:"Error al guardar",j.ok);
   }catch(e){ show("Error al guardar",0); }
 };
+  /* --- nombre corto al lado del link --- */
+.item .name {
+  width: 110px;               /* chico, tipo “Borrar” */
+  min-width: 100px;
+  background:#2b2250;
+  border:1px solid rgba(180,140,255,.35);
+  border-radius:12px;
+  padding:10px 10px;
+  color:#fff;
+  outline:none;
+}
+.item .url {
+  flex:1;
+}
+
 </script>
 </body>
 </html>
