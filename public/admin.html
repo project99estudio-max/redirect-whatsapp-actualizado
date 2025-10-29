@@ -316,6 +316,27 @@ $("#btnSaveBS").onclick=async()=>{
 };
 
 $("#btnStats").onclick=()=>show("📊 Próximamente: Conteo de mensajes y métricas.",1);
+  /* Centrar siempre el botón AGREGAR CAJERA */
+.actions-bottom{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+}
+
+#btnAdd.btn--main{
+  margin:0 auto;          /* fuerza centrar */
+  display:inline-flex;     /* mantiene el layout del botón */
+}
+
+/* En pantallas chicas, evitar que desborde y se corra */
+@media (max-width:420px){
+  #btnAdd.btn--main{
+    min-width:200px;       /* un poco menor */
+    max-width:90vw;        /* nunca más ancho que la vista */
+  }
+}
+
 </script>
 </body>
 </html>
