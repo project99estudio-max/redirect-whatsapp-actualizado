@@ -42,7 +42,7 @@
   input::placeholder{color:#9a8ccc}
 
   /* Campos nombre + url */
-  .item { /* Usaremos 'item' como contenedor de la fila. */
+  .item{ /* Usamos display flex y gap directamente para evitar conflictos con .row */
     display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;
   }
   .item .name{
@@ -126,11 +126,10 @@
       </div>
       <p id="msg"></p>
     </div>
-  </div>
-
     <div class="stats-card" id="btnStats">
-    <div class="stats-icon"></div>
-    <span>Estadísticas</span>
+      <div class="stats-icon"></div>
+      <span>Estadísticas</span>
+    </div>
   </div>
 
     <div class="card-mini">
@@ -164,35 +163,47 @@ x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
 for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
 requestAnimationFrame(anim);})();
 
-// ===== Inicialización de Variables (CORRECCIÓN CLAVE CONTRA PANTALLA EN BLANCO) =====
+// ===== Panel =====
 const $=s=>document.querySelector(s);
-// Inicialización segura de variables
-const list = $("#list");
-const msg = $("#msg");
-const tokenInput = $("#token");
-const bsInput = $("#blocksize");
-
+const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize");
 
 /**
- * FUNCIÓN CORREGIDA para [object Object]
- * Extrae explícitamente name y url como strings, asegurando que no haya objetos.
+ * FUNCIÓN CORREGIDA
+ * 1. Elimina la línea 'if(typeof val==="string") val={name:"",url:val};' que causó el [object Object].
+ * 2. Asegura que val.name y val.url siempre se usen como strings o cadena vacía.
  */
-function row(data={name:"",url:""}) {
-    // 1. Extracción robusta de valores como strings.
-    const name = (data && data.name) ? String(data.name).trim() : '';
-    const url = (data && data.url) ? String(data.url).trim() : '';
-    
-    // Si no hay URL ni nombre, no hace nada (para no agregar filas vacías si el backend falla)
-    if (!url && !name) return;
+function row(val={name:"",url:""}) {
+  // **CORRECCIÓN:** Se eliminó la línea que convertía val a objeto si era string,
+  // y se utiliza la desestructuración de valores con un fallback a string vacío.
+  const name = (val && typeof val.name === 'string') ? val.name : '';
+  const url = (val && typeof val.url === 'string') ? val.url : '';
+  
+  const d=document.createElement("div");d.className="item"; // Usamos 'item' que tiene el display:flex
+  const iName=document.createElement("input");iName.type="text";iName.placeholder="Nombre";iName.className="name";iName.value=name;
+  const iUrl=document.createElement("input");iUrl.type="text";iUrl.placeholder="https://wa.me/...";iUrl.className="url";iUrl.value=url;
+  const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
+  d.append(iName,iUrl,b);list.append(d);
+}
 
-    // 2. Creación de elementos, usando solo la clase 'item'.
-    const d=document.createElement("div");d.className="item"; 
+function values(){
+  return [...list.querySelectorAll(".item")].map(el=>{
+    const name=el.querySelector(".name")?.value.trim()||"";
+    const url=el.querySelector(".url")?.value.trim()||"";
+    return url?{name,url}:null;
+  }).filter(Boolean);
+}
+function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
-    const iName=document.createElement("input");iName.type="text";iName.placeholder="Nombre";iName.className="name";iName.value=name; 
-    
-    // Aquí es donde se soluciona el [object Object] al asegurar que se usa 'url' (un string).
-    const iUrl=document.createElement("input");iUrl.type="text";iUrl.placeholder="https://wa.me/...";iUrl.className="url";iUrl.value=url; 
-    
-    const b=document.createElement("button");b.className="btn btn--thin btn--sm";b.textContent="Borrar";b.onclick=()=>d.remove();
-    
-    d.append(iName
+$("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
+
+window.onload=async()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;if(t){await loadBlockSize(t);}};
+
+$("#btnView").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  try{
+    show("Cargando...");
+    const r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
+    const j=await r.json();
+    list.innerHTML="";(j.links||[]).forEach(o=>row(o));
+    if((j.links||[]).length===0)row();
+    show
