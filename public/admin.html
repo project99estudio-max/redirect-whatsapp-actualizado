@@ -237,6 +237,24 @@
     .item .url{ padding:8px 10px; font-size:12.5px; }
     .item .btn{ font-size:11.5px; padding:0 6px; }
   }
+  /* ===== Ajuste de CONFIGURACIÓN en escritorio (parejo) ===== */
+  @media (min-width: 768px){
+    .cfg-grid{
+      grid-template-columns:
+        var(--cfgLabelW)
+        var(--cfgNumberW)
+        var(--cfgSuffixW)
+        1fr
+        var(--saveBtnW);
+      align-items: center;
+      gap: var(--cfgGap);
+    }
+    #token{ grid-column: 1 / 5; }
+    .cfg-grid .btn{
+      min-width: var(--saveBtnW);
+      justify-content:center;
+    }
+  }
 </style>
 </head>
 <body>
