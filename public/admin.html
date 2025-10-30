@@ -209,19 +209,26 @@
 
   /* ===== Ajuste de CONFIGURACIÓN en escritorio (alineado) ===== */
   @media (min-width: 768px){
-    .cfg-grid{
-      grid-template-columns:
-        var(--cfgLabelW)
-        var(--cfgNumberW)
-        var(--cfgSuffixW)
-        1fr
-        var(--saveBtnW);
-      align-items:center;
-      gap:var(--cfgGap);
-    }
-    #token{ grid-column:1 / 5; }
-    .cfg-grid .btn{ min-width: var(--saveBtnW); justify-content:center; }
+  .cfg-grid{
+    grid-template-columns:
+      var(--cfgLabelW)
+      var(--cfgNumberW)
+      var(--cfgSuffixW)
+      minmax(0, 0.8fr)  /* 🔹 le da un ancho controlado al token */
+      var(--saveBtnW);
+    align-items:center;
+    gap:var(--cfgGap);
   }
+  #token{
+    grid-column:1 / 4;
+    width:100%;
+    min-width:0;
+  }
+  .cfg-grid .btn{
+    min-width: var(--saveBtnW);
+    justify-content:center;
+  }
+}
 </style>
 </head>
 <body>
