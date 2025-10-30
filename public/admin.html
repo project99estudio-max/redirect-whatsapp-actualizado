@@ -10,7 +10,13 @@
     --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
     --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
     --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
+
+    /* === variables para ajustar fácil === */
+    --listColW:108px;     /* ancho col 1 (Nombre) y col 3 (Borrar) */
+    --saveBtnW:160px;     /* ancho de botones en la mini tarjeta (Guardar / Guardar token) */
+    --cfgGap:6px;         /* espacio entre elementos en la mini tarjeta */
   }
+
   html,body{
     height:100%;margin:0;color:var(--text);
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
@@ -53,6 +59,8 @@
   .btn:hover{filter:brightness(1.08)}
   .btn > *{position:relative;z-index:2}
   .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
+
+  /* borde fino neon */
   .btn--thin::before{
     inset:-1px;border-radius:13px;
     background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
@@ -60,11 +68,13 @@
     -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
+  /* tamaño chico real (antes no existía esta clase) */
+  .btn--sm{ height:34px; padding:8px 10px; font-size:12px; }
 
   /* ===== TOP: 3 BOTONES SIMÉTRICOS ===== */
   .actions-top{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr; /* tres iguales */
+    grid-template-columns:1fr 1fr 1fr;
     gap:8px;
     margin:8px 0 6px;
   }
@@ -96,19 +106,19 @@
     50%    { transform:scale(1.06); opacity:1;   }
   }
 
-  /* ===== LISTA: NOMBRE | WALINK | BORRAR ===== */
+  /* ===== LISTA: NOMBRE | wa link | BORRAR ===== */
   #list{margin-top:24px;}
   .item{
     display:grid;
-    grid-template-columns: 108px 1fr 108px;
+    grid-template-columns: var(--listColW) 1fr var(--listColW);
     gap:8px; align-items:center; margin:6px 0;
   }
   .item input, .item .btn{ height:36px; }
 
   .item .name{
-    width:108px;min-width:108px;max-width:108px;
+    width:var(--listColW);min-width:var(--listColW);max-width:var(--listColW);
     background:#2b2250;border:1px solid rgba(180,140,255,.35);
-    border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;
+    border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;text-align:left;
   }
   .item .url{
     width:100%;min-width:0;
@@ -116,19 +126,36 @@
     border-radius:12px;padding:8px 12px;color:#fff;outline:none;font-size:13px;
   }
   .item .btn{
-    min-width:108px;max-width:108px;
+    min-width:var(--listColW);max-width:var(--listColW);
     display:flex;align-items:center;justify-content:center;font-size:12.5px;
   }
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
-  /* ===== CAMPO NUMÉRICO COMPACTO ===== */
+  /* ===== MINI TARJETA: CONFIGURACIÓN ===== */
+  .card-mini .row{
+    gap: var(--cfgGap);
+    flex-wrap: nowrap;           /* fuerza una sola línea incluso en móvil */
+    align-items: center;
+  }
+  .cfg-label{
+    color:#d7ccff;
+    white-space:nowrap;          /* no se corta el texto */
+    font-size:13px;
+  }
+  .cfg-clicks{ }
+  /* Campo numérico compacto y centrado */
   #blocksize {
     width: 55px !important;
     flex: 0 0 auto !important;
     text-align: center;
     padding: 6px 4px;
     font-size: 13px;
+  }
+  /* Ambos botones de la mini tarjeta con el MISMO ancho */
+  .mini-inner .row .btn{
+    min-width: var(--saveBtnW);
+    justify-content:center;
   }
 
   /* ===== BOTÓN ESTADÍSTICAS ===== */
@@ -152,6 +179,10 @@
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
+    /* en pantallas muy chicas, reducimos un poco la primera/tercera columna para mantener simetría */
+    .item{
+      grid-template-columns: 96px 1fr 96px;
+    }
   }
 </style>
 </head>
@@ -199,9 +230,9 @@
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
       <div class="row">
-        <label style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
+        <label class="cfg-label">Rotar cada</label>
         <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
-        <label style="align-self:center;color:#d7ccff;min-width:60px">clicks</label>
+        <label class="cfg-label cfg-clicks">clicks</label>
         <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
 
@@ -222,7 +253,7 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
 const cs=p=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
 grad.addColorStop(0,cs('--bg1'));grad.addColorStop(1,cs('--bg2'));
 x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
-for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
+for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
 requestAnimationFrame(anim);})();
 
 // ===== Panel =====
