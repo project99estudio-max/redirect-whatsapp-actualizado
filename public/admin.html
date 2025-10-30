@@ -254,6 +254,29 @@
       min-width: var(--saveBtnW);
       justify-content:center;
     }
+    /* ===== Corrección de alineación horizontal (solo desktop) ===== */
+@media (min-width: 768px){
+  .cfg-grid{
+    grid-template-columns:
+      var(--cfgLabelW)
+      var(--cfgNumberW)
+      var(--cfgSuffixW)
+      1fr
+      var(--saveBtnW);
+    align-items:center;
+    gap:var(--cfgGap);
+  }
+
+  /* Token ocupa hasta col 4, no hasta el borde total, así deja espacio para el botón */
+  #token{
+    grid-column:1 / 4; 
+    min-width:0;
+  }
+
+  /* Botones de misma altura y centrados verticalmente */
+  .cfg-grid .btn{
+    align-self:center;
+    min-width:var(--saveBtnW);
   }
 </style>
 </head>
