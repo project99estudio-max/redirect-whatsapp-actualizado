@@ -11,10 +11,15 @@
     --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
     --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
 
-    /* === variables para ajustar fácil === */
-    --listColW:108px;     /* ancho col 1 (Nombre) y col 3 (Borrar) */
-    --saveBtnW:160px;     /* ancho de botones en la mini tarjeta (Guardar / Guardar token) */
-    --cfgGap:6px;         /* espacio entre elementos en la mini tarjeta */
+    /* Ajustes rápidos */
+    --listColW:108px;   /* col Nombre y Borrar */
+    --saveBtnW:160px;   /* ancho de Guardar / Guardar token (mini tarjeta) */
+
+    /* Grid de Configuración (mini tarjeta) */
+    --cfgLabelW:110px;  /* "Rotar cada" */
+    --cfgNumberW:60px;  /* [número] */
+    --cfgSuffixW:56px;  /* "clicks" */
+    --cfgGap:8px;       /* separación entre columnas */
   }
 
   html,body{
@@ -47,7 +52,7 @@
   }
   input::placeholder{color:#9a8ccc}
 
-  /* ===== BOTONES BASE ===== */
+  /* ===== Botones ===== */
   .btn{
     position:relative;border:none;border-radius:12px;padding:10px 12px;
     color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
@@ -59,8 +64,6 @@
   .btn:hover{filter:brightness(1.08)}
   .btn > *{position:relative;z-index:2}
   .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
-
-  /* borde fino neon */
   .btn--thin::before{
     inset:-1px;border-radius:13px;
     background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
@@ -68,10 +71,9 @@
     -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
     filter:saturate(90%) blur(.15px) opacity(.85);
   }
-  /* tamaño chico real (antes no existía esta clase) */
   .btn--sm{ height:34px; padding:8px 10px; font-size:12px; }
 
-  /* ===== TOP: 3 BOTONES SIMÉTRICOS ===== */
+  /* ===== Top 3 botones ===== */
   .actions-top{
     display:grid;
     grid-template-columns:1fr 1fr 1fr;
@@ -80,7 +82,7 @@
   }
   #btnRot{ font-size:11.4px; }
 
-  /* ===== BOTÓN PRINCIPAL (AGREGAR CAJERA) ===== */
+  /* ===== Botón principal ===== */
   .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
   .btn--main{
     position:relative;
@@ -106,7 +108,7 @@
     50%    { transform:scale(1.06); opacity:1;   }
   }
 
-  /* ===== LISTA: NOMBRE | wa link | BORRAR ===== */
+  /* ===== Lista: Nombre | wa link | Borrar ===== */
   #list{margin-top:24px;}
   .item{
     display:grid;
@@ -114,7 +116,6 @@
     gap:8px; align-items:center; margin:6px 0;
   }
   .item input, .item .btn{ height:36px; }
-
   .item .name{
     width:var(--listColW);min-width:var(--listColW);max-width:var(--listColW);
     background:#2b2250;border:1px solid rgba(180,140,255,.35);
@@ -132,33 +133,43 @@
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
-  /* ===== MINI TARJETA: CONFIGURACIÓN ===== */
-  .card-mini .row{
+  /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO) ===== */
+  .cfg-grid{
+    display:grid;
+    grid-template-columns: var(--cfgLabelW) var(--cfgNumberW) var(--cfgSuffixW) 1fr var(--saveBtnW);
+    align-items:center;
     gap: var(--cfgGap);
-    flex-wrap: nowrap;           /* fuerza una sola línea incluso en móvil */
-    align-items: center;
   }
   .cfg-label{
     color:#d7ccff;
-    white-space:nowrap;          /* no se corta el texto */
+    white-space:nowrap;
     font-size:13px;
   }
-  .cfg-clicks{ }
-  /* Campo numérico compacto y centrado */
+  .cfg-suffix{
+    color:#d7ccff;
+    white-space:nowrap;
+    font-size:13px;
+    text-align:left;
+  }
+  /* Número compacto, centrado, ocupa su columna fija */
   #blocksize {
-    width: 55px !important;
+    width: 100% !important;
     flex: 0 0 auto !important;
     text-align: center;
     padding: 6px 4px;
     font-size: 13px;
   }
-  /* Ambos botones de la mini tarjeta con el MISMO ancho */
-  .mini-inner .row .btn{
+  /* Ambos botones con el MISMO ancho */
+  .mini-inner .cfg-grid .btn{
     min-width: var(--saveBtnW);
     justify-content:center;
   }
+  /* El token ocupa columnas 2-4 para alinearse con número+clicks+espacio */
+  #token{
+    grid-column: 2 / 5; /* 2,3,4 */
+  }
 
-  /* ===== BOTÓN ESTADÍSTICAS ===== */
+  /* ===== Botón estadísticas ===== */
   .stats-card{
     margin:18px auto;
     padding:14px;
@@ -179,10 +190,18 @@
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
-    /* en pantallas muy chicas, reducimos un poco la primera/tercera columna para mantener simetría */
-    .item{
-      grid-template-columns: 96px 1fr 96px;
+
+    /* Ajustes mini tarjeta para mantener todo en una línea */
+    :root{
+      --cfgLabelW:96px;
+      --cfgNumberW:54px;
+      --cfgSuffixW:52px;
+      --saveBtnW:148px;
+      --cfgGap:6px;
     }
+
+    /* Lista un poquito más estrecha */
+    .item{ grid-template-columns: 96px 1fr 96px; }
   }
 </style>
 </head>
@@ -199,7 +218,6 @@
     <div class="card-inner">
       <h1>PANEL ADMIN</h1>
 
-      <!-- ORDEN CORREGIDO -->
       <div class="actions-top">
         <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
@@ -229,16 +247,19 @@
     <div class="mini-inner">
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
-      <div class="row">
-        <label class="cfg-label">Rotar cada</label>
-        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
-        <label class="cfg-label cfg-clicks">clicks</label>
-        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
-      </div>
+      <!-- GRID SIMÉTRICO -->
+      <div class="cfg-grid">
+        <!-- Fila 1: Rotar -->
+        <label class="cfg-label">Rotar cada</label> <!-- col 1 -->
+        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2"> <!-- col 2 -->
+        <span class="cfg-suffix">clicks</span> <!-- col 3 -->
+        <div></div> <!-- col 4 (espaciador flexible) -->
+        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button> <!-- col 5 -->
 
-      <div class="row">
-        <input id="token" type="text" placeholder="tok99-2025">
-        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
+        <!-- Fila 2: Token (label vacío para alinear con col 1) -->
+        <span></span> <!-- col 1 vacío -->
+        <input id="token" type="text" placeholder="tok99-2025"> <!-- cols 2-4 -->
+        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button> <!-- col 5 -->
       </div>
     </div>
   </div>
@@ -247,14 +268,25 @@
 <script>
 // ===== Fondo partículas =====
 const c=document.getElementById("bg"),x=c.getContext("2d");
-let P=[];function rs(){c.width=innerWidth;c.height=innerHeight}addEventListener("resize",rs);rs();
-for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
-(function anim(){const grad=x.createRadialGradient(c.width*0.3,c.height*0.1,0,c.width*0.3,c.height*0.1,Math.max(c.width,c.height));
-const cs=p=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
-grad.addColorStop(0,cs('--bg1'));grad.addColorStop(1,cs('--bg2'));
-x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
-for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
-requestAnimationFrame(anim);})();
+let P=[];
+function rs(){c.width=innerWidth;c.height=innerHeight}
+addEventListener("resize",rs);rs();
+for(let i=0;i<90;i++){
+  P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
+}
+(function anim(){
+  const grad=x.createRadialGradient(c.width*0.3,c.height*0.1,0,c.width*0.3,c.height*0.1,Math.max(c.width,c.height));
+  const cs=p=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
+  grad.addColorStop(0,cs('--bg1'));grad.addColorStop(1,cs('--bg2'));
+  x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
+  for(const p of P){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>c.width)p.vx*=-1;
+    if(p.y<0||p.y>c.height)p.vy*=-1; /* corregido: p.y>c.height */
+    x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
+  }
+  requestAnimationFrame(anim);
+})();
 
 // ===== Panel =====
 const $=s=>document.querySelector(s);
@@ -279,7 +311,11 @@ function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
-window.onload=async()=>{const t=localStorage.getItem("adm_tok");if(t)tokenInput.value=t;if(t){await loadBlockSize(t);}};
+window.onload=async()=>{
+  const t=localStorage.getItem("adm_tok");
+  if(t) tokenInput.value=t;
+  if(t){ await loadBlockSize(t); }
+};
 
 $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
