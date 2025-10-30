@@ -138,20 +138,22 @@
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
   /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO y RESPONSIVO) ===== */
-  .cfg-grid{
-    display:grid;
-    /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
-    grid-template-columns:
-      minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
-      minmax(48px, var(--cfgNumberW))  /* número */
-      minmax(48px, var(--cfgSuffixW))  /* "clicks" */
-      minmax(0, 1fr)                   /* espacio flexible */
-      minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
-    align-items:center;
-    gap: var(--cfgGap);
-  }
-  .cfg-label,.cfg-suffix{
-    color:#d7ccff; white-space:nowrap; font-size:13px;
+.cfg-grid{
+  display:grid;
+  /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
+  grid-template-columns:
+    minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
+    minmax(48px, var(--cfgNumberW))  /* número */
+    minmax(48px, var(--cfgSuffixW))  /* "clicks" */
+    minmax(0, 1fr)                   /* espacio flexible */
+    minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
+  align-items:center;
+  gap: var(--cfgGap);
+}
+.cfg-label,.cfg-suffix{
+  color:#d7ccff; white-space:nowrap; font-size:13px;
+}
+.cfg-label{ padding-left:8px; } /* 🔹 mueve "Rotar cada" hacia la derecha */
   }
   /* Número compacto, centrado, ocupa su columna fija */
   #blocksize{
