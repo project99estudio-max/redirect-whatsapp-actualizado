@@ -34,7 +34,7 @@
   h1{text-align:center;margin:2px 0 8px;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
 
-  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center}
   input[type=text],input[type=number]{
     flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
     border-radius:12px;padding:10px 12px;color:#fff;outline:none;
@@ -131,6 +131,12 @@
     font-size: 13px;
   }
 
+  /* ===== ANCHOS IGUALES: GUARDAR (ROTACIÓN) = GUARDAR TOKEN ===== */
+  #btnSaveBS, #btnSaveToken {
+    min-width: 150px;         /* mismo ancho mínimo */
+    justify-content: center;  /* centra el texto */
+  }
+
   /* ===== BOTÓN ESTADÍSTICAS ===== */
   .stats-card{
     margin:18px auto;
@@ -152,6 +158,8 @@
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
+    /* si en móvil se aprieta, aumenta un poco el ancho igualado */
+    #btnSaveBS, #btnSaveToken { min-width: 160px; }
   }
 </style>
 </head>
@@ -168,7 +176,6 @@
     <div class="card-inner">
       <h1>PANEL ADMIN</h1>
 
-      <!-- ORDEN CORREGIDO -->
       <div class="actions-top">
         <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
@@ -199,9 +206,9 @@
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
       <div class="row">
-        <label style="align-self:center;min-width:110px;color:#d7ccff;">Rotar cada</label>
+        <label style="min-width:110px;color:#d7ccff;">Rotar cada</label>
         <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
-        <label style="align-self:center;color:#d7ccff;min-width:60px">clicks</label>
+        <label style="color:#d7ccff;min-width:60px">clicks</label>
         <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
       </div>
 
