@@ -15,7 +15,7 @@
     --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
 
     /* Ajustes rápidos */
-    --listColW:108px;   /* col Nombre y Borrar */
+    --listColW:108px;   /* col Nombre y Borrar (desktop) */
     --saveBtnW:160px;   /* ancho de Guardar / Guardar token (mini tarjeta) */
 
     /* Grid de Configuración (mini tarjeta) */
@@ -126,35 +126,36 @@
     border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;text-align:left;
   }
   .item .url{
-    width:100%;min-width:0;
+    width:100%;min-width:0; /* clave para que el middle col pueda encoger */
     background:#2b2250;border:1px solid rgba(180,140,255,.35);
     border-radius:12px;padding:8px 12px;color:#fff;outline:none;font-size:13px;
   }
   .item .btn{
     min-width:var(--listColW);max-width:var(--listColW);
     display:flex;align-items:center;justify-content:center;font-size:12.5px;
+    padding:0 10px; /* evita que el padding empuje en pantallas angostas */
   }
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
   /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO y RESPONSIVO) ===== */
-.cfg-grid{
-  display:grid;
-  /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
-  grid-template-columns:
-    minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
-    minmax(48px, var(--cfgNumberW))  /* número */
-    minmax(48px, var(--cfgSuffixW))  /* "clicks" */
-    minmax(0, 1fr)                   /* espacio flexible */
-    minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
-  align-items:center;
-  gap: var(--cfgGap);
-}
-.cfg-label,.cfg-suffix{
-  color:#d7ccff; white-space:nowrap; font-size:13px;
-}
-.cfg-label{ padding-left:8px; } /* 🔹 mueve "Rotar cada" hacia la derecha */
+  .cfg-grid{
+    display:grid;
+    /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
+    grid-template-columns:
+      minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
+      minmax(48px, var(--cfgNumberW))  /* número */
+      minmax(48px, var(--cfgSuffixW))  /* "clicks" */
+      minmax(0, 1fr)                   /* espacio flexible */
+      minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
+    align-items:center;
+    gap: var(--cfgGap);
   }
+  .cfg-label,.cfg-suffix{
+    color:#d7ccff; white-space:nowrap; font-size:13px;
+  }
+  .cfg-label{ padding-left:8px; } /* 🔹 mueve "Rotar cada" hacia la derecha */
+
   /* Número compacto, centrado, ocupa su columna fija */
   #blocksize{
     width:100% !important;
@@ -194,12 +195,13 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
+  /* ===== Ajustes RESPONSIVE ===== */
   @media(max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
 
-    /* Ajustes mini tarjeta para que TODO quepa sin salir de la card */
+    /* Configuración compacta en celus medianos */
     :root{
       --cfgLabelW:96px;
       --cfgNumberW:52px;
@@ -208,8 +210,32 @@
       --cfgGap:6px;
     }
 
-    /* Lista un poquito más estrecha */
-    .item{ grid-template-columns: 96px 1fr 96px; }
+    /* LISTA: reducir columnas laterales y botón más compacto */
+    :root{
+      --listColW:96px;
+    }
+    .item{
+      grid-template-columns: var(--listColW) 1fr var(--listColW);
+      gap:6px;
+    }
+    .item .btn{
+      font-size:12px;
+      padding:0 8px; /* un poco menos para que no empuje */
+      min-width:var(--listColW);
+      max-width:var(--listColW);
+    }
+  }
+
+  @media(max-width:360px){
+    /* LISTA aún más compacta para pantallas muy angostas */
+    :root{ --listColW:88px; }
+    .item{
+      grid-template-columns: var(--listColW) 1fr var(--listColW);
+      gap:6px;
+    }
+    .item .name{ padding:8px 8px; font-size:12px; }
+    .item .url{ padding:8px 10px; font-size:12.5px; }
+    .item .btn{ font-size:11.5px; padding:0 6px; }
   }
 </style>
 </head>
