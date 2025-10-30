@@ -12,7 +12,6 @@
     --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
     --text:#fff; --muted:#c9c0f2; --btn-bg:#1e1935;
     --neonA:#b985ff; --neonB:#efe6ff;
-    --listColW:108px;
     --fieldH:36px;
   }
 
@@ -46,12 +45,21 @@
   }
   input::placeholder{color:#9a8ccc}
 
+  /* === BOTONES NEÓN === */
   .btn{
     border:none;border-radius:12px;background:var(--btn-bg);
     color:#fff;cursor:pointer;font-weight:600;
     display:flex;align-items:center;justify-content:center;
     height:var(--fieldH);padding:0 12px;font-size:12.5px;
     box-shadow:0 6px 18px rgba(40,0,120,.22);
+    position:relative;z-index:0;
+  }
+  .btn--thin::before{
+    content:"";position:absolute;inset:-1px;border-radius:13px;z-index:1;
+    background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
+    filter:saturate(90%) blur(.15px) opacity(.85);
   }
   .btn:hover{filter:brightness(1.08)}
 
@@ -61,21 +69,48 @@
 
   /* ===== Lista ===== */
   #list{margin-top:24px;}
-  .item{display:grid;grid-template-columns:var(--listColW) 1fr var(--listColW);gap:8px;align-items:center;margin:6px 0;}
+  .item{display:grid;grid-template-columns:108px 1fr 108px;gap:8px;align-items:center;margin:6px 0;}
   .item input,.item .btn{height:var(--fieldH);}
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px;}
 
-  /* ===== Configuración ===== */
+  /* ===== CONFIGURACIÓN ===== */
   .cfg-grid{
     display:grid;
-    grid-template-columns:110px 70px 60px 160px; /* Rotar | número | clicks | botón */
-    align-items:center;gap:8px;width:100%;
+    grid-template-columns:110px 70px 60px 1fr 160px;
+    align-items:center;
+    gap:8px;
+    width:100%;
   }
-  .cfg-label,.cfg-suffix{color:#d7ccff;font-size:13px;white-space:nowrap;}
-  #blocksize,#token{height:var(--fieldH);width:100%;}
+  .cfg-label,.cfg-suffix{
+    color:#d7ccff;font-size:13px;white-space:nowrap;
+  }
+  #blocksize,#token{
+    height:36px;background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;color:#fff;font-size:13px;outline:none;
+  }
   #blocksize{text-align:center;padding:6px 6px;}
-  #token{grid-column:1/4;padding:8px 10px;}
-  .cfg-grid .btn{width:100%;height:var(--fieldH);justify-content:center;}
+  #token{grid-column:1/5;width:100%;padding:8px 10px;min-width:0;}
+  .cfg-grid .btn{width:100%;height:36px;justify-content:center;font-size:12.5px;}
+
+  /* RESPONSIVE */
+  @media (max-width:430px){
+    .mini-inner{padding:12px;}
+    .cfg-grid{
+      grid-template-columns:minmax(85px,95px) minmax(55px,65px) minmax(55px,65px) 1fr minmax(120px,140px);
+      gap:6px;
+    }
+    #blocksize,#token,.cfg-grid .btn{height:34px;}
+    .cfg-label,.cfg-suffix{font-size:12px;}
+  }
+  @media (max-width:375px){
+    .mini-inner{padding:10px;}
+    .cfg-grid{
+      grid-template-columns:minmax(75px,85px) minmax(50px,60px) minmax(50px,60px) 1fr minmax(108px,128px);
+      gap:5px;
+    }
+    #blocksize,#token,.cfg-grid .btn{height:32px;}
+    .cfg-label,.cfg-suffix{font-size:11.5px;}
+  }
 
   /* ===== Estadísticas ===== */
   .stats-card{
@@ -85,26 +120,6 @@
                linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
   }
   .stats-icon{width:20px;height:20px;border-radius:50%;background:conic-gradient(from 0deg,#fff 0deg 110deg,#b985ff 110deg 360deg);}
-
-  /* ===== PARCHE RESPONSIVO ===== */
-  @media (max-width:430px){
-    .mini-inner{padding:12px;}
-    .cfg-grid{grid-template-columns:minmax(88px,100px) minmax(56px,70px) minmax(52px,60px) minmax(120px,150px);gap:6px;}
-    .cfg-label,.cfg-suffix{font-size:12px;}
-    #token{padding:7px 8px;}
-    .cfg-grid .btn{font-size:11.5px;}
-  }
-  @media (max-width:375px){
-    .mini-inner{padding:10px;}
-    .cfg-grid{grid-template-columns:minmax(82px,94px) minmax(52px,64px) minmax(48px,56px) minmax(110px,130px);gap:5px;}
-    .cfg-label,.cfg-suffix{font-size:11.5px;}
-    #blocksize,#token,.cfg-grid .btn{border-radius:10px;height:32px;}
-  }
-  @media (max-width:340px){
-    .mini-inner{padding:8px;}
-    .cfg-grid{grid-template-columns:minmax(74px,86px) minmax(48px,58px) minmax(44px,52px) minmax(108px,124px);}
-    .cfg-label,.cfg-suffix{letter-spacing:0;}
-  }
 </style>
 </head>
 <body>
@@ -120,9 +135,9 @@
       <h1>PANEL ADMIN</h1>
 
       <div class="actions-top">
-        <button class="btn" id="btnView">Ver lista</button>
-        <button class="btn" id="btnRot">Resetear rotación</button>
-        <button class="btn" id="btnReset">Borrar lista</button>
+        <button class="btn btn--thin" id="btnView">Ver lista</button>
+        <button class="btn btn--thin" id="btnRot">Resetear rotación</button>
+        <button class="btn btn--thin" id="btnReset">Borrar lista</button>
       </div>
 
       <div class="actions-bottom">
@@ -130,7 +145,7 @@
       </div>
 
       <div id="list"></div>
-      <div class="save-wrap"><button class="btn" id="btnSaveFinal">Guardar</button></div>
+      <div class="save-wrap"><button class="btn btn--thin" id="btnSaveFinal">Guardar</button></div>
       <p id="msg"></p>
     </div>
   </div>
@@ -139,7 +154,7 @@
     <div class="stats-icon"></div><span>Estadísticas</span>
   </div>
 
-  <!-- Configuración -->
+  <!-- CONFIGURACIÓN -->
   <div class="card-mini">
     <div class="mini-inner">
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
@@ -147,10 +162,12 @@
         <label class="cfg-label">Rotar cada</label>
         <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
         <span class="cfg-suffix">clicks</span>
-        <button class="btn" id="btnSaveBS">Guardar</button>
+        <div></div>
+        <button class="btn btn--thin" id="btnSaveBS">Guardar</button>
 
         <input id="token" type="text" placeholder="tok99-2025">
-        <button class="btn" id="btnSaveToken">Guardar token</button>
+        <div></div><div></div><div></div>
+        <button class="btn btn--thin" id="btnSaveToken">Guardar token</button>
       </div>
     </div>
   </div>
@@ -175,41 +192,13 @@ function row(v={name:"",url:""}){if(typeof v==="string")v={name:"",url:v};
   const d=document.createElement("div");d.className="item";
   d.innerHTML=`<input type="text" placeholder="Nombre" class="name" value="${v.name}">
                <input type="text" placeholder="https://wa.me/..." class="url" value="${v.url}">
-               <button class="btn">Borrar</button>`;
+               <button class="btn btn--thin">Borrar</button>`;
   d.querySelector("button").onclick=()=>d.remove();list.append(d);}
 function values(){return[...list.querySelectorAll(".item")].map(e=>{let n=e.querySelector(".name").value.trim(),u=e.querySelector(".url").value.trim();return u?{name:n,url:u}:null}).filter(Boolean);}
 function show(t,ok=1){msg.textContent=t;msg.style.color=ok?"#9eff9e":"#ff8080";}
 
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",token.value.trim());show("Token guardado")};
-window.onload=async()=>{let t=localStorage.getItem("adm_tok");if(t)token.value=t;};
-$("#btnView").onclick=async()=>{let t=token.value.trim();if(!t)return show("Poné token",0);
-  show("Cargando...");try{let r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&get=1`);
-  let j=await r.json();list.innerHTML="";(j.links||[]).forEach(o=>row(o));if(!j.links?.length)row();show("Lista cargada");}
-  catch{show("Error al cargar",0);}};
-
-$("#btnReset").onclick=async()=>{let t=token.value.trim();if(!t)return show("Poné token",0);
-  try{let r=await fetch(`/api/admin?token=${encodeURIComponent(t)}&reset=1`);
-  let j=await r.json();list.innerHTML="";row();show(j.ok?"Lista borrada":"Error",j.ok);}catch{show("Error",0);}};
-
-$("#btnRot").onclick=async()=>{let t=token.value.trim();if(!t)return show("Poné token",0);
-  try{let r=await fetch(`/api/rotate-reset?token=${encodeURIComponent(t)}`);
-  let j=await r.json();show(j.ok?"Rotación reiniciada":"Error",j.ok);}catch{show("Error",0);}};
-
 $("#btnAdd").onclick=()=>row();
-$("#btnSaveFinal").onclick=async()=>{
-  let t=token.value.trim();if(!t)return show("Poné token",0);
-  let vals=values();if(!vals.length)return show("Nada que guardar",0);
-  try{show("Guardando...");let r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
-    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)});
-  let j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error",j.ok);}catch{show("Error al guardar",0);}};
-
-$("#btnSaveBS").onclick=async()=>{
-  let t=token.value.trim();if(!t)return show("Poné token",0);
-  let v=Number(bs.value);if(!Number.isInteger(v)||v<1||v>20)return show("Valor inválido (1 a 20)",0);
-  try{let r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}`,{
-    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({value:v})});
-  let j=await r.json();show(j.ok?`Block size guardado (${v})`:"Error",j.ok);}catch{show("Error al guardar",0);}};
-
 $("#btnStats").onclick=()=>show("📊 Próximamente: métricas.",1);
 </script>
 </body>
