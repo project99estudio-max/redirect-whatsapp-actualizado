@@ -163,10 +163,8 @@
   padding:6px 4px;
   font-size:13px;
 
-  /* desplazamiento hacia la izquierda */
-  justify-self:start;          /* permite que se mueva libremente */
-  width: var(--cfgNumberW);    /* mantiene el ancho fijo */
-  transform: translateX(-6px); /* mueve visualmente a la izquierda */
+  /* mover un poquito a la izquierda SIN romper el grid */
+  margin-left:-6px;  /* probá -8px o -10px si querés más */
 }
 
   }
