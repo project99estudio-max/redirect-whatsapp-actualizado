@@ -5,223 +5,238 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>PANEL ADMIN</title>
 <style>
-/* Evita desbordes inesperados en layouts responsivos */
-*{ box-sizing:border-box; }
+  /* Evita desbordes inesperados en layouts responsivos */
+  *{ box-sizing:border-box; }
 
-:root{
-  --bg1:#4b0082; --bg2:#000000; --particle:#c7b3ff;
-  --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
-  --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
-  --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
-
-  /* Ajustes rápidos */
-  --listColW:108px;
-  --saveBtnW:160px;
-
-  /* Grid de Configuración */
-  --cfgLabelW:110px;
-  --cfgNumberW:60px;
-  --cfgSuffixW:56px;
-  --cfgGap:8px;
-}
-
-html,body{
-  height:100%;margin:0;color:var(--text);
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-  background:radial-gradient(circle at 30% -10%,var(--bg1),var(--bg2));
-  overflow:auto;
-}
-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-.shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
-.logo-wrap{display:flex;justify-content:center}
-.logo{width:240px;display:block;filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));margin:10px auto -36px;}
-
-.card,.card-mini{
-  position:relative;z-index:1;margin:0 auto;
-  background:linear-gradient(var(--card),var(--card)) padding-box,
-             linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
-  border:1px solid transparent;border-radius:20px;
-  box-shadow:0 12px 40px rgba(0,0,0,.45);
-}
-.card-inner{padding:16px 14px}
-.card-mini{ overflow:hidden; }
-.mini-inner{padding:14px 14px}
-h1{text-align:center;margin:2px 0 8px;font-size:24px;letter-spacing:.4px}
-p,small{color:var(--muted);text-align:center;margin:0}
-
-.row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
-input[type=text],input[type=number]{
-  flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
-  border-radius:12px;padding:10px 12px;color:#fff;outline:none;
-}
-input::placeholder{color:#9a8ccc}
-
-/* ===== Botones ===== */
-.btn{
-  position:relative;border:none;border-radius:12px;padding:10px 12px;
-  color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
-  white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
-  box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
-  display:flex;align-items:center;justify-content:center;
-  height:36px;font-size:12.5px;
-}
-.btn:hover{filter:brightness(1.08)}
-.btn > *{position:relative;z-index:2}
-.btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
-.btn--thin::before{
-  inset:-1px;border-radius:13px;
-  background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
-  filter:saturate(90%) blur(.15px) opacity(.85);
-}
-.btn--sm{ height:34px; padding:8px 10px; font-size:12px; }
-
-/* ===== Top 3 botones ===== */
-.actions-top{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  margin:8px 0 6px;
-}
-#btnRot{ font-size:11.4px; }
-
-/* ===== Botón principal ===== */
-.actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
-.btn--main{
-  position:relative;
-  font-size:15px; padding:12px 16px; min-width:220px;
-  background:#231a44;
-  box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);
-}
-.btn--main::before{
-  content:""; position:absolute; inset:-2px; border-radius:14px; z-index:1;
-  background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
-  padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
-}
-.btn--main::after{
-  content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px;
-  background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%);
-  filter:blur(16px);
-  animation:breath 2.8s ease-in-out infinite;
-}
-@keyframes breath{
-  0%,100%{ transform:scale(0.96); opacity:.85; }
-  50%    { transform:scale(1.06); opacity:1;   }
-}
-
-/* ===== Lista ===== */
-#list{margin-top:24px;}
-.item{
-  display:grid;
-  grid-template-columns: var(--listColW) 1fr var(--listColW);
-  gap:8px; align-items:center; margin:6px 0;
-}
-.item input, .item .btn{ height:36px; }
-.item .name{
-  width:var(--listColW);min-width:var(--listColW);max-width:var(--listColW);
-  background:#2b2250;border:1px solid rgba(180,140,255,.35);
-  border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;text-align:left;
-}
-.item .url{
-  width:100%;min-width:0;
-  background:#2b2250;border:1px solid rgba(180,140,255,.35);
-  border-radius:12px;padding:8px 12px;color:#fff;outline:none;font-size:13px;
-}
-.item .btn{
-  min-width:var(--listColW);max-width:var(--listColW);
-  display:flex;align-items:center;justify-content:center;font-size:12.5px;
-  padding:0 10px;
-}
-.save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
-
-/* ===== Configuración ===== */
-.cfg-grid{
-  display:grid;
-  grid-template-columns:
-    minmax(80px,var(--cfgLabelW))
-    minmax(48px,var(--cfgNumberW))
-    minmax(48px,var(--cfgSuffixW))
-    minmax(0,1fr)
-    minmax(120px,var(--saveBtnW));
-  align-items:center;
-  gap:var(--cfgGap);
-}
-.cfg-label,.cfg-suffix{color:#d7ccff;white-space:nowrap;font-size:13px;}
-.cfg-label{padding-left:8px;}
-#blocksize{
-  width:100% !important;
-  flex:0 0 auto !important;
-  text-align:center;
-  padding:6px 4px;font-size:13px;
-}
-#token{
-  grid-column:1/4;min-width:0;width:100%;
-  padding:8px 10px;
-  background:#2b2250;border:1px solid rgba(180,140,255,.35);
-  border-radius:12px;color:#fff;font-size:13px;outline:none;
-}
-.mini-inner .cfg-grid .btn{
-  width:100%;min-width:0;justify-content:center;
-}
-
-/* ===== Estadísticas ===== */
-.stats-card{
-  margin:18px auto;
-  padding:14px;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  cursor:pointer;user-select:none;
-  background:linear-gradient(var(--card),var(--card)) padding-box,
-             linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
-  border:1px solid transparent;border-radius:20px;
-  box-shadow:0 12px 40px rgba(0,0,0,.45);
-}
-.stats-card:hover{filter:brightness(1.05);transform:translateY(-1px);transition:.18s}
-.stats-icon{
-  width:20px;height:20px;border-radius:50%;
-  background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
-}
-
-/* ===== Responsive ===== */
-@media(max-width:420px){
-  :root{--cfgLabelW:96px;--cfgNumberW:52px;--cfgSuffixW:50px;--saveBtnW:140px;--cfgGap:6px;--listColW:96px;}
-  .item{grid-template-columns:var(--listColW) 1fr var(--listColW);gap:6px;}
-  .item .btn{font-size:12px;padding:0 8px;}
-}
-@media(max-width:360px){
-  :root{--listColW:88px;}
-  .item{grid-template-columns:var(--listColW) 1fr var(--listColW);gap:6px;}
-  .item .name{padding:8px 8px;font-size:12px;}
-  .item .url{padding:8px 10px;font-size:12.5px;}
-  .item .btn{font-size:11.5px;padding:0 6px;}
-}
-
-/* ===== Desktop stabilization ===== */
-@media(min-width:768px){
-  .cfg-grid{
-    grid-template-columns:
-      var(--cfgLabelW)
-      var(--cfgNumberW)
-      var(--cfgSuffixW)
-      1fr
-      var(--saveBtnW);
-    align-items:center;
-  }
-  #token{grid-column:1/4;}
-  .cfg-grid .btn{min-width:var(--saveBtnW);}
-  #blocksize{left:0 !important;margin-left:0 !important;transform:none !important;}
-}
-@media(min-width:1024px){
   :root{
-    --cfgLabelW:120px;
-    --cfgNumberW:60px;
-    --cfgSuffixW:60px;
-    --saveBtnW:180px;
-    --cfgGap:8px;
+    --bg1:#4b0082; --bg2:#000000; --particle:#c7b3ff;
+    --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
+    --text:#ffffff; --muted:#c9c0f2; --btn-bg:#1e1935;
+    --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
+
+    /* Ajustes rápidos */
+    --listColW:108px;   /* col Nombre y Borrar (desktop) */
+    --saveBtnW:160px;   /* ancho de Guardar / Guardar token (mini tarjeta) */
+
+    /* Grid de Configuración (mini tarjeta) */
+    --cfgLabelW:110px;  /* "Rotar cada" */
+    --cfgNumberW:60px;  /* [número] */
+    --cfgSuffixW:56px;  /* "clicks" */
+    --cfgGap:8px;       /* separación entre columnas */
   }
-}
+
+  html,body{
+    height:100%;margin:0;color:var(--text);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    background:radial-gradient(circle at 30% -10%,var(--bg1),var(--bg2));
+    overflow:auto;
+  }
+  canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+  .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
+  .logo-wrap{display:flex;justify-content:center}
+  .logo{width:240px;display:block;filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));margin:10px auto -36px;}
+
+  .card,.card-mini{
+    position:relative;z-index:1;margin:0 auto;
+    background:linear-gradient(var(--card),var(--card)) padding-box,
+               linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
+    border:1px solid transparent;border-radius:20px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);
+  }
+  .card-inner{padding:16px 14px}
+  .card-mini{ overflow:hidden; } /* evita que algo se vea fuera de la tarjeta */
+  .mini-inner{padding:14px 14px}
+  h1{text-align:center;margin:2px 0 8px;font-size:24px;letter-spacing:.4px}
+  p,small{color:var(--muted);text-align:center;margin:0}
+
+  .row{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+  input[type=text],input[type=number]{
+    flex:1;background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:10px 12px;color:#fff;outline:none;
+  }
+  input::placeholder{color:#9a8ccc}
+
+  /* ===== Botones ===== */
+  .btn{
+    position:relative;border:none;border-radius:12px;padding:10px 12px;
+    color:#fff;cursor:pointer;outline:none;background:var(--btn-bg);
+    white-space:nowrap;font-weight:600;letter-spacing:.2px;text-align:center;
+    box-shadow:0 6px 18px rgba(40,0,120,.22);z-index:0;
+    display:flex;align-items:center;justify-content:center;
+    height:36px;font-size:12.5px;
+  }
+  .btn:hover{filter:brightness(1.08)}
+  .btn > *{position:relative;z-index:2}
+  .btn::before{content:"";position:absolute;inset:0;border-radius:12px;z-index:1;background:transparent;}
+  .btn--thin::before{
+    inset:-1px;border-radius:13px;
+    background:conic-gradient(from 45deg,var(--neonA)0%,var(--neonB)18%,var(--neonA)36%,var(--neonA)100%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;
+    filter:saturate(90%) blur(.15px) opacity(.85);
+  }
+  .btn--sm{ height:34px; padding:8px 10px; font-size:12px; }
+
+  /* ===== Top 3 botones ===== */
+  .actions-top{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+    margin:8px 0 6px;
+  }
+  #btnRot{ font-size:11.4px; }
+
+  /* ===== Botón principal ===== */
+  .actions-bottom{display:flex;justify-content:center;margin:18px 0 6px;position:relative;}
+  .btn--main{
+    position:relative;
+    font-size:15px; padding:12px 16px; min-width:220px;
+    background:#231a44;
+    box-shadow:0 10px 28px rgba(127,92,255,.35), 0 0 22px rgba(127,92,255,.22);
+  }
+  .btn--main::before{
+    content:""; position:absolute; inset:-2px; border-radius:14px; z-index:1;
+    background:conic-gradient(from 30deg, var(--neonA) 0%, var(--neonB) 14%, var(--neonA) 28%, var(--neonA) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    padding:2px; filter:saturate(120%) blur(.35px) opacity(.95);
+  }
+  .btn--main::after{
+    content:""; position:absolute; z-index:0; inset:-16px; border-radius:28px;
+    background: radial-gradient(45% 70% at 50% 50%, rgba(127,92,255,.55), rgba(127,92,255,.22) 55%, transparent 75%);
+    filter:blur(16px);
+    animation:breath 2.8s ease-in-out infinite;
+  }
+  @keyframes breath{
+    0%,100%{ transform:scale(0.96); opacity:.85; }
+    50%    { transform:scale(1.06); opacity:1;   }
+  }
+
+  /* ===== Lista: Nombre | wa link | Borrar ===== */
+  #list{margin-top:24px;}
+  .item{
+    display:grid;
+    grid-template-columns: var(--listColW) 1fr var(--listColW);
+    gap:8px; align-items:center; margin:6px 0;
+  }
+  .item input, .item .btn{ height:36px; }
+  .item .name{
+    width:var(--listColW);min-width:var(--listColW);max-width:var(--listColW);
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:8px 10px;color:#fff;outline:none;font-size:12.5px;text-align:left;
+  }
+  .item .url{
+    width:100%;min-width:0; /* clave para que el middle col pueda encoger */
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;padding:8px 12px;color:#fff;outline:none;font-size:13px;
+  }
+  .item .btn{
+    min-width:var(--listColW);max-width:var(--listColW);
+    display:flex;align-items:center;justify-content:center;font-size:12.5px;
+    padding:0 10px; /* evita que el padding empuje en pantallas angostas */
+  }
+
+  .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
+
+  /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO y RESPONSIVO) ===== */
+  .cfg-grid{
+    display:grid;
+    /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
+    grid-template-columns:
+      minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
+      minmax(48px, var(--cfgNumberW))  /* número */
+      minmax(48px, var(--cfgSuffixW))  /* "clicks" */
+      minmax(0, 1fr)                   /* espacio flexible */
+      minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
+    align-items:center;
+    gap: var(--cfgGap);
+  }
+  .cfg-label,.cfg-suffix{
+    color:#d7ccff; white-space:nowrap; font-size:13px;
+  }
+  .cfg-label{ padding-left:8px; } /* 🔹 mueve "Rotar cada" hacia la derecha */
+
+  /* Número compacto, centrado, ocupa su columna fija */
+  #blocksize{
+    width:100% !important;
+    flex:0 0 auto !important;
+    text-align:center;
+    padding:6px 4px; font-size:13px;
+  }
+  /* El token ocupa columnas 1-3 (de "Rotar" a "clicks") y permite shrink */
+  #token{
+    grid-column:1 / 4; /* 1,2,3 */
+    min-width:0;       /* clave para que no desborde */
+    width:100%;
+    padding:8px 10px;
+    background:#2b2250;border:1px solid rgba(180,140,255,.35);border-radius:12px;color:#fff;font-size:13px;outline:none;
+  }
+  /* Ambos botones llenan su columna → simetría perfecta y no empujan el grid */
+  .mini-inner .cfg-grid .btn{
+    width:100%;
+    min-width:0;
+    justify-content:center;
+  }
+
+  /* ===== Botón estadísticas ===== */
+  .stats-card{
+    margin:18px auto;
+    padding:14px;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    cursor:pointer;user-select:none;
+    background:linear-gradient(var(--card),var(--card)) padding-box,
+               linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
+    border:1px solid transparent;border-radius:20px;
+    box-shadow:0 12px 40px rgba(0,0,0,.45);
+  }
+  .stats-card:hover{filter:brightness(1.05);transform:translateY(-1px);transition:.18s}
+  .stats-icon{
+    width:20px;height:20px;border-radius:50%;
+    background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
+  }
+
+  /* ===== Ajustes RESPONSIVE ===== */
+  @media(max-width:420px){
+    .logo{width:216px;margin:8px auto -38px}
+    .card-inner{padding:14px 10px}
+    .btn{font-size:12.5px}
+
+    /* Configuración compacta en celus medianos */
+    :root{
+      --cfgLabelW:96px;
+      --cfgNumberW:52px;
+      --cfgSuffixW:50px;
+      --saveBtnW:140px;
+      --cfgGap:6px;
+    }
+
+    /* LISTA: reducir columnas laterales y botón más compacto */
+    :root{
+      --listColW:96px;
+    }
+    .item{
+      grid-template-columns: var(--listColW) 1fr var(--listColW);
+      gap:6px;
+    }
+    .item .btn{
+      font-size:12px;
+      padding:0 8px; /* un poco menos para que no empuje */
+      min-width:var(--listColW);
+      max-width:var(--listColW);
+    }
+  }
+
+  @media(max-width:360px){
+    /* LISTA aún más compacta para pantallas muy angostas */
+    :root{ --listColW:88px; }
+    .item{
+      grid-template-columns: var(--listColW) 1fr var(--listColW);
+      gap:6px;
+    }
+    .item .name{ padding:8px 8px; font-size:12px; }
+    .item .url{ padding:8px 10px; font-size:12.5px; }
+    .item .btn{ font-size:11.5px; padding:0 6px; }
+  }
 </style>
 </head>
 <body>
@@ -232,17 +247,21 @@ input::placeholder{color:#9a8ccc}
     <img class="logo" src="/insomnia-logo.png" alt="Insomnia Logo">
   </div>
 
+  <!-- Tarjeta principal -->
   <div class="card">
     <div class="card-inner">
       <h1>PANEL ADMIN</h1>
+
       <div class="actions-top">
         <button class="btn btn--thin btn--sm" id="btnView">Ver lista</button>
         <button class="btn btn--thin btn--sm" id="btnRot">Resetear rotación</button>
         <button class="btn btn--thin btn--sm" id="btnReset">Borrar lista</button>
       </div>
+
       <div class="actions-bottom">
         <button class="btn btn--main" id="btnAdd">AGREGAR CAJERA</button>
       </div>
+
       <div id="list"></div>
       <div class="save-wrap">
         <button class="btn btn--thin" id="btnSaveFinal">Guardar</button>
@@ -251,44 +270,59 @@ input::placeholder{color:#9a8ccc}
     </div>
   </div>
 
+  <!-- Botón Estadísticas -->
   <div class="stats-card" id="btnStats">
     <div class="stats-icon"></div>
     <span>Estadísticas</span>
   </div>
 
+  <!-- Mini tarjeta inferior -->
   <div class="card-mini">
     <div class="mini-inner">
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
+
+      <!-- GRID SIMÉTRICO y RESPONSIVO -->
       <div class="cfg-grid">
-        <label class="cfg-label">Rotar cada</label>
-        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
-        <span class="cfg-suffix">clicks</span>
-        <div></div>
-        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
-        <input id="token" type="text" placeholder="tok99-2025">
-        <div></div>
-        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
+        <!-- Fila 1: Rotar -->
+        <label class="cfg-label">Rotar cada</label> <!-- col 1 -->
+        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2"> <!-- col 2 -->
+        <span class="cfg-suffix">clicks</span> <!-- col 3 -->
+        <div></div> <!-- col 4 (espaciador flexible) -->
+        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button> <!-- col 5 -->
+
+        <!-- Fila 2: Token (token ocupa columnas 1-3; col 4 se deja vacía para que el botón caiga a col 5) -->
+        <input id="token" type="text" placeholder="tok99-2025"> <!-- cols 1-3 -->
+        <div></div> <!-- col 4 vacío -->
+        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button> <!-- col 5 -->
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// Fondo partículas
+// ===== Fondo partículas =====
 const c=document.getElementById("bg"),x=c.getContext("2d");
 let P=[];
 function rs(){c.width=innerWidth;c.height=innerHeight}
 addEventListener("resize",rs);rs();
-for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
+for(let i=0;i<90;i++){
+  P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*2+.7});
+}
 (function anim(){
   const grad=x.createRadialGradient(c.width*0.3,c.height*0.1,0,c.width*0.3,c.height*0.1,Math.max(c.width,c.height));
   const cs=p=>getComputedStyle(document.documentElement).getPropertyValue(p).trim();
   grad.addColorStop(0,cs('--bg1'));grad.addColorStop(1,cs('--bg2'));
   x.fillStyle=grad;x.fillRect(0,0,c.width,c.height);x.fillStyle=cs('--particle');
-  for(const p of P){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>c.width)p.vx*=-1;if(p.y<0||p.y>c.height)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,6.283);x.fill();}
+  for(const p of P){
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>c.width)p.vx*=-1;
+    if(p.y<0||p.y>c.height)p.vy*=-1; /* fix: condición correcta */
+    x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
+  }
   requestAnimationFrame(anim);
 })();
 
+// ===== Panel =====
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize");
 
@@ -339,4 +373,47 @@ $("#btnReset").onclick=async()=>{
 };
 
 $("#btnRot").onclick=async()=>{
-  const t=tokenInput.value.trim();if(!t)return show("Pon
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  try{
+    const r=await fetch(`/api/rotate-reset?token=${encodeURIComponent(t)}`);
+    const j=await r.json();show(j.ok?"Rotación reiniciada":"Error",j.ok);
+  }catch(e){show("Error",0);}
+};
+
+$("#btnAdd").onclick=()=>row();
+
+$("#btnSaveFinal").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const vals=values();if(!vals.length)return show("Nada que guardar",0);
+  try{
+    show("Guardando...");
+    const r=await fetch(`/api/admin-post?token=${encodeURIComponent(t)}`,{
+      method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(vals)
+    });
+    const j=await r.json();show(j.ok?`Guardado (${j.saved})`:"Error al guardar",j.ok);
+  }catch(e){show("Error al guardar",0);}
+};
+
+async function loadBlockSize(t){
+  try{
+    const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
+    const j=await r.json();if(j.ok&&j.value!==undefined)bsInput.value=j.value;
+  }catch(e){}
+}
+
+$("#btnSaveBS").onclick=async()=>{
+  const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
+  const v=Number(bsInput.value);
+  if(!Number.isInteger(v)||v<1||v>20)return show("Valor inválido (1 a 20)",0);
+  try{
+    const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}`,{
+      method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({value:v})
+    });
+    const j=await r.json();show(j.ok?`Block size guardado (${v})`:"Error al guardar",j.ok);
+  }catch(e){show("Error al guardar",0);}
+};
+
+$("#btnStats").onclick=()=>show("📊 Próximamente: Conteo de mensajes y métricas.",1);
+</script>
+</body>
+</html>
