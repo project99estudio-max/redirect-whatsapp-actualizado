@@ -155,14 +155,17 @@
 }
 .cfg-label{ padding-left:8px; } /* 🔹 mueve "Rotar cada" hacia la derecha */
 
-  //* Número compacto, centrado, ocupa su columna fija */
+  /* Número compacto, centrado, ocupa su columna fija */
 #blocksize{
   width:100% !important;
   flex:0 0 auto !important;
   text-align:center;
   padding:6px 4px;
   font-size:13px;
-  margin-left:-6px; /* mueve el casillero a la izquierda */
+
+  /* mover SOLO visualmente sin afectar el grid */
+  position: relative;
+  left: -6px;           /* ajustá a -8px / -10px si querés más */
 }
   }
   /* El token ocupa columnas 1-3 (de "Rotar" a "clicks") y permite shrink */
