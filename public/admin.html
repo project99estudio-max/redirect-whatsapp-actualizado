@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>PANEL ADMIN</title>
 <style>
+  /* Evita desbordes inesperados en layouts responsivos */
+  *{ box-sizing:border-box; }
+
   :root{
     --bg1:#4b0082; --bg2:#000000; --particle:#c7b3ff;
     --card:#1c1433f0; --edge1:rgba(174,143,255,.16); --edge2:rgba(255,255,255,.55);
@@ -41,6 +44,7 @@
     box-shadow:0 12px 40px rgba(0,0,0,.45);
   }
   .card-inner{padding:16px 14px}
+  .card-mini{ overflow:hidden; } /* evita que algo se vea fuera de la tarjeta */
   .mini-inner{padding:14px 14px}
   h1{text-align:center;margin:2px 0 8px;font-size:24px;letter-spacing:.4px}
   p,small{color:var(--muted);text-align:center;margin:0}
@@ -133,40 +137,39 @@
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
-  /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO) ===== */
+  /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO y RESPONSIVO) ===== */
   .cfg-grid{
     display:grid;
-    grid-template-columns: var(--cfgLabelW) var(--cfgNumberW) var(--cfgSuffixW) 1fr var(--saveBtnW);
+    /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
+    grid-template-columns:
+      minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
+      minmax(48px, var(--cfgNumberW))  /* número */
+      minmax(48px, var(--cfgSuffixW))  /* "clicks" */
+      minmax(0, 1fr)                   /* espacio flexible */
+      minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
     align-items:center;
     gap: var(--cfgGap);
   }
-  .cfg-label{
-    color:#d7ccff;
-    white-space:nowrap;
-    font-size:13px;
-  }
-  .cfg-suffix{
-    color:#d7ccff;
-    white-space:nowrap;
-    font-size:13px;
-    text-align:left;
+  .cfg-label,.cfg-suffix{
+    color:#d7ccff; white-space:nowrap; font-size:13px;
   }
   /* Número compacto, centrado, ocupa su columna fija */
-  #blocksize {
-    width: 100% !important;
-    flex: 0 0 auto !important;
-    text-align: center;
-    padding: 6px 4px;
-    font-size: 13px;
+  #blocksize{
+    width:100% !important;
+    flex:0 0 auto !important;
+    text-align:center;
+    padding:6px 4px; font-size:13px;
   }
-  /* Ambos botones con el MISMO ancho */
-  .mini-inner .cfg-grid .btn{
-    min-width: var(--saveBtnW);
-    justify-content:center;
-  }
-  /* El token ocupa columnas 2-4 para alinearse con número+clicks+espacio */
+  /* El token ocupa columnas 2-4 para alinearse con número+clicks+espacio y permite shrink */
   #token{
-    grid-column: 2 / 5; /* 2,3,4 */
+    grid-column:2 / 5; /* 2,3,4 */
+    min-width:0;       /* clave para que no desborde */
+  }
+  /* Ambos botones llenan su columna → simetría perfecta y no empujan el grid */
+  .mini-inner .cfg-grid .btn{
+    width:100%;
+    min-width:0;
+    justify-content:center;
   }
 
   /* ===== Botón estadísticas ===== */
@@ -191,12 +194,12 @@
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
 
-    /* Ajustes mini tarjeta para mantener todo en una línea */
+    /* Ajustes mini tarjeta para que TODO quepa sin salir de la card */
     :root{
       --cfgLabelW:96px;
-      --cfgNumberW:54px;
-      --cfgSuffixW:52px;
-      --saveBtnW:148px;
+      --cfgNumberW:52px;
+      --cfgSuffixW:50px;
+      --saveBtnW:140px;
       --cfgGap:6px;
     }
 
@@ -247,7 +250,7 @@
     <div class="mini-inner">
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
-      <!-- GRID SIMÉTRICO -->
+      <!-- GRID SIMÉTRICO y RESPONSIVO -->
       <div class="cfg-grid">
         <!-- Fila 1: Rotar -->
         <label class="cfg-label">Rotar cada</label> <!-- col 1 -->
@@ -282,7 +285,7 @@ for(let i=0;i<90;i++){
   for(const p of P){
     p.x+=p.vx;p.y+=p.vy;
     if(p.x<0||p.x>c.width)p.vx*=-1;
-    if(p.y<0||p.y>c.height)p.vy*=-1; /* corregido: p.y>c.height */
+    if(p.y<0||p.y>c.height)p.vy*=-1; /* fix: condición correcta */
     x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
   }
   requestAnimationFrame(anim);
