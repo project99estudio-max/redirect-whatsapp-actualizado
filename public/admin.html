@@ -15,14 +15,15 @@
     --neonA:#b985ff; --neonB:#efe6ff; --pulse:#7f5cff;
 
     /* Ajustes rápidos */
-    --listColW:108px;   /* col Nombre y Borrar */
-    --saveBtnW:160px;   /* ancho de Guardar / Guardar token (mini tarjeta) */
+    --listColW:108px;    /* col Nombre y Borrar */
+    --saveBtnW:160px;    /* ancho de Guardar / Guardar token (mini tarjeta) */
+    --fieldH:36px;       /* alto unificado inputs/botones en Configuración */
 
     /* Grid de Configuración (mini tarjeta) */
-    --cfgLabelW:110px;  /* "Rotar cada" */
-    --cfgNumberW:60px;  /* [número] */
-    --cfgSuffixW:56px;  /* "clicks" */
-    --cfgGap:8px;       /* separación entre columnas */
+    --cfgLabelW:110px;   /* "Rotar cada" */
+    --cfgNumberW:70px;   /* [número] */
+    --cfgSuffixW:60px;   /* "clicks" */
+    --cfgGap:8px;        /* separación entre columnas */
   }
 
   html,body{
@@ -137,39 +138,51 @@
 
   .save-wrap{display:flex;justify-content:center;margin:16px 0 6px}
 
-  /* ===== Mini tarjeta: Configuración (GRID SIMÉTRICO y RESPONSIVO) ===== */
+  /* ===== Mini tarjeta: Configuración (alineación exacta) ===== */
   .cfg-grid{
     display:grid;
-    /* Las 4 primeras columnas pueden encogerse; el botón usa un mínimo para no romper */
-    grid-template-columns:
-      minmax(80px, var(--cfgLabelW))   /* label: "Rotar cada" */
-      minmax(48px, var(--cfgNumberW))  /* número */
-      minmax(48px, var(--cfgSuffixW))  /* "clicks" */
-      minmax(0, 1fr)                   /* espacio flexible */
-      minmax(120px, var(--saveBtnW));  /* botón (ancho mínimo 120px) */
+    /* 4 columnas compartidas por ambas filas:
+       [ Rotar cada ] [ número ] [ clicks ] [ botón ] */
+    grid-template-columns: var(--cfgLabelW) var(--cfgNumberW) var(--cfgSuffixW) var(--saveBtnW);
     align-items:center;
     gap: var(--cfgGap);
+    width:100%;
   }
   .cfg-label,.cfg-suffix{
-    color:#d7ccff; white-space:nowrap; font-size:13px;
+    color:#d7ccff; font-size:13px; white-space:nowrap;
   }
-  /* Número compacto, centrado, ocupa su columna fija */
-  #blocksize{
-    width:100% !important;
-    flex:0 0 auto !important;
-    text-align:center;
-    padding:6px 4px; font-size:13px;
-  }
-  /* El token ocupa columnas 2-4 para alinearse con número+clicks+espacio y permite shrink */
+
+  /* Inputs de Configuración: mismo alto exacto */
+  #blocksize,
   #token{
-    grid-column:2 / 5; /* 2,3,4 */
-    min-width:0;       /* clave para que no desborde */
+    height: var(--fieldH);
+    background:#2b2250;
+    border:1px solid rgba(180,140,255,.35);
+    border-radius:12px;
+    color:#fff;
+    font-size:13px;
+    outline:none;
   }
-  /* Ambos botones llenan su columna → simetría perfecta y no empujan el grid */
-  .mini-inner .cfg-grid .btn{
+  #blocksize{
     width:100%;
-    min-width:0;
+    text-align:center;
+    padding:6px 6px;
+  }
+  /* El token ocupa las columnas 1 a 3: desde "Rotar" hasta "clicks" */
+  #token{
+    grid-column: 1 / 4;
+    width:100%;
+    padding:8px 10px;
+    min-width:0; /* evita desborde */
+  }
+
+  /* Botones de Configuración: mismo alto exacto y ancho fijo de columna 4 */
+  .cfg-grid .btn{
+    height: var(--fieldH);
+    width:100%;
     justify-content:center;
+    font-size:12px;
+    padding:0 12px;
   }
 
   /* ===== Botón estadísticas ===== */
@@ -194,16 +207,14 @@
     .card-inner{padding:14px 10px}
     .btn{font-size:12.5px}
 
-    /* Ajustes mini tarjeta para que TODO quepa sin salir de la card */
     :root{
-      --cfgLabelW:96px;
-      --cfgNumberW:52px;
-      --cfgSuffixW:50px;
+      --cfgLabelW:95px;
+      --cfgNumberW:60px;
+      --cfgSuffixW:55px;
       --saveBtnW:140px;
       --cfgGap:6px;
     }
 
-    /* Lista un poquito más estrecha */
     .item{ grid-template-columns: 96px 1fr 96px; }
   }
 </style>
@@ -250,19 +261,17 @@
     <div class="mini-inner">
       <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;">Configuración</p>
 
-      <!-- GRID SIMÉTRICO y RESPONSIVO -->
+      <!-- GRID ALINEADO: token ocupa de "Rotar" a "clicks" -->
       <div class="cfg-grid">
-        <!-- Fila 1: Rotar -->
-        <label class="cfg-label">Rotar cada</label> <!-- col 1 -->
-        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2"> <!-- col 2 -->
-        <span class="cfg-suffix">clicks</span> <!-- col 3 -->
-        <div></div> <!-- col 4 (espaciador flexible) -->
-        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button> <!-- col 5 -->
+        <!-- Fila 1 -->
+        <label class="cfg-label">Rotar cada</label>
+        <input id="blocksize" type="number" min="1" max="20" step="1" placeholder="2">
+        <span class="cfg-suffix">clicks</span>
+        <button class="btn btn--thin btn--sm" id="btnSaveBS">Guardar</button>
 
-        <!-- Fila 2: Token (label vacío para alinear con col 1) -->
-        <span></span> <!-- col 1 vacío -->
-        <input id="token" type="text" placeholder="tok99-2025"> <!-- cols 2-4 -->
-        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button> <!-- col 5 -->
+        <!-- Fila 2 -->
+        <input id="token" type="text" placeholder="tok99-2025">
+        <button class="btn btn--thin btn--sm" id="btnSaveToken">Guardar token</button>
       </div>
     </div>
   </div>
@@ -285,7 +294,7 @@ for(let i=0;i<90;i++){
   for(const p of P){
     p.x+=p.vx;p.y+=p.vy;
     if(p.x<0||p.x>c.width)p.vx*=-1;
-    if(p.y<0||p.y>c.height)p.vy*=-1; /* fix: condición correcta */
+    if(p.y<0||p.y>c.height)p.vy*=-1; /* condición correcta */
     x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill();
   }
   requestAnimationFrame(anim);
