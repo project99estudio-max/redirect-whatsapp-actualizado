@@ -275,6 +275,23 @@
   filter: brightness(1.1);
   transition: 0.2s;
 }
+/* --- Ajuste responsive para botones de estadísticas en móvil --- */
+@media (max-width: 480px) {
+  .stats-filters {
+    gap: 6px;
+  }
+
+  .stats-filters .btn {
+    flex: 1;
+    padding: 0 2px;
+    font-size: 11.5px;
+    height: 34px;
+  }
+
+  .stats-filters button span {
+    display: none; /* Opcional: si el texto es muy largo */
+  }
+}
 
 </style>
 </head>
