@@ -28,7 +28,15 @@
     background:radial-gradient(circle at 30% -10%,var(--bg1),var(--bg2));
   }
   canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-  .shell{position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px}
+  .shell{
+    position:relative;z-index:2;max-width:760px;margin:4px auto 32px;padding:0 14px;
+    transition:transform .25s ease,filter .25s ease;
+  }
+  body.stats-open .shell{
+    filter:blur(3px) brightness(.7);
+    transform:translateY(6px) scale(.98);
+  }
+
   .logo-wrap{display:flex;justify-content:center}
   .logo{width:240px;display:block;filter:drop-shadow(0 6px 18px rgba(115,90,255,.35));margin:10px auto -36px;}
 
@@ -181,7 +189,32 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
-  /* 🔹 botón activo en filtros de estadísticas */
+  /* Overlay de estadísticas */
+  #statsPanel{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.55);
+    z-index:5;
+    padding:16px;
+  }
+  #statsPanel .card-mini{
+    max-width:420px;
+    width:100%;
+    background:radial-gradient(circle at 10% -20%, #3a1b6d, #1a0b33 60%) padding-box,
+               linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
+    border-radius:22px;
+    box-shadow:0 18px 50px rgba(0,0,0,.8);
+  }
+  #statsPanel .mini-inner{
+    padding:18px 16px 16px;
+  }
+  #statsPanel p{
+    color:#f0e8ff;
+  }
+
   .stats-filters .btn.active{
     background:#3a2b66;
     box-shadow:0 0 12px rgba(127,92,255,.45);
@@ -265,7 +298,7 @@
     <span>Estadísticas</span>
   </div>
 
-  <div id="statsPanel" style="display:none; margin:18px auto 0;">
+  <div id="statsPanel">
     <div class="card-mini">
       <div class="mini-inner">
         <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;font-weight:600;">
@@ -320,6 +353,8 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
 
 const $=s=>document.querySelector(s);
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize"),saveWrap=$("#saveWrap");
+const statsPanel = $("#statsPanel");
+const statsResults = $("#statsResults");
 
 function row(val={name:"",url:""}) {
   if(typeof val==="string") val={name:"",url:val};
@@ -355,7 +390,7 @@ $("#btnView").onclick=async()=>{
     list.innerHTML="";(j.links||[]).forEach(o=>row(o));
     if((j.links||[]).length===0)row();
     show("Lista cargada");
-    saveWrap.style.display='flex'; // 👈 aparece el botón Guardar
+    saveWrap.style.display='flex';
   }catch(e){show("Error al cargar",0);}
 };
 
@@ -376,7 +411,6 @@ $("#btnRot").onclick=async()=>{
   }catch(e){show("Error",0);}
 };
 
-// 👇 ahora también muestra el botón Guardar al agregar cajera
 $("#btnAdd").onclick = () => {
   row();
   saveWrap.style.display='flex';
@@ -413,9 +447,7 @@ $("#btnSaveBS").onclick=async()=>{
   }catch(e){show("Error al guardar",0);}
 };
 
-const statsPanel = $("#statsPanel");
-const statsResults = $("#statsResults");
-
+// 🔹 Cargar estadísticas por rango
 async function loadStatsRange(range) {
   const t = tokenInput.value.trim();
   if (!t) {
@@ -458,11 +490,11 @@ async function loadStatsRange(range) {
   }
 }
 
+// Abrir overlay de estadísticas
 $("#btnStats").onclick = () => {
-  // Mostrar panel de estadísticas
-  statsPanel.style.display = 'block';
+  statsPanel.style.display = 'flex';
+  document.body.classList.add('stats-open');
 
-  // Marcar "Hoy" como activo por defecto
   const btns = document.querySelectorAll(".stats-filters .btn");
   btns.forEach(b => b.classList.remove("active"));
   const first = document.querySelector('.stats-filters .btn[data-range="today"]');
@@ -471,20 +503,23 @@ $("#btnStats").onclick = () => {
   loadStatsRange("today");
 };
 
-// Clicks en los botones [Hoy] [Ayer] [Semana actual] [Mes actual]
-document.addEventListener("click", (e) => {
-  const btn = e.target.closest(".stats-filters .btn");
-  if (!btn) return;
-  const range = btn.getAttribute("data-range");
-  if (!range) return;
-
-  const btns = document.querySelectorAll(".stats-filters .btn");
-  btns.forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-
-  loadStatsRange(range);
+// Cerrar overlay clickeando el fondo
+statsPanel.addEventListener("click", (e) => {
+  if (e.target === statsPanel) {
+    statsPanel.style.display = 'none';
+    document.body.classList.remove('stats-open');
+  }
 });
 
+// Cambiar rango (Hoy / Ayer / Semana / Mes)
+document.querySelectorAll(".stats-filters .btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const range = btn.getAttribute("data-range");
+    document.querySelectorAll(".stats-filters .btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    loadStatsRange(range);
+  });
+});
 </script>
 </body>
 </html>
