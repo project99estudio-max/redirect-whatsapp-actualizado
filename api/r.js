@@ -66,8 +66,11 @@ async function getBlockSize() {
     const n = Number(saved);
     if (Number.isInteger(n) && n >= 1 && n <= 20) return n;
   }
+
   const envN = Number(process.env.BLOCK_SIZE || 2);
-  if (Number.isInteger(envN) && n >= 1 && n <= 50) return envN;
+  // 👇 acá estaba el bug: antes comparábamos "n" (no existe)
+  if (Number.isInteger(envN) && envN >= 1 && envN <= 50) return envN;
+
   return 2;
 }
 
@@ -110,7 +113,6 @@ export default async function handler(req, res) {
   try {
     const now = new Date();
     const day = now.toISOString().slice(0, 10); // YYYY-MM-DD
-    // Hash por día: field = URL de la cajera, value = cantidad de clicks
     await redis.hincrby(`stats:day:${day}`, target, 1);
   } catch (e) {
     console.error('Error incrementando stats diarias', e);
