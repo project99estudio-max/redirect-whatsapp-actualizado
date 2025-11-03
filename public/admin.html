@@ -471,6 +471,84 @@ for(let i=0;i<90;i++)P.push({x:Math.random()*c.width,y:Math.random()*c.height,vx
 })();
 
 const $=s=>document.querySelector(s);
+ // 🔐 LOGIN SIMPLE (frontal) CON EXPIRACIÓN POR INACTIVIDAD
+const LOGIN_USER = "Insomnia";      // <-- CAMBIÁ ESTO SI QUERÉS
+const LOGIN_PASS = "1234";       // <-- CAMBIÁ ESTO TAMBIÉN
+const SESSION_MINUTES = 10;      // minutos de inactividad antes de pedir login de nuevo
+
+const loginScreen = document.getElementById("loginScreen");
+const loginUser   = document.getElementById("loginUser");
+const loginPass   = document.getElementById("loginPass");
+const loginBtn    = document.getElementById("loginBtn");
+const loginError  = document.getElementById("loginError");
+
+function markActivity() {
+  // guarda el timestamp de la última actividad
+  localStorage.setItem("admin_last_active", Date.now().toString());
+}
+
+function isSessionValid() {
+  const ok   = localStorage.getItem("admin_auth_ok");
+  const last = Number(localStorage.getItem("admin_last_active") || "0");
+  if (ok !== "1") return false;
+  if (!last) return false;
+  const diffMs = Date.now() - last;
+  const maxMs  = SESSION_MINUTES * 60 * 1000;
+  return diffMs < maxMs;
+}
+
+function forceLogout() {
+  localStorage.removeItem("admin_auth_ok");
+  localStorage.removeItem("admin_last_active");
+  if (loginScreen) loginScreen.style.display = "flex";
+}
+
+function doLogin(){
+  const u = (loginUser.value || "").trim();
+  const p = loginPass.value || "";
+  if (u === LOGIN_USER && p === LOGIN_PASS) {
+    localStorage.setItem("admin_auth_ok", "1");
+    markActivity();
+    if (loginScreen) loginScreen.style.display = "none";
+    loginError.textContent = "";
+  } else {
+    loginError.textContent = "Usuario o contraseña incorrectos";
+  }
+}
+
+if (loginBtn) {
+  loginBtn.onclick = (e)=>{ 
+    e.preventDefault(); 
+    doLogin(); 
+  };
+}
+
+// Al cargar la página, decide si muestra el panel o el login
+window.addEventListener("load", () => {
+  if (isSessionValid()) {
+    if (loginScreen) loginScreen.style.display = "none";
+    markActivity();
+  } else {
+    forceLogout();
+  }
+});
+
+// Registrar actividad (clicks, teclas, movimiento, touch) para mantener la sesión viva
+["click","keydown","mousemove","touchstart"].forEach(ev=>{
+  window.addEventListener(ev, () => {
+    if (isSessionValid()) {
+      markActivity();
+    }
+  }, { passive:true });
+});
+
+// Chequeo periódico: si se vence la sesión, muestra login de nuevo
+setInterval(() => {
+  if (!isSessionValid()) {
+    forceLogout();
+  }
+}, 15000); // cada 15 segundos revisa si se venció
+
 const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize"),saveWrap=$("#saveWrap");
 const statsPanel = $("#statsPanel");
 const statsResults = $("#statsResults");
