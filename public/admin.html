@@ -252,7 +252,30 @@
       min-width: var(--saveBtnW);
       justify-content:center;
     }
-  }
+  /* --- Ajuste de botones de estadísticas --- */
+.stats-filters {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: nowrap;
+}
+
+.stats-filters .btn {
+  flex: 1;
+  text-align: center;
+  font-size: 12.8px;
+  height: 38px;
+  padding: 0 6px;
+}
+
+.stats-filters .btn.active {
+  background: #3a2b66;
+  box-shadow: 0 0 12px rgba(127, 92, 255, 0.45);
+  filter: brightness(1.1);
+  transition: 0.2s;
+}
+
 </style>
 </head>
 <body>
