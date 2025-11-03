@@ -5,7 +5,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-// 🔧 Versión nueva: soporta objetos y strings, evita [object Object]
+// Soporta objetos y strings, evita [object Object]
 function normalizeItem(s) {
   if (!s) return null;
 
@@ -67,7 +67,7 @@ async function getBlockSize() {
     if (Number.isInteger(n) && n >= 1 && n <= 20) return n;
   }
   const envN = Number(process.env.BLOCK_SIZE || 2);
-  if (Number.isInteger(envN) && envN >= 1 && envN <= 50) return envN;
+  if (Number.isInteger(envN) && n >= 1 && n <= 50) return envN;
   return 2;
 }
 
@@ -105,6 +105,16 @@ export default async function handler(req, res) {
 
   const current = list[i];
   const target = current.url;
+
+  // 📊 REGISTRO DE ESTADÍSTICAS POR DÍA Y CAJERA
+  try {
+    const now = new Date();
+    const day = now.toISOString().slice(0, 10); // YYYY-MM-DD
+    // Hash por día: field = URL de la cajera, value = cantidad de clicks
+    await redis.hincrby(`stats:day:${day}`, target, 1);
+  } catch (e) {
+    console.error('Error incrementando stats diarias', e);
+  }
 
   left -= 1;
   if (left <= 0) {
