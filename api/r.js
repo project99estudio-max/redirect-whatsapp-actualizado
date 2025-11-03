@@ -114,6 +114,7 @@ export default async function handler(req, res) {
     const now = new Date();
     const day = now.toISOString().slice(0, 10); // YYYY-MM-DD
     await redis.hincrby(`stats:day:${day}`, target, 1);
+    await redis.expire(`stats:day:${day}`, 35 * 24 * 60 * 60); // borra después de 35 días
   } catch (e) {
     console.error('Error incrementando stats diarias', e);
   }
