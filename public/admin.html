@@ -6,6 +6,77 @@
 <title>PANEL ADMIN</title>
 <style>
   *{ box-sizing:border-box; }
+ /* 🔐 LOGIN SIMPLE FRONTAL */
+#loginScreen{
+  position:fixed;
+  inset:0;
+  z-index:2000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(5,0,15,.86);
+  backdrop-filter:blur(6px);
+}
+
+.login-box{
+  width:100%;
+  max-width:360px;
+  padding:20px 18px 18px;
+  border-radius:18px;
+  background:radial-gradient(circle at 20% -10%, #2d1858, #0b0318 80%);
+  box-shadow:0 18px 40px rgba(0,0,0,.8);
+  border:1px solid rgba(255,255,255,0.16);
+  color:#efeaff;
+  font-family:inherit;
+}
+
+.login-box h2{
+  margin:0 0 8px;
+  font-size:18px;
+  text-align:center;
+}
+
+.login-box p{
+  margin:0 0 14px;
+  font-size:13px;
+  text-align:center;
+  color:#c9c0f2;
+}
+
+.login-field{
+  margin-bottom:10px;
+}
+
+.login-field label{
+  display:block;
+  font-size:12px;
+  margin-bottom:4px;
+  color:#d7ccff;
+}
+
+.login-field input{
+  width:100%;
+  border-radius:10px;
+  border:1px solid rgba(180,140,255,.5);
+  background:#2b2250;
+  color:#fff;
+  padding:8px 10px;
+  font-size:13px;
+  outline:none;
+}
+
+#loginBtn{
+  width:100%;
+  margin-top:6px;
+}
+
+#loginError{
+  margin-top:8px;
+  font-size:12px;
+  color:#ff9b9b;
+  text-align:center;
+}
+
 
   :root{
     --bg1:#4b0082; --bg2:#000000; --particle:#c7b3ff;
