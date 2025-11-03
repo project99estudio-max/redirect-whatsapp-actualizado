@@ -292,6 +292,23 @@
     display: none; /* Opcional: si el texto es muy largo */
   }
 }
+/* --- Ajuste responsive mejorado: mantener textos completos en una línea --- */
+@media (max-width: 480px) {
+  .stats-filters {
+    flex-wrap: nowrap;
+    gap: 5px;
+  }
+
+  .stats-filters .btn {
+    flex: 1;
+    min-width: 0;
+    font-size: 10.8px;  /* 🔹 texto más chico pero legible */
+    height: 32px;       /* 🔹 más compactos en alto */
+    padding: 0 4px;     /* 🔹 menos margen lateral */
+    letter-spacing: 0.1px;
+    white-space: nowrap; /* 🔹 evita que las palabras salten de línea */
+  }
+}
 
 </style>
 </head>
