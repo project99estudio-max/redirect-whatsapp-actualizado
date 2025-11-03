@@ -5,9 +5,9 @@
     { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "^/$", "dest": "/puente.html" },
-    { "src": "^/puente$", "dest": "/puente.html" },
-    { "src": "^/admin$", "dest": "/admin.html" },
-    { "src": "^/api/(.*)$", "dest": "/api/$1.js" }
+    { "src": "^/$", "dest": "/public/puente.html" },
+    { "src": "^/puente$", "dest": "/public/puente.html" },
+    { "src": "^/api/(.*)$", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
