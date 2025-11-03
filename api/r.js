@@ -5,16 +5,59 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
+// 🔧 Versión nueva: soporta objetos y strings, evita [object Object]
 function normalizeItem(s) {
-  try {
-    const o = JSON.parse(s);
-    if (o && typeof o === 'object' && typeof o.url === 'string') {
-      return { name: o.name || '', url: o.url.trim() };
+  if (!s) return null;
+
+  // 1) Si YA viene como objeto desde Redis
+  if (typeof s === 'object') {
+    const o = s;
+
+    if (typeof o.url === 'string' && o.url.trim()) {
+      return {
+        name: typeof o.name === 'string' ? o.name : '',
+        url: o.url.trim(),
+      };
     }
-  } catch {}
-  const str = String(s || '').trim();
-  if (!str) return null;
-  return { name: '', url: str };
+
+    if (typeof o.link === 'string' && o.link.trim()) {
+      return {
+        name: typeof o.name === 'string' ? o.name : '',
+        url: o.link.trim(),
+      };
+    }
+
+    return null;
+  }
+
+  // 2) Si viene como string
+  if (typeof s === 'string') {
+    const str = s.trim();
+    if (!str) return null;
+
+    // Puede ser JSON serializado
+    try {
+      const o = JSON.parse(str);
+      if (
+        o &&
+        typeof o === 'object' &&
+        typeof o.url === 'string' &&
+        o.url.trim()
+      ) {
+        return {
+          name: typeof o.name === 'string' ? o.name : '',
+          url: o.url.trim(),
+        };
+      }
+    } catch {
+      // no es JSON, seguimos abajo
+    }
+
+    // O directamente una URL plana
+    return { name: '', url: str };
+  }
+
+  return null;
 }
 
 async function getBlockSize() {
@@ -32,18 +75,26 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.status(204).end();
-  if (req.method !== 'GET')
-    return res.status(405).json({ ok: false, error: 'method_not_allowed' });
 
-  const raw = await redis.lrange('links', 0, -1);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'GET') {
+    return res
+      .status(405)
+      .json({ ok: false, error: 'method_not_allowed' });
+  }
+
+  const raw = (await redis.lrange('links', 0, -1)) || [];
   const list = raw.map(normalizeItem).filter(Boolean);
-  if (!list.length) return res.status(404).send('No hay enlaces configurados.');
+
+  if (!list.length) {
+    return res.status(404).send('No hay enlaces configurados.');
+  }
 
   const blockSize = await getBlockSize();
 
   let i = Number(await redis.get('rot:i'));
   if (!Number.isInteger(i) || i < 0) i = 0;
+
   let left = Number(await redis.get('rot:left'));
   if (!Number.isInteger(left) || left <= 0) left = blockSize;
 
