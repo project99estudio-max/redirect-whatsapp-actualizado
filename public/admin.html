@@ -413,7 +413,78 @@ $("#btnSaveBS").onclick=async()=>{
   }catch(e){show("Error al guardar",0);}
 };
 
-$("#btnStats").onclick=()=>show("📊 Próximamente: Conteo de mensajes y métricas.",1);
+const statsPanel = $("#statsPanel");
+const statsResults = $("#statsResults");
+
+async function loadStatsRange(range) {
+  const t = tokenInput.value.trim();
+  if (!t) {
+    show("Poné token", 0);
+    return;
+  }
+
+  try {
+    show("Cargando estadísticas...");
+    statsResults.textContent = "Cargando...";
+
+    const r = await fetch(`/api/stats-range?token=${encodeURIComponent(t)}&range=${encodeURIComponent(range)}`);
+    const j = await r.json();
+
+    if (!j.ok) {
+      statsResults.textContent = "";
+      return show("Error al obtener estadísticas", 0);
+    }
+
+    if (!j.stats || !j.stats.length) {
+      statsResults.textContent = "Sin datos para este período.";
+      return show("Sin datos todavía", 1);
+    }
+
+    const lineas = j.stats.map(s => {
+      const nombre = s.name || "Sin nombre";
+      const cant = s.count || 0;
+      return `<div style="display:flex;justify-content:space-between;gap:8px;margin:3px 0;">
+        <span>${nombre}</span>
+        <span style="font-weight:600">${cant} clics</span>
+      </div>`;
+    });
+
+    statsResults.innerHTML = lineas.join("");
+    show("Estadísticas cargadas", 1);
+  } catch (e) {
+    console.error(e);
+    statsResults.textContent = "";
+    show("Error al obtener estadísticas", 0);
+  }
+}
+
+$("#btnStats").onclick = () => {
+  // Mostrar panel de estadísticas
+  statsPanel.style.display = 'block';
+
+  // Marcar "Hoy" como activo por defecto
+  const btns = document.querySelectorAll(".stats-filters .btn");
+  btns.forEach(b => b.classList.remove("active"));
+  const first = document.querySelector('.stats-filters .btn[data-range="today"]');
+  if (first) first.classList.add("active");
+
+  loadStatsRange("today");
+};
+
+// Clicks en los botones [Hoy] [Ayer] [Semana actual] [Mes actual]
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest(".stats-filters .btn");
+  if (!btn) return;
+  const range = btn.getAttribute("data-range");
+  if (!range) return;
+
+  const btns = document.querySelectorAll(".stats-filters .btn");
+  btns.forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  loadStatsRange(range);
+});
+
 </script>
 </body>
 </html>
