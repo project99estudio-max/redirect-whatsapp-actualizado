@@ -256,6 +256,24 @@
     <div class="stats-icon"></div>
     <span>Estadísticas</span>
   </div>
+   <div id="statsPanel" style="display:none; margin:18px auto 0;">
+    <div class="card-mini">
+      <div class="mini-inner">
+        <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;font-weight:600;">
+          Clientes nuevos
+        </p>
+
+        <div class="actions-top stats-filters" style="margin-top:4px;">
+          <button class="btn btn--thin btn--sm" data-range="today">Hoy</button>
+          <button class="btn btn--thin btn--sm" data-range="yesterday">Ayer</button>
+          <button class="btn btn--thin btn--sm" data-range="week">Semana actual</button>
+          <button class="btn btn--thin btn--sm" data-range="month">Mes actual</button>
+        </div>
+
+        <div id="statsResults" style="margin-top:14px;font-size:13px;color:#e7e0ff;"></div>
+      </div>
+    </div>
+  </div>
 
   <div class="card-mini">
     <div class="mini-inner">
