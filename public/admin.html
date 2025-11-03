@@ -197,16 +197,20 @@
     align-items:center;
     justify-content:center;
     background:rgba(0,0,0,.55);
-    z-index:5;
+    z-index:4;        /* por encima del panel, por debajo de la tarjeta */
     padding:16px;
   }
   #statsPanel .card-mini{
     max-width:420px;
     width:100%;
-    background:radial-gradient(circle at 10% -20%, #3a1b6d, #1a0b33 60%) padding-box,
+    position:relative;
+    z-index:10;       /* la tarjeta va arriba de todo */
+    background:radial-gradient(circle at 30% -20%, #2e1759, #120428 80%) padding-box,
                linear-gradient(145deg,var(--edge1),var(--edge2),var(--edge1)) border-box;
     border-radius:22px;
     box-shadow:0 18px 50px rgba(0,0,0,.8);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#efeaff;
   }
   #statsPanel .mini-inner{
     padding:18px 16px 16px;
