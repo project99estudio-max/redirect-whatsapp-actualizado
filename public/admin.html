@@ -182,15 +182,15 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
-  /* === Overlay de estadísticas: solo esto es nuevo de verdad === */
+  /* Overlay de estadísticas */
   #statsPanel{
     position:fixed;
     inset:0;
     display:none;
     align-items:center;
     justify-content:center;
-    background:rgba(5,0,15,.7);   /* oscurece el fondo */
-    z-index:999;                  /* encima del resto */
+    background:rgba(5,0,15,.7);
+    z-index:999;
     padding:16px;
   }
   #statsPanel .card-mini{
@@ -209,11 +209,43 @@
     padding:18px 16px 16px;
   }
 
+  /* 🔹 Ajuste definitivo de botones de estadísticas (alineados siempre en 1 línea) */
+  .stats-filters {
+    display:flex;
+    justify-content:space-between;
+    align-items:stretch;
+    gap:6px;
+    margin-top:4px;
+    flex-wrap:nowrap;
+  }
+  .stats-filters .btn{
+    flex:1;
+    min-width:0;
+    text-align:center;
+    font-size:12px;
+    height:34px;
+    padding:0 4px;
+    letter-spacing:0.1px;
+    white-space:nowrap;
+  }
   .stats-filters .btn.active{
     background:#3a2b66;
     box-shadow:0 0 12px rgba(127,92,255,.45);
     filter:brightness(1.1);
     transition:.2s;
+  }
+
+  /* Versión responsive: más compactos en celu */
+  @media(max-width:480px){
+    .stats-filters{
+      gap:4px;
+    }
+    .stats-filters .btn{
+      font-size:9.8px;
+      height:30px;
+      padding:0 2px;
+      letter-spacing:0;
+    }
   }
 
   @media(max-width:420px){
@@ -233,69 +265,26 @@
   }
 
   @media (min-width: 768px){
-    .cfg-grid{
-      grid-template-columns:
-        var(--cfgLabelW)
-        var(--cfgNumberW)
-        var(--cfgSuffixW)
-        minmax(0, 0.8fr)
-        var(--saveBtnW);
-      align-items:center;
-      gap:var(--cfgGap);
-    }
-    #token{
-      grid-column:1 / 4;
-      width:100%;
-      min-width:0;
-    }
-    .cfg-grid .btn{
-      min-width: var(--saveBtnW);
-      justify-content:center;
-    }
-  /* --- Ajuste definitivo de botones de estadísticas (alineación perfecta en todas las pantallas) --- */
-.stats-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  gap: 6px;
-  margin-top: 6px;
-  flex-wrap: nowrap;
-}
-
-.stats-filters .btn {
-  flex: 1;
-  min-width: 0;
-  text-align: center;
-  font-size: 12.5px;
-  height: 36px;
-  padding: 0 4px;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-}
-
-.stats-filters .btn.active {
-  background: #3a2b66;
-  box-shadow: 0 0 12px rgba(127, 92, 255, 0.45);
-  filter: brightness(1.1);
-  transition: 0.2s;
-}
-
-/* --- Versión responsive optimizada --- */
-@media (max-width: 480px) {
-  .stats-filters {
-    gap: 4px;
+  .cfg-grid{
+    grid-template-columns:
+      var(--cfgLabelW)
+      var(--cfgNumberW)
+      var(--cfgSuffixW)
+      minmax(0, 0.8fr)
+      var(--saveBtnW);
+    align-items:center;
+    gap:var(--cfgGap);
   }
-
-  .stats-filters .btn {
-    flex: 1;
-    min-width: 0;
-    font-size: 10.2px; /* 🔹 texto más chico */
-    height: 30px;
-    padding: 0 2px; /* 🔹 menos espacio lateral */
-    white-space: nowrap;
+  #token{
+    grid-column:1 / 4;
+    width:100%;
+    min-width:0;
+  }
+  .cfg-grid .btn{
+    min-width: var(--saveBtnW);
+    justify-content:center;
   }
 }
-
 </style>
 </head>
 <body>
@@ -335,7 +324,6 @@
     <span>Estadísticas</span>
   </div>
 
-  <!-- Stats panel como modal centrado -->
   <div id="statsPanel">
     <div class="card-mini">
       <div class="mini-inner">
@@ -343,7 +331,7 @@
           Clientes nuevos
         </p>
 
-        <div class="actions-top stats-filters" style="margin-top:4px;">
+        <div class="actions-top stats-filters">
           <button class="btn btn--thin btn--sm active" data-range="today">Hoy</button>
           <button class="btn btn--thin btn--sm" data-range="yesterday">Ayer</button>
           <button class="btn btn--thin btn--sm" data-range="week">Semana actual</button>
@@ -394,7 +382,6 @@ const list=$("#list"),msg=$("#msg"),tokenInput=$("#token"),bsInput=$("#blocksize
 const statsPanel = $("#statsPanel");
 const statsResults = $("#statsResults");
 
-/* ----------- helpers ----------- */
 function row(val={name:"",url:""}) {
   if(typeof val==="string") val={name:"",url:val};
   const d=document.createElement("div");d.className="item";
@@ -412,7 +399,6 @@ function values(){
 }
 function show(t,ok=1){msg.textContent=t;msg.className=ok?"ok":"err"}
 
-/* ----------- token + carga inicial ----------- */
 $("#btnSaveToken").onclick=()=>{localStorage.setItem("adm_tok",tokenInput.value.trim());show("Token guardado")};
 
 window.onload=async()=>{
@@ -421,7 +407,6 @@ window.onload=async()=>{
   if(t){ await loadBlockSize(t); }
 };
 
-/* ----------- botones lista ----------- */
 $("#btnView").onclick=async()=>{
   const t=tokenInput.value.trim();if(!t)return show("Poné token",0);
   try{
@@ -469,7 +454,6 @@ $("#btnSaveFinal").onclick=async()=>{
   }catch(e){show("Error al guardar",0);}
 };
 
-/* ----------- blocksize ----------- */
 async function loadBlockSize(t){
   try{
     const r=await fetch(`/api/blocksize?token=${encodeURIComponent(t)}&get=1`);
