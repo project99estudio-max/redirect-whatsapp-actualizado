@@ -252,21 +252,25 @@
       min-width: var(--saveBtnW);
       justify-content:center;
     }
-  /* --- Ajuste de botones de estadísticas --- */
+  /* --- Ajuste definitivo de botones de estadísticas (alineación perfecta en todas las pantallas) --- */
 .stats-filters {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
-  margin-top: 4px;
+  align-items: stretch;
+  gap: 6px;
+  margin-top: 6px;
   flex-wrap: nowrap;
 }
 
 .stats-filters .btn {
   flex: 1;
+  min-width: 0;
   text-align: center;
-  font-size: 12.8px;
-  height: 38px;
-  padding: 0 6px;
+  font-size: 12.5px;
+  height: 36px;
+  padding: 0 4px;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .stats-filters .btn.active {
@@ -275,38 +279,20 @@
   filter: brightness(1.1);
   transition: 0.2s;
 }
-/* --- Ajuste responsive para botones de estadísticas en móvil --- */
+
+/* --- Versión responsive optimizada --- */
 @media (max-width: 480px) {
   .stats-filters {
-    gap: 6px;
-  }
-
-  .stats-filters .btn {
-    flex: 1;
-    padding: 0 2px;
-    font-size: 11.5px;
-    height: 34px;
-  }
-
-  .stats-filters button span {
-    display: none; /* Opcional: si el texto es muy largo */
-  }
-}
-/* --- Ajuste responsive mejorado: mantener textos completos en una línea --- */
-@media (max-width: 480px) {
-  .stats-filters {
-    flex-wrap: nowrap;
-    gap: 5px;
+    gap: 4px;
   }
 
   .stats-filters .btn {
     flex: 1;
     min-width: 0;
-    font-size: 10.8px;  /* 🔹 texto más chico pero legible */
-    height: 32px;       /* 🔹 más compactos en alto */
-    padding: 0 4px;     /* 🔹 menos margen lateral */
-    letter-spacing: 0.1px;
-    white-space: nowrap; /* 🔹 evita que las palabras salten de línea */
+    font-size: 10.2px; /* 🔹 texto más chico */
+    height: 30px;
+    padding: 0 2px; /* 🔹 menos espacio lateral */
+    white-space: nowrap;
   }
 }
 
