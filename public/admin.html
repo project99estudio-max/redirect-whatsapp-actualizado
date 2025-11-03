@@ -181,6 +181,14 @@
     background:conic-gradient(from 0deg,#ffffff 0deg 110deg,#b985ff 110deg 360deg);
   }
 
+  /* 🔹 botón activo en filtros de estadísticas */
+  .stats-filters .btn.active{
+    background:#3a2b66;
+    box-shadow:0 0 12px rgba(127,92,255,.45);
+    filter:brightness(1.1);
+    transition:.2s;
+  }
+
   @media(max-width:420px){
     .logo{width:216px;margin:8px auto -38px}
     .card-inner{padding:14px 10px}
@@ -256,7 +264,8 @@
     <div class="stats-icon"></div>
     <span>Estadísticas</span>
   </div>
-   <div id="statsPanel" style="display:none; margin:18px auto 0;">
+
+  <div id="statsPanel" style="display:none; margin:18px auto 0;">
     <div class="card-mini">
       <div class="mini-inner">
         <p style="text-align:center;color:#dcd2ff;margin-bottom:10px;font-weight:600;">
