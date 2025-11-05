@@ -68,7 +68,6 @@ async function getBlockSize() {
   }
 
   const envN = Number(process.env.BLOCK_SIZE || 2);
-  // 👇 acá estaba el bug: antes comparábamos "n" (no existe)
   if (Number.isInteger(envN) && envN >= 1 && envN <= 50) return envN;
 
   return 2;
@@ -109,10 +108,18 @@ export default async function handler(req, res) {
   const current = list[i];
   const target = current.url;
 
-  // 📊 REGISTRO DE ESTADÍSTICAS POR DÍA Y CAJERA
+  // 📊 REGISTRO DE ESTADÍSTICAS POR DÍA (USANDO HORA LOCAL)
   try {
     const now = new Date();
-    const day = now.toISOString().slice(0, 10); // YYYY-MM-DD
+
+    // Fecha local a las 00:00 del día actual
+    const localMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+    const day = localMidnight.toISOString().slice(0, 10); // YYYY-MM-DD
+
     await redis.hincrby(`stats:day:${day}`, target, 1);
     await redis.expire(`stats:day:${day}`, 35 * 24 * 60 * 60); // borra después de 35 días
   } catch (e) {
