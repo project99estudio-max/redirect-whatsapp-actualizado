@@ -106,9 +106,20 @@
       }
     });
 
-    // Redirigir automáticamente con evento del pixel
-    setTimeout(() => {
+    // Redirigir automáticamente con evento del pixel + registro extra
+    setTimeout(async () => {
       if (window.fbq) fbq('trackCustom', 'RedirectToWhatsApp');
+
+      // 👉 Registro opcional del “llegó” en el backend
+      try {
+        const urlActual = window.location.href;
+        await fetch(
+          `/api/stats-redirect?token=${encodeURIComponent('tok99-2025')}&url=${encodeURIComponent(urlActual)}`
+        );
+      } catch (e) {
+        console.warn('Error registrando RedirectToWhatsApp:', e);
+      }
+
       window.location.href = '/api/r';
     }, 2000);
   </script>
