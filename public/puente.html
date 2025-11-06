@@ -12,7 +12,7 @@
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1368705578011910');
+    fbq('init', '1368705578011910'); 
     fbq('track', 'PageView');
   </script>
   <!-- ✅ FIN META PIXEL CODE -->
@@ -89,9 +89,21 @@
       font-size: 1rem;
     }
   </style>
+</head>
+
+<body>
+  <!-- ✅ PIXEL sin JavaScript -->
+  <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
+  </noscript>
+
+  <div class="loader"></div>
+  <h2>Conectando con WhatsApp...</h2>
+  <p>Aguardá un momento 💬</p>
 
   <script>
-    // Generar partículas flotantes
+    // 🔹 Generar partículas flotantes decorativas
     document.addEventListener("DOMContentLoaded", () => {
       const body = document.body;
       for (let i = 0; i < 80; i++) {
@@ -106,22 +118,19 @@
       }
     });
 
-    // Redirigir automáticamente con evento del pixel
+    // 🔹 Redirección automática + evento Meta Pixel optimizado
     setTimeout(() => {
-      if (window.fbq) fbq('trackCustom', 'RedirectToWhatsApp');
-      window.location.href = '/api/r';
-    }, 2000);
-  </script>
-</head>
-<body>
-  <!-- ✅ PIXEL sin JavaScript -->
-  <noscript>
-    <img height="1" width="1" style="display:none"
-         src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
-  </noscript>
+      // 1️⃣ Disparamos el evento personalizado (conversion)
+      if (window.fbq) {
+        fbq('trackCustom', 'RedirectToWhatsApp');
+      }
 
-  <div class="loader"></div>
-  <h2>Conectando con WhatsApp...</h2>
-  <p>Aguardá un momento 💬</p>
+      // 2️⃣ Esperamos 300ms para asegurar que Meta reciba el evento
+      setTimeout(() => {
+        window.location.href = '/api/r';
+      }, 300);
+
+    }, 2500); // 2.5 segundos de pantalla de carga
+  </script>
 </body>
 </html>
