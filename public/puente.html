@@ -120,9 +120,9 @@
 
     // 🔹 Redirección automática + evento Meta Pixel optimizado
     setTimeout(() => {
-      // 1️⃣ Disparamos el evento personalizado (conversion)
+      // 1️⃣ Disparamos el evento personalizado NUEVO (WAclick)
       if (window.fbq) {
-        fbq('trackCustom', 'RedirectToWhatsApp');
+        fbq('trackCustom', 'WAclick');
       }
 
       // 2️⃣ Esperamos 300ms para asegurar que Meta reciba el evento
