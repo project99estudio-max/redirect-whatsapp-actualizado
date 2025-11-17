@@ -60,6 +60,24 @@
       50% { opacity: 0.9; }
     }
 
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      max-width: 360px;
+    }
+
+    .slot-img {
+      max-width: 240px;
+      width: 70vw;
+      margin-bottom: 16px;
+      filter: drop-shadow(0 0 30px rgba(177, 124, 255, 0.8));
+    }
+
     .loader {
       border: 6px solid rgba(255, 255, 255, 0.1);
       border-top: 6px solid #b17cff;
@@ -67,7 +85,7 @@
       width: 70px;
       height: 70px;
       animation: spin 1.4s linear infinite;
-      margin-bottom: 25px;
+      margin-bottom: 18px;
       box-shadow: 0 0 25px rgba(177, 124, 255, 0.6);
     }
 
@@ -77,16 +95,65 @@
     }
 
     h2 {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       color: #fff;
       text-shadow: 0 0 10px rgba(177, 124, 255, 0.8);
       letter-spacing: 0.5px;
+      margin-bottom: 8px;
     }
 
-    p {
-      color: rgba(255,255,255,0.75);
+    .subtitle {
+      color: rgba(255,255,255,0.9);
+      margin-top: 4px;
+      margin-bottom: 18px;
+      font-size: 0.98rem;
+      font-weight: 500;
+    }
+
+    .cta-btn{
+      border:none;
+      outline:none;
+      cursor:pointer;
+      padding:14px 24px;
+      border-radius:999px;
+      font-size:0.95rem;
+      font-weight:700;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:linear-gradient(135deg, #34d399, #22c55e);
+      color:#020617;
+      box-shadow:0 0 18px rgba(34, 197, 94, 0.9);
+      position:relative;
+      animation:pulse 1.4s infinite ease-in-out;
+      margin-top: 4px;
+    }
+
+    .wp-icon{
+      font-size:1.1rem;
+    }
+
+    @keyframes pulse{
+      0%{
+        transform:scale(1);
+        box-shadow:0 0 18px rgba(34, 197, 94, 0.8);
+      }
+      50%{
+        transform:scale(1.05);
+        box-shadow:0 0 30px rgba(34, 197, 94, 1);
+      }
+      100%{
+        transform:scale(1);
+        box-shadow:0 0 18px rgba(34, 197, 94, 0.8);
+      }
+    }
+
+    .helper {
+      font-size: 0.8rem;
+      opacity: 0.75;
       margin-top: 10px;
-      font-size: 1rem;
     }
   </style>
 </head>
@@ -98,12 +165,29 @@
          src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
   </noscript>
 
-  <div class="loader"></div>
-  <h2>Conectando con WhatsApp...</h2>
-  <p>Aguardá un momento 💬</p>
+  <div class="content">
+    <!-- 🎰 Imagen de la máquina INSOMNIA (cambiá el src por el nombre real del archivo) -->
+    <img src="insomnia-slot.png" alt="Insomnia Slot" class="slot-img">
+
+    <div class="loader"></div>
+
+    <h2>Conectando con WhatsApp...</h2>
+    <p class="subtitle">
+      Creá tu usuario en segundos y empezá a jugar con ventaja
+    </p>
+
+    <button class="cta-btn" id="cta-btn">
+      <span class="wp-icon">🟢</span>
+      CREAR USUARIO
+    </button>
+
+    <p class="helper">
+      Si no se abre automáticamente, tocá el botón.
+    </p>
+  </div>
 
   <script>
-    // 🔹 Generar partículas flotantes decorativas
+    // 🔹 Partículas flotantes decorativas
     document.addEventListener("DOMContentLoaded", () => {
       const body = document.body;
       for (let i = 0; i < 80; i++) {
@@ -116,21 +200,34 @@
         particle.style.width = particle.style.height = Math.random() * 2 + 1 + "px";
         body.appendChild(particle);
       }
-    });
 
-    // 🔹 Redirección automática + evento Meta Pixel optimizado
-    setTimeout(() => {
-      // 1️⃣ Disparamos el evento personalizado NUEVO (WAclick)
-      if (window.fbq) {
-        fbq('trackCustom', 'WAclick');
+      let hasRedirected = false;
+
+      function goToWhatsapp() {
+        if (hasRedirected) return;
+        hasRedirected = true;
+
+        // 1️⃣ Disparamos el evento personalizado (WAclick) SOLO cuando realmente vamos a WhatsApp
+        if (window.fbq) {
+          fbq('trackCustom', 'WAclick');
+        }
+
+        // 2️⃣ Esperamos 300ms para asegurar que Meta reciba el evento
+        setTimeout(() => {
+          // 🔁 Tu backend sigue manejando el round robin y el conteo de clics en /api/r
+          window.location.href = '/api/r';
+        }, 300);
       }
 
-      // 2️⃣ Esperamos 300ms para asegurar que Meta reciba el evento
-      setTimeout(() => {
-        window.location.href = '/api/r';
-      }, 300);
+      // ➡️ Click en el botón
+      const btn = document.getElementById('cta-btn');
+      if (btn) {
+        btn.addEventListener('click', goToWhatsapp);
+      }
 
-    }, 2500); // 2.5 segundos de pantalla de carga
+      // ⏱️ Auto-redirección si el usuario no toca nada (2.5 segundos)
+      setTimeout(goToWhatsapp, 2500);
+    });
   </script>
 </body>
 </html>
