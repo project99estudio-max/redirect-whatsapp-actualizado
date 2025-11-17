@@ -8,14 +8,17 @@
   <!-- 💎 FUENTE MEJORADA -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- 💰 META PIXEL -->
+  <!-- 💰 META PIXEL PX-Web -->
   <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
     t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1368705578011910'); 
+
+    // ✅ Pixel nuevo PX-Web
+    fbq('init', '2437097971325151'); 
+    // ✅ PageView al entrar
     fbq('track', 'PageView');
   </script>
 
@@ -270,30 +273,42 @@
   <script>
   document.addEventListener("DOMContentLoaded", () => {
 
-    for (let i=0;i<70;i++){
-      const p=document.createElement("div");
+    // 🌌 Partículas de fondo
+    for (let i = 0; i < 70; i++){
+      const p = document.createElement("div");
       p.classList.add("particle");
-      p.style.top=Math.random()*100+"vh";
-      p.style.left=Math.random()*100+"vw";
-      p.style.animationDuration=(6+Math.random()*8)+"s";
+      p.style.top = Math.random() * 100 + "vh";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDuration = (6 + Math.random() * 8) + "s";
       document.body.appendChild(p);
     }
 
-    let redirected=false;
+    let redirected = false;
 
     function goToWhatsapp(){
-      if(redirected) return;
-      redirected=true;
+      if (redirected) return;
+      redirected = true;
 
-      if(window.fbq) fbq("trackCustom","WAclick");
+      // ✅ Evento de conversión para Meta
+      if (window.fbq) {
+        // Lead = evento estándar (usalo como conversión en la campaña)
+        fbq('track', 'Lead');
+        // WAclick = evento personalizado para controlar clics a WhatsApp
+        fbq('trackCustom', 'WAclick');
+      }
 
-      setTimeout(()=>{ window.location.href="/api/r"; },300);
+      // 🔁 Redirección al router / round robin
+      setTimeout(() => {
+        window.location.href = "/api/r";
+      }, 300);
     }
 
-    document.addEventListener("click", e=>{
-      if(e.target.closest("#cta-btn")) goToWhatsapp();
+    // Click en el botón
+    document.addEventListener("click", e => {
+      if (e.target.closest("#cta-btn")) goToWhatsapp();
     });
 
+    // ⏱ Redirección automática a los 7 segundos si no tocó nada
     setTimeout(goToWhatsapp, 7000);
   });
   </script>
