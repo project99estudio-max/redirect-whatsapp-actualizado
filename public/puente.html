@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Conectando con WhatsApp...</title>
 
+  <!-- ✅ FUENTE MEJORADA -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
   <!-- ✅ META PIXEL CODE -->
   <script>
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -15,7 +18,7 @@
     fbq('init', '1368705578011910'); 
     fbq('track', 'PageView');
   </script>
-  <!-- ✅ FIN META PIXEL CODE -->
+  <!-- ❗ FIN META PIXEL CODE -->
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +32,7 @@
       align-items: center;
       flex-direction: column;
       color: white;
-      font-family: 'Poppins', sans-serif;
+      font-family: "Montserrat", sans-serif;
       text-align: center;
       position: relative;
       animation: bgMove 10s ease-in-out infinite alternate;
@@ -40,6 +43,7 @@
       100% { background-position: 100% 100%; background-color: #4b0099; }
     }
 
+    /* ⭐ PARTICULAS */
     .particle {
       position: absolute;
       background: rgba(177, 124, 255, 0.6);
@@ -71,13 +75,15 @@
       max-width: 360px;
     }
 
+    /* 🟣 IMAGEN */
     .slot-img {
       max-width: 240px;
       width: 70vw;
-      margin-bottom: 16px;
-      filter: drop-shadow(0 0 30px rgba(177, 124, 255, 0.8));
+      margin-bottom: 18px;
+      filter: drop-shadow(0 0 30px rgba(177, 124, 255, 0.9));
     }
 
+    /* 🔄 LOADER */
     .loader {
       border: 6px solid rgba(255, 255, 255, 0.1);
       border-top: 6px solid #b17cff;
@@ -85,7 +91,7 @@
       width: 70px;
       height: 70px;
       animation: spin 1.4s linear infinite;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
       box-shadow: 0 0 25px rgba(177, 124, 255, 0.6);
     }
 
@@ -94,139 +100,118 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* 📝 TEXTO */
     h2 {
       font-size: 1.5rem;
-      color: #fff;
+      font-weight: 700;
+      margin-bottom: 5px;
       text-shadow: 0 0 10px rgba(177, 124, 255, 0.8);
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
     }
 
     .subtitle {
-      color: rgba(255,255,255,0.9);
-      margin-top: 4px;
-      margin-bottom: 18px;
-      font-size: 0.98rem;
+      font-size: 1rem;
       font-weight: 500;
+      margin-bottom: 18px;
+      opacity: 0.95;
     }
 
+    /* 🟢 BOTÓN */
     .cta-btn{
       border:none;
-      outline:none;
       cursor:pointer;
-      padding:14px 24px;
-      border-radius:999px;
-      font-size:0.95rem;
+      padding:15px 26px;
+      border-radius:50px;
+      font-size:1rem;
       font-weight:700;
       letter-spacing:0.04em;
       text-transform:uppercase;
-      display:inline-flex;
+      display:flex;
       align-items:center;
-      gap:8px;
-      background:linear-gradient(135deg, #34d399, #22c55e);
+      gap:10px;
+      background:linear-gradient(135deg, #3aff97, #17c45b);
       color:#020617;
-      box-shadow:0 0 18px rgba(34, 197, 94, 0.9);
-      position:relative;
+      box-shadow:0 0 26px rgba(34, 197, 94, 0.9);
       animation:pulse 1.4s infinite ease-in-out;
-      margin-top: 4px;
-    }
-
-    .wp-icon{
-      font-size:1.1rem;
+      transition:0.2s ease-in-out;
     }
 
     @keyframes pulse{
-      0%{
-        transform:scale(1);
-        box-shadow:0 0 18px rgba(34, 197, 94, 0.8);
-      }
-      50%{
-        transform:scale(1.05);
-        box-shadow:0 0 30px rgba(34, 197, 94, 1);
-      }
-      100%{
-        transform:scale(1);
-        box-shadow:0 0 18px rgba(34, 197, 94, 0.8);
-      }
+      0% { transform:scale(1); }
+      50%{ transform:scale(1.07); }
+      100% { transform:scale(1); }
     }
 
     .helper {
       font-size: 0.8rem;
-      opacity: 0.75;
-      margin-top: 10px;
+      opacity: .7;
+      margin-top: 12px;
     }
   </style>
 </head>
 
 <body>
-  <!-- ✅ PIXEL sin JavaScript -->
+
+  <!-- 🔹 Pixel sin JS -->
   <noscript>
     <img height="1" width="1" style="display:none"
          src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
   </noscript>
 
   <div class="content">
-    <!-- 🎰 Imagen de la máquina INSOMNIA (cambiá el src por el nombre real del archivo) -->
-    <img src="insomnia-slot.png" alt="Insomnia Slot" class="slot-img">
+
+    <!-- 🎰 TU IMAGEN -->
+    <img src="logo-home.png" class="slot-img" alt="Insomnia Slot">
 
     <div class="loader"></div>
 
     <h2>Conectando con WhatsApp...</h2>
+
     <p class="subtitle">
       Creá tu usuario en segundos y empezá a jugar con ventaja
     </p>
 
+    <!-- 🟢 BOTON CON SVG -->
     <button class="cta-btn" id="cta-btn">
-      <span class="wp-icon">🟢</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+        <path d="M19.05 4.91A9.8 9.8 0 0 0 12.04 2C6.51 2 2 6.51 2 12.04c0 1.93.53 3.81 1.52 5.46L2 22l4.62-1.51a10 10 0 0 0 5.42 1.55h.02c5.53 0 10.04-4.51 10.04-10.04 0-2.67-1.04-5.18-2.95-7.09ZM12.06 20c-1.71 0-3.38-.46-4.84-1.33l-.35-.2-2.74.9.9-2.67-.22-.35a8.05 8.05 0 1 1 7.25 4.65Zm4.52-5.99c-.25-.13-1.47-.72-1.7-.8-.23-.08-.4-.13-.57.14-.17.25-.65.8-.8.96-.15.17-.3.18-.55.06-.25-.13-1.06-.39-2.03-1.24-.75-.67-1.25-1.49-1.4-1.73-.15-.25-.02-.38.11-.5.12-.12.25-.3.38-.45.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.57-1.37-.78-1.88-.2-.48-.4-.42-.57-.43l-.48-.01c-.17 0-.45.06-.69.32-.23.25-.9.88-.9 2.14 0 1.26.93 2.48 1.06 2.65.13.17 1.81 2.77 4.47 3.89 2.66 1.12 2.66.75 3.14.7.48-.04 1.47-.6 1.68-1.18.21-.57.21-1.06.15-1.18-.06-.13-.23-.2-.48-.33Z"/>
+      </svg>
       CREAR USUARIO
     </button>
 
-    <p class="helper">
-      Si no se abre automáticamente, tocá el botón.
-    </p>
+    <p class="helper">Si no se abre solo, tocá el botón 👇</p>
+
   </div>
 
   <script>
-    // 🔹 Partículas flotantes decorativas
     document.addEventListener("DOMContentLoaded", () => {
-      const body = document.body;
+
+      /* 🌌 PARTICULAS */
       for (let i = 0; i < 80; i++) {
-        const particle = document.createElement("div");
-        particle.classList.add("particle");
-        particle.style.top = Math.random() * 100 + "vh";
-        particle.style.left = Math.random() * 100 + "vw";
-        particle.style.animationDuration = (6 + Math.random() * 8) + "s";
-        particle.style.animationDelay = Math.random() * 6 + "s";
-        particle.style.width = particle.style.height = Math.random() * 2 + 1 + "px";
-        body.appendChild(particle);
+        const p = document.createElement("div");
+        p.classList.add("particle");
+        p.style.top = Math.random()*100 + "vh";
+        p.style.left = Math.random()*100 + "vw";
+        p.style.animationDuration = (6+Math.random()*8) + "s";
+        document.body.appendChild(p);
       }
 
-      let hasRedirected = false;
+      let redirected = false;
 
-      function goToWhatsapp() {
-        if (hasRedirected) return;
-        hasRedirected = true;
+      function goToWhatsapp(){
+        if (redirected) return;
+        redirected = true;
 
-        // 1️⃣ Disparamos el evento personalizado (WAclick) SOLO cuando realmente vamos a WhatsApp
-        if (window.fbq) {
-          fbq('trackCustom', 'WAclick');
-        }
+        if (window.fbq) fbq('trackCustom','WAclick');
 
-        // 2️⃣ Esperamos 300ms para asegurar que Meta reciba el evento
         setTimeout(() => {
-          // 🔁 Tu backend sigue manejando el round robin y el conteo de clics en /api/r
-          window.location.href = '/api/r';
+          window.location.href = "/api/r"; 
         }, 300);
       }
 
-      // ➡️ Click en el botón
-      const btn = document.getElementById('cta-btn');
-      if (btn) {
-        btn.addEventListener('click', goToWhatsapp);
-      }
+      document.getElementById("cta-btn").addEventListener("click", goToWhatsapp);
 
-      // ⏱️ Auto-redirección si el usuario no toca nada (2.5 segundos)
-      setTimeout(goToWhatsapp, 2500);
+      /* ⏱️ AUTORREDIRECCIÓN A 7s */
+      setTimeout(goToWhatsapp, 7000);
     });
   </script>
 </body>
