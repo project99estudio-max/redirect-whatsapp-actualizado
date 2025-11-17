@@ -60,7 +60,7 @@
       flex-direction:column;
       align-items:center;
       max-width:380px;
-      padding:24px;
+      padding:24px 20px;
     }
 
     .slot-img{
@@ -120,6 +120,36 @@
       font-size:.82rem;
       opacity:.75;
       margin-top:14px;
+    }
+
+    /* 📱 Ajustes para celular: contenido más arriba y un poco más compacto */
+    @media (max-width: 768px){
+      body{
+        justify-content:flex-start;
+        padding-top:32px;
+      }
+
+      .content{
+        max-width:340px;
+      }
+
+      .slot-img{
+        max-width:260px;
+        margin-bottom:20px;
+      }
+
+      h1{
+        font-size:1.4rem;
+      }
+
+      .h1-line-small{
+        font-size:1rem;
+      }
+
+      .subtitle{
+        font-size:0.9rem;
+        white-space:normal; /* por si algún celu MUY chico corta la línea */
+      }
     }
   </style>
 </head>
