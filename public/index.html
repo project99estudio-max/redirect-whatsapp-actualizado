@@ -17,10 +17,15 @@
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
 
     // ✅ Pixel nuevo PX-Web
-    fbq('init', '2437097971325151'); 
+    fbq('init', '24730979713251511');
     // ✅ PageView al entrar
     fbq('track', 'PageView');
   </script>
+
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=24730979713251511&ev=PageView&noscript=1"/>
+  </noscript>
 
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -291,10 +296,8 @@
 
       // ✅ Evento de conversión para Meta
       if (window.fbq) {
-        // Lead = evento estándar (usalo como conversión en la campaña)
-        fbq('track', 'Lead');
-        // WAclick = evento personalizado para controlar clics a WhatsApp
-        fbq('trackCustom', 'WAclick');
+        fbq('track', 'Lead');          // evento estándar
+        fbq('trackCustom', 'WAclick'); // evento personalizado
       }
 
       // 🔁 Redirección al router / round robin
