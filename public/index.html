@@ -1,128 +1,316 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Insomnia Redirección</title>
-<style>
-  :root {
-    --bg1: #4b0082;
-    --bg2: #000;
-    --particle: #c7b3ff;
-  }
-  html, body {
-    height: 100%;
-    margin: 0;
-    background: radial-gradient(circle at 30% -10%, var(--bg1), var(--bg2));
-    overflow: hidden;
-  }
-  canvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-  }
-  .wrap {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    color: white;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial;
-    text-align: center;
-  }
-  .logo {
-    width: 160px;
-    margin-bottom: 28px;
-    filter: drop-shadow(0 0 10px rgba(200,150,255,0.4));
-  }
-  .loader {
-    width: 80px;
-    height: 80px;
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #b985ff;
-    border-radius: 50%;
-    animation: spin 1.4s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  p {
-    margin-top: 22px;
-    color: #c7b3ff;
-    font-size: 15px;
-    letter-spacing: 0.3px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accediendo…</title>
 
-<!-- 🧠 Meta Pixel -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '1368705578011910');
-  fbq('track', 'PageView');
-</script>
-<noscript>
-  <img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=1368705578011910&ev=PageView&noscript=1"/>
-</noscript>
+  <!-- 💎 FUENTE MEJORADA -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- 💰 META PIXEL PX-Web -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    // ✅ Pixel nuevo PX-Web
+    fbq('init', '2437097971325151'); 
+    // ✅ PageView al entrar
+    fbq('track', 'PageView');
+  </script>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      height:100vh;
+      background:radial-gradient(circle at 20% 20%, #2a004d, #000000 90%);
+      overflow:hidden;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      color:white;
+      font-family:"Montserrat", sans-serif;
+      text-align:center;
+      position:relative;
+      animation:bgMove 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes bgMove{
+      0%{ background-position:0 0; background-color:#2a004d }
+      100%{ background-position:100% 100%; background-color:#4b0099 }
+    }
+
+    .particle{
+      position:absolute;
+      background:rgba(177,124,255,.5);
+      border-radius:50%;
+      width:2px; height:2px;
+      animation:float linear infinite, shimmer 4s ease-in-out infinite;
+      box-shadow:0 0 6px rgba(177,124,255,.8);
+    }
+
+    @keyframes float{ from{transform:translateX(0);opacity:.25} to{transform:translateX(100vw);opacity:.9} }
+    @keyframes shimmer{ 0%,100%{opacity:.2} 50%{opacity:.9} }
+
+    .card-wrapper{
+      z-index:2;
+      padding:20px;
+      width:100%;
+      display:flex;
+      justify-content:center;
+    }
+
+    .card{
+      position:relative;
+      max-width:380px;
+      width:100%;
+      padding:22px 20px 20px;
+      border-radius:20px;
+      background:rgba(9, 9, 22, 0.82);
+      box-shadow:0 0 32px rgba(0,0,0,.7);
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:20px;
+      padding:1px;
+      background:linear-gradient(135deg, rgba(177,124,255,.9), rgba(56,189,248,.7));
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      opacity:.7;
+    }
+
+    .card-inner{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .badge-row{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+
+    .brand{
+      font-size:0.72rem;
+      letter-spacing:0.22em;
+      text-transform:uppercase;
+      opacity:.75;
+    }
+
+    .pill{
+      font-size:0.7rem;
+      padding:4px 10px;
+      border-radius:999px;
+      background:rgba(34,197,94,.12);
+      border:1px solid rgba(34,197,94,.45);
+      color:#bbf7d0;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      white-space:nowrap;
+    }
+
+    .pill-dot{
+      width:7px; height:7px;
+      border-radius:50%;
+      background:#22c55e;
+      box-shadow:0 0 8px rgba(34,197,94,1);
+    }
+
+    .slot-img{
+      max-width:290px;
+      width:78vw;
+      margin:4px 0 22px;
+      filter:drop-shadow(0 0 32px rgba(177,124,255,.95));
+    }
+
+    h1{
+      font-size:1.45rem;
+      font-weight:700;
+      margin-bottom:6px;
+      text-shadow:0 0 10px rgba(177,124,255,.9);
+      line-height:1.2;
+    }
+
+    .h1-line-small{
+      display:block;
+      font-size:1.05rem;
+      font-weight:600;
+      opacity:.96;
+      margin-top:2px;
+    }
+
+    .subtitle{
+      font-size:0.78rem;
+      opacity:.96;
+      margin-bottom:16px;
+      font-weight:500;
+      white-space:nowrap;
+      transform: translateY(-2px);
+    }
+
+    .cta-btn{
+      border:none;
+      cursor:pointer;
+      padding:15px 26px;
+      border-radius:50px;
+      font-size:0.95rem;
+      font-weight:700;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background:linear-gradient(135deg,#3aff97,#17c45b);
+      color:#020617;
+      box-shadow:0 0 22px rgba(34,197,94,.9);
+      animation:pulse 1.4s infinite ease-in-out;
+      letter-spacing:0.04em;
+    }
+
+    @keyframes pulse{
+      0%{transform:scale(1)}
+      50%{transform:scale(1.05)}
+      100%{transform:scale(1)}
+    }
+
+    .helper{
+      font-size:.78rem;
+      opacity:.72;
+      margin-top:12px;
+    }
+
+    .footnote{
+      font-size:0.72rem;
+      opacity:0.48;
+      text-align:center;
+      width:100%;
+      margin-top:6px;
+      letter-spacing:0.04em;
+      white-space:nowrap;
+    }
+
+    @media (max-width:768px){
+      body{
+        justify-content:flex-start;
+        padding-top:24px;
+      }
+
+      .subtitle{
+        font-size:0.72rem;
+        line-height:1.1;
+        white-space:normal;
+      }
+
+      .slot-img{
+        max-width:250px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-<canvas id="bg"></canvas>
-<div class="wrap">
-  <img src="/logo-home.png" alt="Insomnia Logo" class="logo" />
-  <div class="loader"></div>
-  <p>Conectando con tu asistente...</p>
-</div>
 
-<script>
-  // Partículas suaves
-  const c = document.getElementById("bg"), x = c.getContext("2d");
-  let P = [];
-  function rs(){ c.width = innerWidth; c.height = innerHeight }
-  addEventListener("resize", rs); rs();
-  for (let i = 0; i < 70; i++) {
-    P.push({
-      x: Math.random() * c.width,
-      y: Math.random() * c.height,
-      vx: (Math.random() - 0.5) * 0.25,
-      vy: (Math.random() - 0.5) * 0.25,
-      r: Math.random() * 2 + 0.5
-    });
-  }
-  (function anim() {
-    const grad = x.createRadialGradient(
-      c.width * 0.3, c.height * 0.1, 0,
-      c.width * 0.3, c.height * 0.1, Math.max(c.width, c.height)
-    );
-    grad.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--bg1').trim());
-    grad.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--bg2').trim());
-    x.fillStyle = grad; x.fillRect(0, 0, c.width, c.height);
-    x.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--particle').trim();
-    for (const p of P) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > c.width) p.vx *= -1;
-      if (p.y < 0 || p.y > c.height) p.vy *= -1;
-      x.beginPath(); x.arc(p.x, p.y, p.r, 0, 6.283); x.fill();
+  <div class="card-wrapper">
+    <div class="card">
+      <div class="card-inner">
+
+        <div class="badge-row">
+          <span class="brand">INSOMNIA</span>
+          <span class="pill">
+            <span class="pill-dot"></span>
+            Acceso oficial
+          </span>
+        </div>
+
+        <img src="/logo-home.png" class="slot-img" alt="Insomnia Slot">
+
+        <h1>
+          CREÁ TU USUARIO
+          <span class="h1-line-small">EN SEGUNDOS</span>
+        </h1>
+
+        <p class="subtitle">
+          Y empezá a jugar con ventaja ahora mismo 🎰💵
+        </p>
+
+        <button class="cta-btn" id="cta-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="white" viewBox="0 0 24 24">
+            <path d="M19.05 4.91A9.8 9.8 0 0 0 12.04 2C6.51 2 2 6.51 2 12.04c0 1.93.53 3.81 1.52 5.46L2 22l4.62-1.51a10 10 0 0 0 5.42 1.55h.02c5.53 0 10.04-4.51 10.04-10.04 0-2.67-1.04-5.18-2.95-7.09ZM12.06 20c-1.71 0-3.38-.46-4.84-1.33l-.35-.2-2.74.9.9-2.67-.22-.35a8.05 8.05 0 1 1 7.25 4.65Zm4.52-5.99c-.25-.13-1.47-.72-1.7-.8-.23-.08-.4-.13-.57.14-.17.25-.65.8-.8.96-.15.17-.3.18-.55.06-.25-.13-1.06-.39-2.03-1.24-.75-.67-1.25-1.49-1.4-1.73-.15-.25-.02-.38.11-.5.12-.12.25-.3.38-.45.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.57-1.37-.78-1.88-.2-.48-.4-.42-.57-.43l-.48-.01c-.17 0-.45.06-.69.32-.23.25-.9.88-.9 2.14 0 1.26.93 2.48 1.06 2.65.13.17 1.81 2.77 4.47 3.89 2.66 1.12 2.66.75 3.14.7.48-.04 1.47-.6 1.68-1.18.21-.57.21-1.06.15-1.18-.06-.13-.23-.2-.48-.33Z"/>
+          </svg>
+          CREAR USUARIO
+        </button>
+
+        <p class="helper">
+          Si no se abre automáticamente, presioná el botón
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <footer class="footnote">
+    © GERENCIA INSOMNIA – Todos los derechos reservados
+  </footer>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+
+    // 🌌 Partículas de fondo
+    for (let i = 0; i < 70; i++){
+      const p = document.createElement("div");
+      p.classList.add("particle");
+      p.style.top = Math.random() * 100 + "vh";
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.animationDuration = (6 + Math.random() * 8) + "s";
+      document.body.appendChild(p);
     }
-    requestAnimationFrame(anim);
-  })();
 
-  // Redirección automática
-  setTimeout(() => {
-    window.location.href = "/api/r";
-  }, 400);
-</script>
+    let redirected = false;
+
+    function goToWhatsapp(){
+      if (redirected) return;
+      redirected = true;
+
+      // ✅ Evento de conversión para Meta
+      if (window.fbq) {
+        // Lead = evento estándar (usalo como conversión en la campaña)
+        fbq('track', 'Lead');
+        // WAclick = evento personalizado para controlar clics a WhatsApp
+        fbq('trackCustom', 'WAclick');
+      }
+
+      // 🔁 Redirección al router / round robin
+      setTimeout(() => {
+        window.location.href = "/api/r";
+      }, 300);
+    }
+
+    // Click en el botón
+    document.addEventListener("click", e => {
+      if (e.target.closest("#cta-btn")) goToWhatsapp();
+    });
+
+    // ⏱ Redirección automática a los 7 segundos si no tocó nada
+    setTimeout(goToWhatsapp, 7000);
+  });
+  </script>
 </body>
 </html>
